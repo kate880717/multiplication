@@ -12,48 +12,51 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0c2433;}
 #stage{position:absolute;width:1280px;height:800px;left:50%;top:50%;
   transform:translate(-50%,-50%) scale(1);transform-origin:center center;overflow:hidden;border-radius:8px;
   background:linear-gradient(170deg,#3aa6d4 0%,#2b86b8 55%,#236d9e 100%);}
+/* 장식은 화면 가장자리에만 - 놀이 영역 절대 침범 금지 */
 #decor{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.deco{position:absolute;opacity:.85;}
-.cloud{font-size:70px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.12));animation:drift linear infinite;}
+.deco{position:absolute;opacity:.7;}
+.cloud{font-size:46px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.12));animation:drift linear infinite;}
 .float{animation:bob ease-in-out infinite;}
-@keyframes drift{from{transform:translateX(-160px);}to{transform:translateX(1440px);}}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-22px) rotate(4deg);}}
+@keyframes drift{from{transform:translateX(-200px);}to{transform:translateX(1480px);}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-14px) rotate(4deg);}}
 .twinkle{animation:tw 2.4s ease-in-out infinite;}
-@keyframes tw{0%,100%{opacity:.3;transform:scale(.8);}50%{opacity:1;transform:scale(1.2);}}
+@keyframes tw{0%,100%{opacity:.25;transform:scale(.8);}50%{opacity:.8;transform:scale(1.1);}}
 .screen{position:absolute;inset:0;display:none;padding:20px 34px;flex-direction:column;z-index:1;}
 .screen.on{display:flex;}
-.bigtxt{font-size:33px;font-weight:900;color:#fff6c9;text-align:center;
-  background:rgba(11,34,48,.5);padding:9px 28px;border-radius:999px;
-  display:inline-block;margin:0 auto;text-shadow:0 2px 4px rgba(0,0,0,.4);}
-.topbar{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
-.topbar .title{font-size:24px;font-weight:900;color:#fff;
-  background:rgba(11,34,48,.42);padding:8px 20px;border-radius:999px;}
+.bigtxt{font-size:31px;font-weight:900;color:#fff6c9;text-align:center;
+  background:rgba(11,34,48,.55);padding:11px 30px;border-radius:999px;
+  display:inline-block;margin:0 auto;text-shadow:0 2px 4px rgba(0,0,0,.4);max-width:90%;}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+.topbar .title{font-size:23px;font-weight:900;color:#fff;
+  background:rgba(11,34,48,.5);padding:9px 22px;border-radius:999px;}
 .topbar .prog{flex:1;display:flex;gap:8px;justify-content:center;}
-.dot{width:19px;height:19px;border-radius:50%;background:rgba(255,255,255,.35);transition:.25s;}
+.dot{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.35);transition:.25s;}
 .dot.done{background:#7ee06a;box-shadow:0 0 8px #7ee06a;}
 .dot.cur{background:#ffd23f;transform:scale(1.4);box-shadow:0 0 12px #ffd23f;}
-.spk{width:60px;height:60px;border-radius:18px;border:4px solid #fff;background:#2c4a5c;color:#fff;
-  font-size:27px;cursor:pointer;font-weight:900;transition:.15s;}
+.spk{width:54px;height:54px;border-radius:16px;border:4px solid #fff;background:#2c4a5c;color:#fff;
+  font-size:25px;cursor:pointer;font-weight:900;transition:.15s;flex-shrink:0;}
 .spk.on{background:#ffd23f;color:#1f4258;}
 .btn{border:none;border-radius:999px;cursor:pointer;font-weight:900;transition:transform .12s,filter .12s;}
 .btn:active{transform:scale(.93);}
-.btn-go{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:28px;
-  padding:17px 44px;box-shadow:0 8px 0 #d68a00,0 10px 18px rgba(0,0,0,.25);animation:cta 1.5s ease-in-out infinite;}
+.btn-go{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:27px;
+  padding:16px 42px;box-shadow:0 8px 0 #d68a00,0 10px 18px rgba(0,0,0,.25);animation:cta 1.5s ease-in-out infinite;}
 @keyframes cta{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
 .btn-go:active{box-shadow:0 3px 0 #d68a00;animation:none;}
 .btn-go:disabled{filter:grayscale(.65);opacity:.5;animation:none;}
-.btn-sm{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:23px;
-  padding:14px 30px;box-shadow:0 5px 0 #d68a00;}
+.btn-sm{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:21px;
+  padding:12px 26px;box-shadow:0 5px 0 #d68a00;}
 .btn-sm:disabled{filter:grayscale(.6);opacity:.55;}
-.btn-blue{background:linear-gradient(180deg,#5ab0ff,#2f7fe0);color:#fff;font-size:24px;
-  padding:15px 34px;box-shadow:0 6px 0 #1f5cab;}
+.btn-blue{background:linear-gradient(180deg,#5ab0ff,#2f7fe0);color:#fff;font-size:22px;
+  padding:13px 30px;box-shadow:0 6px 0 #1f5cab;}
 .btn-blue:disabled{filter:grayscale(.6);opacity:.5;}
-.btn-mint{background:linear-gradient(180deg,#5fe3b6,#2eb389);color:#fff;font-size:24px;
-  padding:16px 38px;box-shadow:0 7px 0 #1f8666;}
-.btn-skip{background:rgba(255,255,255,.92);color:#356;font-size:19px;padding:12px 24px;
+.btn-mint{background:linear-gradient(180deg,#5fe3b6,#2eb389);color:#fff;font-size:22px;
+  padding:14px 34px;box-shadow:0 7px 0 #1f8666;}
+.btn-skip{background:rgba(255,255,255,.94);color:#356;font-size:18px;padding:11px 22px;
   box-shadow:0 4px 0 rgba(0,0,0,.18);}
-.btn-help{background:linear-gradient(180deg,#ffb84d,#f08a14);color:#fff;font-size:21px;
-  padding:12px 24px;box-shadow:0 5px 0 #bd6a08;}
+.btn-help{background:linear-gradient(180deg,#ffb84d,#f08a14);color:#fff;font-size:20px;
+  padding:11px 22px;box-shadow:0 5px 0 #bd6a08;}
+.btn-pink{background:linear-gradient(180deg,#ff95b3,#e0556a);color:#fff;font-size:21px;
+  padding:13px 26px;box-shadow:0 6px 0 #9c3340;}
 .btn-mint:disabled{filter:grayscale(.6);opacity:.55;}
 .goal{background:linear-gradient(180deg,#fffbe0,#fff2b0);border:6px solid #ffd23f;
   border-radius:30px;padding:22px 30px;box-shadow:0 10px 24px rgba(0,0,0,.22);}
@@ -61,118 +64,151 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0c2433;}
 .goal p{font-size:25px;font-weight:800;color:#5e4b00;line-height:1.8;}
 .goal .hl{background:#fff;border-radius:11px;padding:3px 11px;box-shadow:0 2px 4px rgba(0,0,0,.1);}
 .panel{background:#fff;border-radius:24px;box-shadow:0 8px 22px rgba(0,0,0,.2);}
-.peng{font-size:84px;animation:bob 2.6s ease-in-out infinite;display:inline-block;}
+.peng{font-size:78px;animation:bob 2.6s ease-in-out infinite;display:inline-block;}
 .bubble{background:#fff;border:4px solid #ffd23f;border-radius:20px;padding:11px 17px;
-  font-size:20px;font-weight:800;color:#356;max-width:360px;box-shadow:0 5px 12px rgba(0,0,0,.2);}
+  font-size:19px;font-weight:800;color:#356;max-width:340px;box-shadow:0 5px 12px rgba(0,0,0,.2);}
 /* 튜토리얼 */
-.tut-cards{display:flex;gap:13px;justify-content:center;flex-wrap:wrap;}
-.tut-card{background:#fff;border:5px solid #ff9aa2;border-radius:18px;padding:11px;display:grid;gap:8px;
+.tut-cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.tut-card{background:#fff;border:5px solid #ff9aa2;border-radius:18px;padding:10px;display:grid;gap:7px;
   box-shadow:0 6px 14px rgba(0,0,0,.18);animation:popIn .4s backwards;}
-.gdot{width:33px;height:33px;border-radius:50%;
+.gdot{width:30px;height:30px;border-radius:50%;
   background:radial-gradient(circle at 34% 30%,#a8f098,#4fae3e);border:3px solid #3c8c30;
   box-shadow:0 2px 4px rgba(0,0,0,.2);}
 @keyframes popIn{from{transform:scale(.3);opacity:0;}}
 .nline{display:flex;gap:6px;justify-content:center;align-items:center;}
-.nbox{background:#fff;border:4px solid #6cb8d8;border-radius:13px;min-width:64px;height:60px;
-  display:flex;align-items:center;justify-content:center;font-size:31px;font-weight:900;
+.nbox{background:#fff;border:4px solid #6cb8d8;border-radius:13px;min-width:60px;height:56px;
+  display:flex;align-items:center;justify-content:center;font-size:29px;font-weight:900;
   color:#1f4258;position:relative;box-shadow:0 4px 8px rgba(0,0,0,.15);}
-.nbox .ord,.blank .ord{position:absolute;top:-14px;background:#2f7fe0;color:#fff;font-size:15px;
-  width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 4px rgba(0,0,0,.3);}
-.nbox .ord{right:-9px;}
-.nline .seg{width:24px;height:4px;background:#fff;border-radius:3px;}
-.frame{background:#fff;border-radius:22px;padding:15px 24px;display:flex;gap:11px;align-items:center;
-  justify-content:center;font-size:36px;font-weight:900;color:#1f4258;box-shadow:0 6px 14px rgba(0,0,0,.18);}
-.blank{border:4px solid #ff8a93;border-radius:13px;min-width:66px;height:62px;display:flex;
-  align-items:center;justify-content:center;background:#fff;font-size:34px;color:#e0556a;position:relative;}
+.nbox .ord,.blank .ord{position:absolute;top:-14px;background:#2f7fe0;color:#fff;font-size:14px;
+  width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 4px rgba(0,0,0,.3);z-index:2;}
+.nbox .ord{right:-8px;}
+.nline .seg{width:22px;height:4px;background:#fff;border-radius:3px;}
+.frame{background:#fff;border-radius:22px;padding:13px 22px;display:flex;gap:11px;align-items:center;
+  justify-content:center;font-size:33px;font-weight:900;color:#1f4258;box-shadow:0 6px 14px rgba(0,0,0,.18);
+  flex-wrap:wrap;}
+.blank{border:4px solid #ff8a93;border-radius:13px;min-width:60px;height:58px;display:flex;
+  align-items:center;justify-content:center;background:#fff;font-size:32px;color:#e0556a;position:relative;}
 .blank.fill{border-color:#5cc24a;color:#2f7fe0;background:#eefbe9;animation:pop1 .4s;}
 @keyframes pop1{50%{transform:scale(1.25);}}
-.blank .ord{left:-9px;background:#e0556a;}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:300px;}
-.key{background:linear-gradient(180deg,#3d6072,#2c4a5c);color:#fff;font-size:30px;font-weight:900;
-  border:none;border-radius:15px;height:62px;cursor:pointer;box-shadow:0 5px 0 #16313f;}
+.blank .ord{left:-8px;background:#e0556a;}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:270px;}
+.key{background:linear-gradient(180deg,#3d6072,#2c4a5c);color:#fff;font-size:27px;font-weight:900;
+  border:none;border-radius:14px;height:56px;cursor:pointer;box-shadow:0 5px 0 #16313f;}
 .key:active{transform:translateY(4px);box-shadow:none;}
 .key.act{background:linear-gradient(180deg,#f0697d,#e0556a);box-shadow:0 5px 0 #9c3340;}
 .key.ok{background:linear-gradient(180deg,#4a9eff,#2f7fe0);box-shadow:0 5px 0 #1f5cab;}
-.kdisp{background:#fff;border-radius:15px;height:74px;display:flex;align-items:center;
-  justify-content:center;font-size:46px;font-weight:900;color:#1f4258;margin-bottom:9px;
+.kdisp{background:#fff;border-radius:14px;height:66px;display:flex;align-items:center;
+  justify-content:center;font-size:42px;font-weight:900;color:#1f4258;margin-bottom:8px;
   box-shadow:inset 0 3px 8px rgba(0,0,0,.12);}
-.play{flex:1;display:flex;gap:16px;min-height:0;}
-.scene{flex:1;background:rgba(255,255,255,.16);border:3px solid rgba(255,255,255,.4);
+.play{flex:1;display:flex;gap:14px;min-height:0;}
+.scene{flex:1;background:rgba(255,255,255,.18);border:3px solid rgba(255,255,255,.5);
   border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;padding:14px;}
-.gridwrap{position:relative;}
-#objGrid,#rgGrid{display:grid;gap:14px;position:relative;}
-.obj{font-size:48px;cursor:pointer;width:62px;height:62px;display:flex;align-items:center;
+  position:relative;padding:14px;overflow:hidden;}
+/* 그리드는 폭이 명확하게 정해져야 한 줄로 무너지지 않음 */
+.gridwrap{position:relative;display:inline-block;}
+#objGrid,#rgGrid,#motGrid{display:grid;gap:13px;position:relative;justify-content:center;}
+.obj{font-size:46px;cursor:pointer;width:58px;height:58px;display:flex;align-items:center;
   justify-content:center;border-radius:50%;transition:transform .15s,background .15s,filter .2s;
   user-select:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));}
 .obj.pick{background:#fff3a8;transform:scale(1.18) rotate(-6deg);}
-.obj.bundled{transform:translateY(-4px);}
+.obj.bundled{transform:translateY(-3px);}
 .obj.glow{animation:glowB .6s ease;}
 @keyframes glowB{0%,100%{filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));}
   50%{filter:drop-shadow(0 0 14px #ffd23f) brightness(1.3);transform:scale(1.22);}}
 .ringSvg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;}
 .ringSvg ellipse{fill:none;stroke-width:7;stroke-linecap:round;}
-.sidep{width:330px;display:flex;flex-direction:column;gap:11px;}
-.guidebox{background:#fff;border-radius:18px;padding:13px 17px;font-size:21px;font-weight:800;
+.sidep{width:310px;display:flex;flex-direction:column;gap:10px;}
+.guidebox{background:#fff;border-radius:18px;padding:12px 16px;font-size:20px;font-weight:800;
   color:#1f4258;line-height:1.5;text-align:center;box-shadow:0 5px 12px rgba(0,0,0,.16);}
-/* 수직선 패널 */
-.nlpanel{background:#fff;border-radius:22px;margin-top:10px;padding:8px 18px 12px;
-  box-shadow:0 8px 22px rgba(0,0,0,.2);display:flex;align-items:center;gap:16px;}
+/* 수직선 패널 - 펭귄과 숫자가 절대 겹치지 않게 충분한 높이 */
+.nlpanel{background:#fff;border-radius:22px;margin-top:8px;padding:6px 18px 10px;
+  box-shadow:0 8px 22px rgba(0,0,0,.2);display:flex;align-items:center;gap:14px;}
 .nlpanel.dim{filter:grayscale(.7) brightness(.96);opacity:.65;}
-.numline{position:relative;height:118px;flex:1;}
-.nl-track{position:absolute;top:74px;left:30px;right:30px;height:7px;
+.numline{position:relative;height:114px;flex:1;min-width:0;}
+.nl-track{position:absolute;top:72px;left:30px;right:30px;height:6px;
   background:linear-gradient(90deg,#cfe9f4,#9bd0e6);border-radius:4px;}
-.tick{position:absolute;top:56px;width:46px;text-align:center;}
-.tick .tk{width:7px;height:20px;background:#9bd0e6;margin:0 auto;border-radius:4px;}
-.tick .tn{font-size:25px;font-weight:900;color:#9bb8c6;margin-top:5px;transition:.3s;}
+.tick{position:absolute;top:52px;width:46px;text-align:center;}
+.tick .tk{width:6px;height:18px;background:#9bd0e6;margin:0 auto;border-radius:4px;}
+.tick .tn{font-size:23px;font-weight:900;color:#9bb8c6;margin-top:5px;transition:.3s;}
 .tick.lit .tn{color:#2f7fe0;transform:scale(1.4);}
-.hopper{position:absolute;top:0;font-size:46px;transition:left .55s ease;}
+/* 펭귄은 트랙 위쪽에 살짝 뜨게 - 숫자 안 가림 */
+.hopper{position:absolute;top:8px;font-size:38px;transition:left .55s ease;z-index:3;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.3));}
 .hopper.hop{animation:hopArc .55s ease;}
-@keyframes hopArc{0%,100%{transform:translateY(0);}45%{transform:translateY(-48px);}}
-.nl-arc{position:absolute;border:4px dashed #ffd23f;border-bottom:none;border-radius:50%;
-  top:30px;height:46px;opacity:0;transition:opacity .3s;}
-.nl-arc.show{opacity:.9;}
-.addstrip{display:flex;gap:7px;align-items:center;flex-wrap:wrap;justify-content:center;
-  min-width:230px;font-size:30px;font-weight:900;color:#1f4258;}
-.addtile{background:#eef6ff;border:3px solid #8fc0ee;border-radius:11px;padding:4px 13px;
+@keyframes hopArc{0%,100%{transform:translateY(0);}45%{transform:translateY(-44px);}}
+.addstrip{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;
+  min-width:220px;max-width:240px;font-size:26px;font-weight:900;color:#1f4258;}
+.addtile{background:#eef6ff;border:3px solid #8fc0ee;border-radius:10px;padding:3px 10px;
   animation:slideIn .4s;}
 @keyframes slideIn{from{transform:translateY(-22px) scale(.5);opacity:0;}}
 /* 동기유발 */
-.metric{background:#fff;border-radius:16px;padding:10px 18px;font-size:24px;font-weight:900;
-  color:#1f4258;display:flex;gap:14px;align-items:center;box-shadow:0 5px 12px rgba(0,0,0,.15);}
-.finger{position:absolute;font-size:46px;transition:left .25s,top .25s;z-index:5;pointer-events:none;}
+.metric{background:#fff;border-radius:16px;padding:9px 16px;font-size:22px;font-weight:900;
+  color:#1f4258;display:flex;gap:12px;align-items:center;box-shadow:0 5px 12px rgba(0,0,0,.15);}
+.btnDone{position:relative;}
+.btnDone::after{content:'✓ 했어요';position:absolute;top:-12px;right:-8px;background:#5cc24a;
+  color:#fff;font-size:14px;padding:3px 10px;border-radius:999px;font-weight:900;
+  box-shadow:0 3px 6px rgba(0,0,0,.3);}
+.finger{position:absolute;font-size:42px;transition:left .25s,top .25s;z-index:5;pointer-events:none;}
 .obj.counted{background:#ffe27a;}
 .obj.mrow{outline:5px solid #ffd23f;}
 /* 녹음 */
-.recwrap{background:#fff;border-radius:26px;padding:20px 26px;display:flex;flex-direction:column;
-  gap:12px;align-items:center;box-shadow:0 10px 26px rgba(0,0,0,.25);}
-.recnote{border-radius:20px;padding:13px 22px;font-size:22px;font-weight:800;text-align:center;line-height:1.5;}
+.recwrap{background:#fff;border-radius:26px;padding:18px 24px;display:flex;flex-direction:column;
+  gap:11px;align-items:center;box-shadow:0 10px 26px rgba(0,0,0,.25);max-width:680px;}
+.recnote{border-radius:20px;padding:12px 20px;font-size:21px;font-weight:800;text-align:center;line-height:1.5;}
 .recnote.pre{background:#e7f1ff;border:5px solid #8fb9e8;color:#1c3f6e;}
 .recnote.post{background:#e6f9f0;border:5px solid #7fd6b0;color:#13573c;}
-.micbtn{width:112px;height:112px;border-radius:50%;border:6px solid #fff;cursor:pointer;font-size:50px;
+.micbtn{width:104px;height:104px;border-radius:50%;border:6px solid #fff;cursor:pointer;font-size:46px;
   background:linear-gradient(180deg,#ff7d92,#e0455e);color:#fff;box-shadow:0 7px 0 #a8344a;}
 .micbtn.rec{animation:pulse 1s infinite;background:linear-gradient(180deg,#ff4d6a,#c5283e);}
 @keyframes pulse{50%{transform:scale(1.1);}}
-.transbox{width:560px;min-height:74px;background:#f3f9fc;border:4px solid #cfe6ea;border-radius:16px;
-  padding:11px 16px;font-size:21px;color:#1f4258;font-weight:700;}
+.transbox{width:540px;min-height:68px;background:#f3f9fc;border:4px solid #cfe6ea;border-radius:16px;
+  padding:10px 15px;font-size:20px;color:#1f4258;font-weight:700;}
 .transbox:empty:before{content:'여기에 말한 내용이 나타나요…';color:#9bb2bf;}
-textarea.kb{width:560px;height:74px;border:4px solid #cfe6ea;border-radius:16px;padding:10px 15px;
-  font-size:21px;font-weight:700;color:#1f4258;resize:none;display:none;}
+textarea.kb{width:540px;height:68px;border:4px solid #cfe6ea;border-radius:16px;padding:9px 14px;
+  font-size:20px;font-weight:700;color:#1f4258;resize:none;display:none;}
 .stars{display:flex;gap:9px;}
-.star{font-size:50px;cursor:pointer;filter:grayscale(1) opacity(.6);transition:.14s;}
+.star{font-size:46px;cursor:pointer;filter:grayscale(1) opacity(.6);transition:.14s;}
 .star.lit{filter:none;transform:scale(1.2) rotate(8deg);}
-.ov{position:absolute;inset:0;background:rgba(8,20,28,.8);display:none;
-  align-items:center;justify-content:center;z-index:50;}
+.ov{position:absolute;inset:0;background:rgba(8,20,28,.85);display:none;
+  align-items:center;justify-content:center;z-index:50;overflow-y:auto;padding:20px;}
 .ov.on{display:flex;}
-.pop{background:#fff;border-radius:32px;padding:30px 38px;width:740px;text-align:center;
-  animation:popIn .4s;border:7px solid #ffd23f;}
-.pop h2{font-size:33px;color:#2f7fe0;margin-bottom:11px;}
-.pop p{font-size:24px;font-weight:800;color:#36505e;line-height:1.6;margin-bottom:15px;}
-.pop textarea{width:100%;height:90px;border:4px solid #cfe6ea;border-radius:16px;padding:11px 16px;
-  font-size:22px;font-weight:700;resize:none;margin-bottom:12px;}
-.idea{background:linear-gradient(180deg,#fffbe0,#fff2b0);border:5px solid #ffd23f;border-radius:18px;
-  padding:15px;font-size:23px;font-weight:800;color:#5e4b00;margin-bottom:14px;display:none;}
+/* 탐구질문 팝업 - 객관식 큰 버튼 위주, 키보드 입력은 옵션 */
+.pop{background:#fff;border-radius:32px;padding:24px 30px;width:780px;text-align:center;
+  animation:popIn .4s;border:7px solid #ffd23f;box-shadow:0 16px 40px rgba(0,0,0,.4);max-height:96%;
+  overflow-y:auto;}
+.pop h2{font-size:30px;color:#2f7fe0;margin-bottom:8px;}
+.pop .q{font-size:24px;font-weight:900;color:#1f4258;line-height:1.4;margin-bottom:16px;}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;}
+.qopt{background:linear-gradient(180deg,#fff8d6,#ffe89c);border:5px solid #ffd23f;border-radius:22px;
+  padding:18px 14px;font-size:22px;font-weight:900;color:#5e4b00;cursor:pointer;
+  box-shadow:0 6px 0 #d68a00;transition:.15s;line-height:1.3;}
+.qopt:hover{transform:translateY(-3px);box-shadow:0 9px 0 #d68a00;}
+.qopt:active{transform:translateY(3px);box-shadow:0 3px 0 #d68a00;}
+.qopt.right{background:linear-gradient(180deg,#a8f098,#5cc24a);border-color:#3c8c30;color:#fff;
+  animation:pop1 .5s;box-shadow:0 6px 0 #2d6921;}
+.qopt.wrong{background:linear-gradient(180deg,#ffc0c8,#ff8a93);border-color:#e0556a;color:#fff;
+  animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+.qopt:disabled{cursor:default;}
+.hintbox{background:linear-gradient(180deg,#fff8d6,#fff2b0);border:5px solid #ffd23f;border-radius:18px;
+  padding:13px 18px;font-size:20px;font-weight:800;color:#5e4b00;text-align:left;line-height:1.5;
+  margin-bottom:10px;display:none;}
+.hintbox.show{display:block;animation:slideIn .4s;}
+.popMicWrap{display:none;flex-direction:column;align-items:center;gap:9px;background:#f3f9fc;
+  border-radius:18px;padding:13px;margin-bottom:10px;}
+.popMicWrap.show{display:flex;}
+.popMicBtn{width:74px;height:74px;border-radius:50%;border:5px solid #fff;cursor:pointer;font-size:32px;
+  background:linear-gradient(180deg,#ff7d92,#e0455e);color:#fff;box-shadow:0 6px 0 #a8344a;}
+.popMicBtn.rec{animation:pulse 1s infinite;}
+.popTrans{width:100%;min-height:50px;background:#fff;border:3px solid #cfe6ea;border-radius:12px;
+  padding:8px 12px;font-size:18px;font-weight:700;color:#1f4258;}
+.popTrans:empty:before{content:'말한 내용이 여기에 나와요…';color:#9bb2bf;}
+.popKbArea{display:none;}
+.popKbArea.show{display:block;}
+textarea.popKb{width:100%;height:60px;border:4px solid #cfe6ea;border-radius:14px;padding:9px 14px;
+  font-size:19px;font-weight:700;color:#1f4258;resize:none;margin-bottom:8px;}
+.popRow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:6px;}
 .dashlist{flex:1;overflow:auto;display:flex;flex-direction:column;gap:11px;padding:4px;}
 .dashrow{background:#fff;border-radius:18px;border-left:12px solid #5cc24a;padding:14px 22px;
   box-shadow:0 4px 10px rgba(0,0,0,.15);}
@@ -184,14 +220,14 @@ textarea.kb{width:560px;height:74px;border:4px solid #cfe6ea;border-radius:16px;
 .kpicard .n{font-size:38px;font-weight:900;color:#2f7fe0;}
 .kpicard .l{font-size:16px;font-weight:800;color:#5b7585;}
 .cert{background:linear-gradient(180deg,#fffef6,#fff6d8);border:12px solid #ffd23f;border-radius:30px;
-  flex:1;padding:22px 36px;display:flex;flex-direction:column;align-items:center;
+  flex:1;padding:20px 34px;display:flex;flex-direction:column;align-items:center;
   box-shadow:0 12px 30px rgba(0,0,0,.3);}
 .compare{display:flex;gap:18px;width:100%;}
-.cmp{flex:1;border-radius:20px;padding:15px 20px;}
+.cmp{flex:1;border-radius:20px;padding:14px 18px;}
 .cmp.pre{background:#e7f1ff;border:5px solid #8fb9e8;}
 .cmp.post{background:#e6f9f0;border:5px solid #7fd6b0;}
-.cmp h4{font-size:21px;margin-bottom:6px;}
-.cmp p{font-size:20px;font-weight:700;color:#36505e;line-height:1.5;}
+.cmp h4{font-size:20px;margin-bottom:5px;}
+.cmp p{font-size:18px;font-weight:700;color:#36505e;line-height:1.5;}
 select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16px;
   border:5px solid #ffd23f;color:#1f4258;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.2);}
 .fade{animation:fadeIn .45s;}
@@ -200,13 +236,13 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
 @keyframes regIn{from{transform:scale(.2);opacity:0;}}
 #confetti{position:absolute;inset:0;pointer-events:none;z-index:60;}
 .toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);
-  background:linear-gradient(180deg,#3d6072,#1f4258);color:#fff;font-size:23px;font-weight:900;
-  padding:13px 30px;border-radius:999px;z-index:55;display:none;box-shadow:0 6px 16px rgba(0,0,0,.35);
+  background:linear-gradient(180deg,#3d6072,#1f4258);color:#fff;font-size:22px;font-weight:900;
+  padding:12px 28px;border-radius:999px;z-index:55;display:none;box-shadow:0 6px 16px rgba(0,0,0,.35);
   border:3px solid #ffd23f;}
-.burst{position:absolute;font-size:48px;z-index:58;pointer-events:none;}
+.burst{position:absolute;font-size:46px;z-index:58;pointer-events:none;}
 @keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.4);opacity:0;}}
 .bigSticker{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(0);
-  font-size:148px;z-index:59;}
+  font-size:140px;z-index:59;}
 .bigSticker.go{animation:stk .8s forwards;}
 @keyframes stk{55%{transform:translate(-50%,-50%) scale(1.35) rotate(12deg);}
   100%{transform:translate(-50%,-50%) scale(1) rotate(0);}}
@@ -218,8 +254,8 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
 
 <!-- 시작 -->
 <section class="screen on" id="scrStart" style="align-items:center;justify-content:center;gap:18px;">
-  <div style="font-size:70px;" class="float">🧺✨🐧</div>
-  <div class="bigtxt" style="font-size:52px;">묶어 세기 탐험대</div>
+  <div style="font-size:66px;" class="float">🧺✨🐧</div>
+  <div class="bigtxt" style="font-size:48px;">묶어 세기 탐험대</div>
   <div class="goal" style="width:790px;">
     <h3>🎯 오늘의 목표</h3>
     <p style="text-align:center;">이 활동이 끝나면 우리는<br>
@@ -235,7 +271,7 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
     <button class="btn btn-go" id="startBtn">시작하기 ▶</button>
     <button class="btn btn-skip" id="toDashBtn">📒 내 학습기록 보기</button>
   </div>
-  <div style="font-size:16px;color:#cfe9f4;">※ 학생 이름·문제는 구글 시트에서 직접 바꿀 수 있어요. 마이크는 시작할 때 한 번만 확인해요.</div>
+  <div style="font-size:15px;color:#cfe9f4;">※ 학생 이름·문제는 구글 시트에서 직접 바꿀 수 있어요</div>
 </section>
 
 <!-- 튜토리얼 -->
@@ -256,7 +292,7 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
       <div class="guidebox">오른쪽 키패드로 <b style="color:#e0556a;">전체 개수</b>를 눌러요.<br>① 묶음 수 → ② 모두 몇 개?</div>
       <div class="kdisp" id="tutDisp"></div>
       <div class="keypad" id="tutKey"></div>
-      <button class="btn btn-go" id="tutGo" disabled style="font-size:24px;padding:14px 28px;">이해했어요, 학습 시작!</button>
+      <button class="btn btn-go" id="tutGo" disabled style="font-size:22px;padding:13px 24px;">이해했어요, 학습 시작!</button>
     </div>
   </div>
 </section>
@@ -265,15 +301,15 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
 <section class="screen" id="scrPre" style="align-items:center;justify-content:center;gap:14px;">
   <div class="recnote pre" style="width:780px;">📌 활동 전 녹음이에요!<br>
     지금 알고 있는 만큼만 말해도 괜찮아요. <span style="color:#7b3fc2;">활동이 끝나고 다시 녹음해서 비교해볼 거예요!</span> 🌱</div>
-  <div class="bigtxt" style="font-size:26px;">"물건을 빨리 세는 방법"을 아는 만큼 말해 보세요</div>
+  <div class="bigtxt" style="font-size:25px;">"물건을 빨리 세는 방법"을 아는 만큼 말해 보세요</div>
   <div id="preRec"></div>
 </section>
 
-<!-- 동기유발: 하나씩 vs 묶어서 -->
+<!-- 동기유발 -->
 <section class="screen" id="scrMot">
   <div class="topbar"><div class="title">🤔 어떻게 세는 게 좋을까?</div>
     <div class="prog" id="pgMot"></div><button class="spk" id="spkMot">🔇</button></div>
-  <div class="bigtxt">사과가 잔뜩! 두 가지 방법으로 세어 보고 비교해 봐요</div>
+  <div class="bigtxt">사과가 잔뜩! <b style="color:#ffd23f;">두 가지 방법 모두</b> 해보고 비교해요</div>
   <div class="play" style="margin-top:8px;">
     <div class="scene"><div class="gridwrap"><div id="motGrid"></div>
       <svg class="ringSvg" id="motSvg"></svg></div>
@@ -281,10 +317,10 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
     <div class="sidep">
       <div class="metric">⏱️ 걸린 시간 <span id="motTime" style="color:#e0556a;">0.0초</span></div>
       <div class="metric">🔢 센 개수 <span id="motCount" style="color:#2f7fe0;">0</span></div>
-      <div class="guidebox" id="motMsg">아래 버튼을 눌러 두 가지 방법을 비교해 봐요!</div>
+      <div class="guidebox" id="motMsg">두 버튼을 <b style="color:#e0556a;">모두</b> 눌러 비교해 봐요!</div>
       <button class="btn btn-blue" id="motOne">🐌 하나씩 세어 보기</button>
       <button class="btn btn-sm" id="motGroup">🚀 묶어서 세어 보기</button>
-      <button class="btn btn-go" id="motNext" style="display:none;font-size:23px;padding:14px 30px;">다음으로 ➡️</button>
+      <button class="btn btn-go" id="motNext" style="display:none;font-size:22px;padding:13px 28px;">다음으로 ➡️</button>
     </div>
   </div>
 </section>
@@ -299,17 +335,17 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
       <svg class="ringSvg" id="ringSvg"></svg></div></div>
     <div class="sidep">
       <div class="guidebox" id="learnGuide"></div>
-      <div class="frame" style="font-size:30px;flex-wrap:wrap;" id="learnFrame"></div>
+      <div class="frame" style="font-size:28px;flex-wrap:wrap;" id="learnFrame"></div>
       <button class="btn btn-skip" id="learnReset">↺ 다시 묶기</button>
       <button class="btn btn-help" id="learnHelp">💡 도와줘</button>
-      <button class="btn btn-go" id="learnNext" style="display:none;font-size:23px;padding:14px 30px;">다음으로 ➡️</button>
+      <button class="btn btn-go" id="learnNext" style="display:none;font-size:22px;padding:13px 28px;">다음으로 ➡️</button>
     </div>
   </div>
   <div class="nlpanel dim" id="nlPanel">
     <div class="numline" id="learnNL"></div>
-    <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+    <div style="display:flex;flex-direction:column;gap:7px;align-items:center;flex-shrink:0;">
       <div class="addstrip" id="addStrip"></div>
-      <button class="btn btn-blue" id="learnJump" disabled>🦘 뛰어 세기</button>
+      <button class="btn btn-blue" id="learnJump" disabled style="font-size:20px;padding:11px 22px;">🦘 뛰어 세기</button>
     </div>
   </div>
 </section>
@@ -324,17 +360,13 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
       <svg class="ringSvg" id="rgSvg"></svg></div></div>
     <div class="sidep">
       <div class="guidebox">버튼을 누르면 컵케이크가<br>그 크기로 다시 묶여요!</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;" id="rgBtns"></div>
-      <div class="frame" style="font-size:28px;" id="rgFrame">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="rgBtns"></div>
+      <div class="frame" style="font-size:26px;" id="rgFrame">
         <b style="color:#e0556a;">12</b><span>은</span>
         <span class="blank" id="rgA"></span><span>씩</span>
         <span class="blank" id="rgB"></span><span>묶음</span></div>
-      <button class="btn btn-go" id="rgNext" style="display:none;font-size:23px;padding:14px 30px;">다음으로 ➡️</button>
+      <button class="btn btn-go" id="rgNext" style="display:none;font-size:22px;padding:13px 28px;">다음으로 ➡️</button>
     </div>
-  </div>
-  <div style="display:flex;align-items:flex-end;gap:10px;position:absolute;left:34px;bottom:18px;">
-    <div class="peng">🐧</div>
-    <div class="bubble" id="rgBubble">12를 여러 방법으로 묶어 봐! 무엇이 똑같고 무엇이 달라질까?</div>
   </div>
 </section>
 
@@ -345,7 +377,7 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
   <div class="bigtxt">빈칸에 들어갈 수를 순서대로 입력해 보세요</div>
   <div class="play" style="margin-top:10px;">
     <div class="scene" style="justify-content:center;">
-      <div style="font-size:27px;font-weight:900;color:#fff;margin-bottom:16px;
+      <div style="font-size:26px;font-weight:900;color:#fff;margin-bottom:14px;
         text-shadow:0 2px 4px rgba(0,0,0,.3);" id="chalLabel"></div>
       <div class="nline" id="chalSeq" style="flex-wrap:wrap;"></div>
     </div>
@@ -362,22 +394,22 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
   <div class="recnote post" style="width:780px;">🌟 활동 후 녹음이에요!<br>
     처음 녹음과 비교해서 새롭게 알게 된 점을 말해주세요.
     <span style="color:#7b3fc2;">"이제는 묶어 세기 박사예요!"</span> 처럼요 🌱</div>
-  <div class="bigtxt" style="font-size:25px;">묶어 세기와 뛰어 세기, 무엇을 새로 알게 되었나요?</div>
+  <div class="bigtxt" style="font-size:24px;">묶어 세기와 뛰어 세기, 무엇을 새로 알게 되었나요?</div>
   <div id="postRec"></div>
 </section>
 
 <!-- 수료증 -->
 <section class="screen" id="scrCert">
   <div class="cert">
-    <div style="font-size:33px;font-weight:900;color:#9a7b00;">🏅 묶어 세기 탐험 수료증 🏅</div>
-    <div style="font-size:37px;font-weight:900;color:#1f4258;margin:5px 0;" id="certName"></div>
-    <div style="font-size:20px;font-weight:800;color:#5b7585;margin-bottom:11px;">
+    <div style="font-size:32px;font-weight:900;color:#9a7b00;">🏅 묶어 세기 탐험 수료증 🏅</div>
+    <div style="font-size:34px;font-weight:900;color:#1f4258;margin:4px 0;" id="certName"></div>
+    <div style="font-size:19px;font-weight:800;color:#5b7585;margin-bottom:10px;">
       위 어린이는 물건을 묶어 세고 뛰어 세는 탐험을 멋지게 해냈습니다.</div>
     <div class="compare">
       <div class="cmp pre"><h4 style="color:#1c3f6e;">💡 활동 전 — 내가 알던 것</h4><p id="certPre"></p></div>
       <div class="cmp post"><h4 style="color:#13573c;">🌟 활동 후 — 새로 알게 된 것</h4><p id="certPost"></p></div>
     </div>
-    <div style="display:flex;gap:26px;margin-top:12px;font-size:23px;font-weight:900;color:#1f4258;">
+    <div style="display:flex;gap:24px;margin-top:10px;font-size:21px;font-weight:900;color:#1f4258;">
       <div id="certStars"></div><div id="certStk"></div>
     </div>
     <div style="margin-top:auto;display:flex;gap:12px;">
@@ -393,16 +425,36 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
     <button class="btn btn-skip" id="dashBack">← 돌아가기</button></div>
   <div class="kpi" id="dashKpi"></div>
   <div class="dashlist" id="dashList"></div>
-  <div style="font-size:16px;color:#cfe9f4;text-align:center;margin-top:6px;">
+  <div style="font-size:15px;color:#cfe9f4;text-align:center;margin-top:6px;">
     💡 활동을 마칠 때마다 내 기록이 스스로 쌓여요. 등급·점수가 아니라 "오늘 내가 한 것"이에요.</div>
 </section>
 
+<!-- 탐구질문 팝업 -->
 <div class="ov" id="ovPop"><div class="pop">
-  <h2 id="popTitle">🤔 탐구 질문</h2><p id="popQ"></p>
-  <textarea id="popInput" placeholder="내 생각을 글로 써 보거나, 친구·선생님께 말해 보세요"></textarea>
-  <div class="idea" id="popIdea"></div>
-  <button class="btn btn-go" id="popBtn" disabled style="font-size:24px;padding:14px 34px;">설명했어요! 다음으로 ➡️</button>
+  <h2>🤔 탐구 질문</h2>
+  <div class="q" id="popQ"></div>
+  <div class="qopts" id="popOpts"></div>
+  <div class="hintbox" id="popHint"></div>
+  <div class="popMicWrap" id="popMicWrap">
+    <div style="font-size:17px;font-weight:900;color:#1f4258;">🎤 내 생각을 말로 더 표현해 봐요 (선택)</div>
+    <button class="popMicBtn" id="popMicBtn">🎤</button>
+    <div style="font-size:14px;font-weight:800;color:#e0455e;" id="popMicStatus">마이크를 눌러 말해 보세요</div>
+    <div class="popTrans" id="popTrans"></div>
+  </div>
+  <div class="popKbArea" id="popKbArea">
+    <textarea class="popKb" id="popKb" placeholder="키보드로 내 생각을 적어 봐요 (선택)"></textarea>
+  </div>
+  <div class="popRow">
+    <button class="btn btn-help" id="popHintBtn">💡 힌트 보기</button>
+    <button class="btn btn-blue" id="popMicToggle" style="font-size:18px;padding:10px 18px;">🎤 말로 더 답하기</button>
+    <button class="btn btn-blue" id="popKbToggle" style="font-size:18px;padding:10px 18px;">⌨️ 키보드</button>
+  </div>
+  <div class="popRow" style="margin-top:10px;">
+    <button class="btn btn-skip" id="popSkip">⏭️ 건너뛰기</button>
+    <button class="btn btn-go" id="popBtn" disabled>다음으로 ➡️</button>
+  </div>
 </div></div>
+
 <div class="toast" id="toast"></div>
 <div class="bigSticker" id="bigSticker"></div>
 <canvas id="confetti"></canvas>
@@ -415,16 +467,18 @@ function fit(){const s=Math.min(innerWidth/1280,innerHeight/800);
   stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
 addEventListener('resize',fit);fit();
 
-/* 장식 */
+/* 장식 — 화면 상단 60px / 하단 60px 가장자리에만! 놀이 영역 침범 금지 */
 (function(){const d=$('#decor');
-  [[60,'25s'],[260,'34s'],[140,'29s']].forEach(([top,dur],i)=>{
+  // 구름은 화면 최상단(y<60)에서만 흐름
+  [[14,'30s'],[40,'36s']].forEach(([top,dur],i)=>{
     const c=document.createElement('div');c.className='deco cloud';c.textContent='☁️';
-    c.style.top=top+'px';c.style.animationDuration=dur;c.style.animationDelay=(-i*8)+'s';d.appendChild(c);});
-  [['🎈',90,'9%'],['🎈',520,'90%'],['⭐',180,'72%'],['⭐',430,'12%'],['✨',300,'42%'],
-   ['🌟',610,'62%'],['🎈',650,'28%']].forEach(([e,top,left],i)=>{
+    c.style.top=top+'px';c.style.animationDuration=dur;c.style.animationDelay=(-i*12)+'s';d.appendChild(c);});
+  // 별·풍선은 네 모서리 가장자리에만 (놀이 영역 침범 금지)
+  [['🎈',14,'2%'],['🎈',30,'95%'],['⭐',748,'4%'],['⭐',756,'93%'],
+   ['🌟',768,'48%'],['✨',6,'48%'],['✨',748,'24%'],['✨',752,'72%']].forEach(([e,top,left],i)=>{
     const s=document.createElement('div');s.className='deco float';s.textContent=e;
-    s.style.fontSize=(e==='🎈'?52:38)+'px';s.style.top=top+'px';s.style.left=left;
-    s.style.animationDuration=(3+i*.5)+'s';s.style.animationDelay=(-i)+'s';
+    s.style.fontSize=(e==='🎈'?28:20)+'px';s.style.top=top+'px';s.style.left=left;
+    s.style.animationDuration=(3+i*.4)+'s';s.style.animationDelay=(-i)+'s';
     if(e!=='🎈'){s.classList.add('twinkle');s.style.animationName='tw';}d.appendChild(s);});
 })();
 
@@ -467,7 +521,6 @@ function progress(box,n,cur){box.innerHTML='';for(let i=0;i<n;i++){const d=docum
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';
   clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',1800);}
 
-/* 숫자 롤업 */
 function rollNum(el,from,to,dur){const t0=performance.now();
   (function step(t){let p=Math.min(1,(t-t0)/dur);p=1-Math.pow(1-p,3);
     el.textContent=Math.round(from+(to-from)*p);
@@ -498,7 +551,7 @@ function stickerBurst(){
     stage.appendChild(sp);setTimeout(()=>sp.remove(),1500);}
   confetti();sndOk();}
 
-/* SVG 동그라미 그리기 */
+/* SVG 동그라미 */
 const RINGCOL=['#ff6b81','#4aa3ff','#5cc24a','#b07bff','#ff9a3c','#2ec4c4'];
 function sizeSvg(svg,grid){svg.setAttribute('width',grid.clientWidth);
   svg.setAttribute('height',grid.clientHeight);
@@ -507,7 +560,7 @@ function drawRing(svg,objs,colorIdx){
   let minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;
   objs.forEach(o=>{minX=Math.min(minX,o.offsetLeft);minY=Math.min(minY,o.offsetTop);
     maxX=Math.max(maxX,o.offsetLeft+o.offsetWidth);maxY=Math.max(maxY,o.offsetTop+o.offsetHeight);});
-  const pad=13,cx2=(minX+maxX)/2,cy2=(minY+maxY)/2,
+  const pad=12,cx2=(minX+maxX)/2,cy2=(minY+maxY)/2,
     rx=(maxX-minX)/2+pad,ry=(maxY-minY)/2+pad;
   const el=document.createElementNS(SVGNS,'ellipse');
   el.setAttribute('cx',cx2);el.setAttribute('cy',cy2);
@@ -521,25 +574,25 @@ function drawRing(svg,objs,colorIdx){
   return el;
 }
 
-/* ================= 녹음기 ================= */
+/* 녹음기 (사전/사후) */
 function buildRecorder(host,opts){
   host.innerHTML='';
   const w=document.createElement('div');w.className='recwrap';
   w.innerHTML=`
-    <div class="guidebox" style="font-size:18px;">🎤 버튼을 누르고 말하거나, ⌨️ 키보드로 써도 돼요. 안 해도 건너뛸 수 있어요.</div>
+    <div class="guidebox" style="font-size:17px;">🎤 버튼을 누르고 말하거나, ⌨️ 키보드로 써도 돼요. 안 해도 건너뛸 수 있어요.</div>
     <button class="micbtn" data-mic>🎤</button>
-    <div style="font-size:18px;font-weight:900;color:#e0455e;" data-status>마이크를 눌러 시작해요</div>
+    <div style="font-size:17px;font-weight:900;color:#e0455e;" data-status>마이크를 눌러 시작해요</div>
     <div class="transbox" data-trans></div>
     <textarea class="kb" data-kb placeholder="여기에 키보드로 써도 돼요"></textarea>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-skip" data-kbtoggle>⌨️ 키보드로 쓰기</button>
       <button class="btn btn-skip" data-play style="display:none;">▶️ 내 녹음 듣기</button></div>
     <div data-rate style="display:none;flex-direction:column;align-items:center;gap:6px;">
-      <div style="font-size:20px;font-weight:900;color:#9a7b00;">⭐ 내 녹음, 어떤 것 같아요? (먼저 ▶️ 듣기를 눌러요)</div>
+      <div style="font-size:19px;font-weight:900;color:#9a7b00;">⭐ 내 녹음, 어떤 것 같아요? (먼저 ▶️ 듣기를 눌러요)</div>
       <div class="stars" data-stars></div></div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-skip" data-redo style="display:none;">🔁 다시 녹음하기</button>
-      <button class="btn btn-go" data-next style="font-size:23px;padding:14px 36px;">건너뛰기 / 다음 ➡️</button></div>`;
+      <button class="btn btn-go" data-next style="font-size:22px;padding:13px 32px;">건너뛰기 / 다음 ➡️</button></div>`;
   host.appendChild(w);
   const q=s=>w.querySelector(s);
   const mic=q('[data-mic]'),status=q('[data-status]'),trans=q('[data-trans]'),kb=q('[data-kb]'),
@@ -621,22 +674,44 @@ function buildPre(){
   say('활동 전이에요. 물건을 빠르게 세는 방법을 아는 만큼 말해 주세요.');
 }
 
-/* ================= 동기유발 ================= */
+/* ================= 동기유발 — 두 버튼 모두 눌러야 다음! ================= */
+let motOneDone=false,motGroupDone=false;
 function startMot(){
   show('scrMot');progress($('#pgMot'),1,0);
-  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(5,1fr)';grid.innerHTML='';
+  motOneDone=false;motGroupDone=false;
+  const grid=$('#motGrid');
+  // 5열 고정 폭, 가운데 정렬 → 한 줄로 무너지지 않음
+  grid.style.gridTemplateColumns='repeat(5,58px)';grid.innerHTML='';
   for(let i=0;i<20;i++){const o=document.createElement('div');o.className='obj';o.textContent='🍎';
     grid.appendChild(o);}
   $('#motSvg').innerHTML='';$('#motTime').textContent='0.0초';$('#motCount').textContent='0';
-  $('#motMsg').textContent='아래 버튼을 눌러 두 가지 방법을 비교해 봐요!';
-  $('#motOne').disabled=false;$('#motGroup').disabled=false;$('#motNext').style.display='none';
+  $('#motMsg').innerHTML='두 버튼을 <b style="color:#e0556a;">모두</b> 눌러 비교해 봐요!';
+  $('#motOne').disabled=false;$('#motGroup').disabled=false;
+  $('#motOne').classList.remove('btnDone');$('#motGroup').classList.remove('btnDone');
+  $('#motNext').style.display='none';
   $('#motFinger').style.display='none';
-  say('사과가 스무 개나 있어요. 어떻게 세는 게 좋을까요? 두 가지 방법을 해 봐요.');
+  say('사과가 스무 개나 있어요. 두 가지 방법을 모두 해 보고 비교해 봐요.');
+}
+function motCheckBoth(){
+  if(motOneDone&&motGroupDone){
+    $('#motMsg').innerHTML='⚡ <b style="color:#2f7fe0;">두 방법 모두 해봤어요!</b><br>어느 게 빠르고 정확했나요?';
+    $('#motNext').style.display='inline-block';
+    confetti();say('두 방법 모두 해봤어요. 어느 게 더 빨랐나요?');
+  }else if(motOneDone&&!motGroupDone){
+    $('#motMsg').innerHTML='🐌 하나씩은 너무 오래 걸렸죠?<br>이번엔 <b style="color:#2f7fe0;">🚀 묶어서</b> 세어 봐요!';
+    $('#motGroup').disabled=false;
+  }else if(motGroupDone&&!motOneDone){
+    $('#motMsg').innerHTML='🚀 묶어 세니 빨랐죠?<br>이번엔 <b style="color:#2f7fe0;">🐌 하나씩</b>도 비교해 봐요!';
+    $('#motOne').disabled=false;
+  }
 }
 $('#motOne').onclick=()=>{
-  const objs=$$('#motGrid .obj'),grid=$('#motGrid'),fin=$('#motFinger');
+  if(motOneDone)return;
+  const objs=$$('#motGrid .obj'),fin=$('#motFinger');
   $('#motOne').disabled=true;$('#motGroup').disabled=true;
   objs.forEach(o=>o.classList.remove('counted'));
+  // 묶어서 했던 동그라미 지움
+  $('#motSvg').innerHTML='';$('#motCount').textContent='0';$('#motTime').textContent='0.0초';
   fin.style.display='block';
   $('#motMsg').textContent='🐌 하나… 둘… 셋… 천천히 세고 있어요.';
   let i=0,t0=performance.now();
@@ -644,14 +719,16 @@ $('#motOne').onclick=()=>{
   const iv=setInterval(()=>{
     if(i>=20){clearInterval(iv);clearInterval(timer);
       fin.style.display='none';
-      $('#motMsg').innerHTML='휴~ <b style="color:#e0556a;">20개</b>… 너무 오래 걸리고 헷갈릴 뻔했어요! 😵';
-      $('#motGroup').disabled=false;say('스무 개. 휴, 하나씩 세니 너무 오래 걸려요.');return;}
+      $('#motOne').classList.add('btnDone');motOneDone=true;
+      say('스무 개. 휴, 하나씩 세니 너무 오래 걸려요.');
+      motCheckBoth();return;}
     const o=objs[i];o.classList.add('counted');
-    fin.style.left=(o.offsetLeft+10)+'px';fin.style.top=(o.offsetTop-6)+'px';
+    fin.style.left=(o.offsetLeft+8)+'px';fin.style.top=(o.offsetTop-6)+'px';
     $('#motCount').textContent=i+1;sndPop();i++;
   },330);
 };
 $('#motGroup').onclick=()=>{
+  if(motGroupDone)return;
   const objs=$$('#motGrid .obj'),svg=$('#motSvg'),grid=$('#motGrid');
   $('#motOne').disabled=true;$('#motGroup').disabled=true;
   objs.forEach(o=>o.classList.remove('counted'));
@@ -667,15 +744,25 @@ $('#motGroup').onclick=()=>{
     rollNum($('#motCount'),r*5,(r+1)*5,300);sndHop();say(String((r+1)*5));
     r++;
     if(r>=4){clearInterval(iv);clearInterval(timer);
-      $('#motMsg').innerHTML='⚡ <b style="color:#2f7fe0;">묶어 세니 5, 10, 15, 20!</b> 훨씬 빠르고 정확해요!';
-      confetti();$('#motNext').style.display='inline-block';
-      say('묶어 세니 훨씬 빨라요. 다섯, 열, 열다섯, 스물!');}
+      $('#motGroup').classList.add('btnDone');motGroupDone=true;
+      say('묶어 세니 훨씬 빨라요. 다섯, 열, 열다섯, 스물!');
+      motCheckBoth();}
   },650);
 };
 $('#motNext').onclick=()=>{
-  popup('🤔 탐구 질문','왜 묶어 세면 더 빠르고 정확할까요? 내 생각을 말해 보세요.',
-    '한 번에 여러 개씩 건너뛰며 세니까 빠르고, 묶음으로 나누니 헷갈리지 않아요!',
-    ()=>{learnIdx=0;startLearn();});
+  // 쉬운 객관식 탐구질문
+  popup({
+    q:'두 가지 방법을 모두 해 봤어요!<br>어느 게 더 빠르고 정확했나요?',
+    opts:[
+      {text:'🚀 묶어서 세기',right:true,fb:'맞아요! 묶어 세면 한 번에 여러 개씩 세니까 훨씬 빨라요!'},
+      {text:'🐌 하나씩 세기',right:false,fb:'다시 봐요! 어느 쪽이 더 오래 걸렸을까요?'}
+    ],
+    hints:[
+      '⏱️ 걸린 시간을 비교해 봐요!',
+      '🐌 하나씩은 20번이나 세야 하지만,<br>🚀 묶어서는 4번만 세면 끝나요!',
+      '👉 답은 "🚀 묶어서 세기"예요'
+    ]
+  },()=>{learnIdx=0;startLearn();});
 };
 
 /* ================= 묶어 세기 + 뛰어 세기 ================= */
@@ -698,12 +785,12 @@ function renderProblem(){
     <span>=</span><span class="blank" id="lkT"></span>`;
   $('#learnNext').style.display='none';
   const grid=$('#objGrid'),svg=$('#ringSvg');
-  grid.style.gridTemplateColumns=`repeat(${P.size},1fr)`;grid.innerHTML='';svg.innerHTML='';
+  // 묶음 크기만큼 열, 각 칸 58px 고정
+  grid.style.gridTemplateColumns=`repeat(${P.size},58px)`;grid.innerHTML='';svg.innerHTML='';
   const total=P.size*P.groups;
   for(let i=0;i<total;i++){const o=document.createElement('div');o.className='obj';o.textContent=P.emoji;
     o.dataset.b='-1';grid.appendChild(o);
     o.onclick=()=>objClick(o);}
-  // 수직선 패널 (잠금)
   $('#nlPanel').classList.add('dim');
   $('#learnJump').disabled=true;$('#addStrip').innerHTML='';
   buildNL($('#learnNL'),P.size,P.groups);
@@ -712,8 +799,7 @@ function renderProblem(){
 function objClick(o){
   if(L.phase!=='bundle')return;
   if(o.dataset.b!=='-1')return;
-  if(o.classList.contains('pick')){ // 다시 눌러 풀기
-    o.classList.remove('pick');L.picked=L.picked.filter(x=>x!==o);sndPop();return;}
+  if(o.classList.contains('pick')){o.classList.remove('pick');L.picked=L.picked.filter(x=>x!==o);sndPop();return;}
   o.classList.add('pick');L.picked.push(o);sndPop();
   if(L.picked.length===L.P.size)closeBundle();
 }
@@ -727,7 +813,7 @@ function closeBundle(){
   $('#bcnt').textContent=L.bundles.length;
   $('#lkB').textContent=L.bundles.length;$('#lkB').classList.add('fill');
   sndOk();say(`${L.bundles.length}묶음!`);
-  if(L.bundles.length===L.P.groups){ // 묶기 끝 → 뛰어세기
+  if(L.bundles.length===L.P.groups){
     L.phase='jump';
     $('#learnInstr').textContent='다 묶었어요! 🦘 뛰어 세기로 모두 몇 개인지 알아봐요';
     $('#learnGuide').innerHTML='아래 <b style="color:#2f7fe0;">🦘 뛰어 세기</b> 버튼을 눌러요!<br>한 묶음씩 콩콩 뛰어요.';
@@ -738,30 +824,29 @@ function closeBundle(){
 }
 function buildNL(nl,size,groups){
   nl.innerHTML='<div class="nl-track"></div>';
-  const W=nl.clientWidth||1080;const L0=30,R0=30,span=(W-L0-R0);
+  const W=nl.clientWidth||820;const L0=30,R0=30,span=(W-L0-R0);
   for(let i=0;i<=groups;i++){
     const t=document.createElement('div');t.className='tick';t.dataset.i=i;
     t.style.left=(L0+i*span/groups-23)+'px';
     t.innerHTML=`<div class="tk"></div><div class="tn">${i*size}</div>`;
     nl.appendChild(t);}
   const h=document.createElement('div');h.className='hopper';h.id='hopper';h.textContent='🐧';
-  h.style.left=(L0-22)+'px';nl.appendChild(h);
+  // 펭귄은 트랙보다 살짝 위(top:8)에 두어 숫자(top:52+) 가리지 않음
+  h.style.left=(L0-18)+'px';nl.appendChild(h);
   nl.querySelector('.tick').classList.add('lit');
 }
 $('#learnJump').onclick=()=>{
   if(L.phase!=='jump')return;
   const P=L.P,j=L.jumpDone;
   if(j>=P.groups)return;
-  // 해당 묶음 반짝
   L.bundles[j].forEach(o=>{o.classList.remove('glow');void o.offsetWidth;o.classList.add('glow');});
   const nl=$('#learnNL'),W=nl.clientWidth,span=W-60;
   const x=30+(j+1)*span/P.groups;
   const hop=$('#hopper');hop.classList.remove('hop');void hop.offsetWidth;hop.classList.add('hop');
-  hop.style.left=(x-22)+'px';
+  hop.style.left=(x-18)+'px';
   sndHop();
   const tick=nl.querySelector(`.tick[data-i="${j+1}"]`);tick.classList.add('lit');
   const tn=tick.querySelector('.tn');rollNum(tn,j*P.size,(j+1)*P.size,500);
-  // 동수누가 타일
   const strip=$('#addStrip');
   if(j>0){const plus=document.createElement('span');plus.textContent='+';strip.appendChild(plus);}
   const tile=document.createElement('span');tile.className='addtile';tile.textContent=P.size;
@@ -790,26 +875,116 @@ $('#learnHelp').onclick=()=>{S.helpUsed++;const P=L.P;
 $('#learnNext').onclick=()=>{
   learnIdx++;
   if(learnIdx===2){
-    popup('🤔 탐구 질문','묶어 세기와 뛰어 세기는 어떻게 도와줄까요? 둘의 관계를 설명해 보세요.',
-      '똑같이 묶고, 그 묶음만큼 뛰어 세면 전체 수를 빠르게 알 수 있어요!',()=>startLearn());
+    popup({
+      q:'한 묶음씩 콩콩 뛰어 셌어요.<br>무엇을 알 수 있었나요?',
+      opts:[
+        {text:'🎯 모두 몇 개인지<br>알 수 있어요',right:true,fb:'딩동댕! 묶음을 보고 뛰어 세면 전체 수를 빠르게 알 수 있어요!'},
+        {text:'🌈 묶음의 색깔을<br>알 수 있어요',right:false,fb:'음… 다시 생각해 봐요!'}
+      ],
+      hints:[
+        '🦘 뛸 때마다 수직선의 숫자가 어떻게 변했나요?',
+        '5, 10, 15, 20… 점점 커지면서 마지막에 무엇을 알게 됐죠?',
+        '👉 답은 "🎯 모두 몇 개인지"예요'
+      ]
+    },()=>startLearn());
   } else if(learnIdx>=PROBLEMS.length){startReg();}
   else startLearn();
 };
 
-/* ================= 탐구질문 ================= */
-function popup(title,q,idea,after){
-  $('#popTitle').textContent=title;$('#popQ').textContent=q;
-  const inp=$('#popInput'),ideaEl=$('#popIdea'),btn=$('#popBtn');
-  inp.value='';ideaEl.style.display='none';ideaEl.textContent='💡 '+idea;
-  btn.disabled=true;btn.textContent='내 생각을 써 보세요';
-  inp.oninput=()=>{btn.disabled=inp.value.trim().length<2;
-    btn.textContent=btn.disabled?'내 생각을 써 보세요':'설명했어요! 다음으로 ➡️';};
-  let shown=false;
-  btn.onclick=()=>{if(!shown){ideaEl.style.display='block';shown=true;
-      btn.textContent='다음 단계로 ➡️';sndOk();say(idea);return;}
-    $('#ovPop').classList.remove('on');after();};
-  $('#ovPop').classList.add('on');say(q);
+/* ================= 탐구질문 팝업 — 객관식 + 힌트 + 녹음 + 키보드 + 건너뛰기 ================= */
+let popState=null;
+function popup(cfg,after){
+  popState={cfg,after,answered:false,hintIdx:0,extraText:''};
+  $('#popQ').innerHTML=cfg.q;
+  const opts=$('#popOpts');opts.innerHTML='';
+  cfg.opts.forEach(o=>{
+    const b=document.createElement('button');b.className='qopt';b.innerHTML=o.text;
+    b.onclick=()=>chooseOpt(b,o);
+    opts.appendChild(b);
+  });
+  $('#popHint').classList.remove('show');$('#popHint').innerHTML='';
+  $('#popMicWrap').classList.remove('show');$('#popKbArea').classList.remove('show');
+  $('#popTrans').textContent='';$('#popKb').value='';$('#popMicStatus').textContent='마이크를 눌러 말해 보세요';
+  $('#popBtn').disabled=true;$('#popBtn').textContent='보기를 하나 골라요';
+  $('#ovPop').classList.add('on');
+  say(cfg.q.replace(/<[^>]+>/g,' '));
 }
+function chooseOpt(btn,o){
+  if(popState.answered)return;
+  if(o.right){
+    btn.classList.add('right');popState.answered=true;sndOk();confetti();
+    [...$('#popOpts').children].forEach(c=>c.disabled=true);
+    showHint(o.fb,true);
+    $('#popBtn').disabled=false;$('#popBtn').textContent='잘했어요! 다음으로 ➡️';
+    say(o.fb);
+  }else{
+    btn.classList.add('wrong');sndNo();
+    setTimeout(()=>btn.classList.remove('wrong'),600);
+    showHint(o.fb||'다시 한 번 생각해 봐요!');
+    say(o.fb||'다시 생각해 봐요.');
+  }
+}
+function showHint(t,green){
+  const h=$('#popHint');h.classList.add('show');
+  h.innerHTML=(green?'✅ ':'💡 ')+t;
+  h.style.background=green?'linear-gradient(180deg,#dff7d6,#a8f098)':'linear-gradient(180deg,#fff8d6,#fff2b0)';
+  h.style.borderColor=green?'#5cc24a':'#ffd23f';
+  h.style.color=green?'#2d6921':'#5e4b00';
+}
+$('#popHintBtn').onclick=()=>{
+  if(!popState)return;
+  const hints=popState.cfg.hints||[];
+  if(popState.hintIdx<hints.length){
+    showHint(hints[popState.hintIdx]);
+    say(hints[popState.hintIdx].replace(/<[^>]+>/g,' '));
+    popState.hintIdx++;
+    if(popState.hintIdx>=hints.length){
+      // 마지막 힌트가 정답을 알려주면 다음 버튼 활성화
+      $('#popBtn').disabled=false;$('#popBtn').textContent='이해했어요! 다음으로 ➡️';
+    }
+  }else toast('힌트를 다 봤어요!');
+};
+$('#popMicToggle').onclick=()=>{
+  const w=$('#popMicWrap');w.classList.toggle('show');
+  if(w.classList.contains('show')){$('#popKbArea').classList.remove('show');startPopRec();}
+};
+$('#popKbToggle').onclick=()=>{
+  const w=$('#popKbArea');w.classList.toggle('show');
+  if(w.classList.contains('show')){$('#popMicWrap').classList.remove('show');stopPopRec();$('#popKb').focus();
+    $('#popBtn').disabled=false;$('#popBtn').textContent='다 썼어요! 다음으로 ➡️';}
+};
+let popRec=null;
+function startPopRec(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){$('#popTrans').textContent='(이 기기는 음성 인식이 안 돼요. ⌨️ 키보드로 써 주세요)';return;}
+  $('#popMicStatus').textContent='🎤를 눌러 시작/정지';
+}
+function stopPopRec(){if(popRec)try{popRec.stop();}catch(e){}popRec=null;}
+$('#popMicBtn').onclick=()=>{
+  const btn=$('#popMicBtn');
+  if(btn.classList.contains('rec')){btn.classList.remove('rec');btn.textContent='🎤';
+    stopPopRec();$('#popMicStatus').textContent='녹음 완료!';
+    $('#popBtn').disabled=false;$('#popBtn').textContent='말했어요! 다음으로 ➡️';return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){toast('이 기기는 음성 인식이 안 돼요. 키보드로 써 주세요');return;}
+  btn.classList.add('rec');btn.textContent='⏹️';$('#popMicStatus').textContent='🔴 녹음 중… 말해 보세요';
+  popRec=new SR();popRec.lang='ko-KR';popRec.continuous=true;popRec.interimResults=true;
+  let fin='';
+  popRec.onresult=e=>{let itm='';for(let i=e.resultIndex;i<e.results.length;i++){
+    const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else itm+=r[0].transcript;}
+    popState.extraText=(fin+itm).trim();$('#popTrans').textContent=popState.extraText;};
+  popRec.onerror=()=>{};try{popRec.start();}catch(e){}
+};
+$('#popKb').oninput=()=>{popState.extraText=$('#popKb').value;};
+$('#popSkip').onclick=()=>{
+  stopPopRec();$('#ovPop').classList.remove('on');
+  if(popState&&popState.after)popState.after();
+};
+$('#popBtn').onclick=()=>{
+  if($('#popBtn').disabled)return;
+  stopPopRec();$('#ovPop').classList.remove('on');
+  if(popState&&popState.after)popState.after();
+};
 
 /* ================= 같은 수, 다른 묶음 ================= */
 const RGOPTS=[{size:2,g:6},{size:3,g:4},{size:4,g:3},{size:6,g:2}];
@@ -818,14 +993,13 @@ function startReg(){
   S.regTried=0;
   const btns=$('#rgBtns');btns.innerHTML='';
   RGOPTS.forEach(o=>{const b=document.createElement('button');
-    b.className='btn btn-blue';b.style.fontSize='22px';b.style.padding='13px 0';
+    b.className='btn btn-blue';b.style.fontSize='20px';b.style.padding='12px 0';
     b.textContent=`${o.size}씩 묶기`;b.dataset.tried='0';
     b.onclick=()=>regroup(o,b);btns.appendChild(b);});
   $('#rgA').textContent='';$('#rgA').classList.remove('fill');
   $('#rgB').textContent='';$('#rgB').classList.remove('fill');
   $('#rgNext').style.display='none';
-  $('#rgBubble').textContent='12를 여러 방법으로 묶어 봐! 무엇이 똑같고 무엇이 달라질까?';
-  const grid=$('#rgGrid');grid.style.gridTemplateColumns='repeat(4,1fr)';grid.innerHTML='';
+  const grid=$('#rgGrid');grid.style.gridTemplateColumns='repeat(4,58px)';grid.innerHTML='';
   for(let i=0;i<12;i++){const o=document.createElement('div');o.className='obj';o.textContent='🧁';
     grid.appendChild(o);}
   $('#rgSvg').innerHTML='';
@@ -833,7 +1007,7 @@ function startReg(){
 }
 function regroup(o,btn){
   const grid=$('#rgGrid'),svg=$('#rgSvg');
-  grid.style.gridTemplateColumns=`repeat(${o.size},1fr)`;
+  grid.style.gridTemplateColumns=`repeat(${o.size},58px)`;
   grid.innerHTML='';svg.innerHTML='';
   const objs=[];
   for(let i=0;i<12;i++){const e=document.createElement('div');e.className='obj regIn';e.textContent='🧁';
@@ -849,14 +1023,22 @@ function regroup(o,btn){
     btn.style.filter='brightness(1.15)';}
   if(S.regTried>=3&&$('#rgNext').style.display==='none'){
     $('#rgNext').style.display='inline-block';
-    $('#rgBubble').textContent='봤지? 12는 그대로인데 묶는 방법은 여러 가지! 똑똑하다 👍';
     toast('여러 방법으로 묶었어요! 🎉');confetti();
   }
 }
 $('#rgNext').onclick=()=>{
-  popup('🤔 탐구 질문','똑같은 12인데 왜 "몇씩 몇 묶음"이 여러 가지로 달라졌을까요?',
-    '한 묶음에 담는 수를 다르게 하면 묶음의 개수도 달라져요. 하지만 전체 수 12는 변하지 않아요!',
-    ()=>startChal());
+  popup({
+    q:'12를 2씩, 3씩, 4씩 묶어 봤어요.<br>그래도 <b>똑같은 것</b>은 무엇이었나요?',
+    opts:[
+      {text:'🔢 전체 수 12',right:true,fb:'맞아요! 묶는 방법이 달라도 모두 모으면 똑같이 12예요!'},
+      {text:'📏 한 묶음의 크기',right:false,fb:'한 묶음의 크기는 2, 3, 4로 달랐어요!'}
+    ],
+    hints:[
+      '🤔 2씩 묶어도 6묶음, 3씩 묶어도 4묶음… 모두 더하면 몇이에요?',
+      '🧁 컵케이크 개수는 처음부터 끝까지 변하지 않았어요!',
+      '👉 답은 "🔢 전체 수 12"예요'
+    ]
+  },()=>startChal());
 };
 
 /* ================= 도전 ================= */
