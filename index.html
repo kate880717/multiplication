@@ -49,6 +49,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0c1f33;}
   padding:10px 22px;box-shadow:0 4px 0 #9c3340;}
 .btn.big{font-size:25px;padding:14px 38px;box-shadow:0 7px 0 #d68a00;}
 
+/* 버튼 바로 옆 안내 — 누를 버튼을 가리키며 까딱까딱 */
+.btnCue{background:linear-gradient(180deg,#fffbe0,#ffe89c);border:4px solid #ffd23f;
+  color:#5e4b00;font-size:19px;font-weight:900;padding:9px 22px;border-radius:16px;
+  display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 0 #d68a00;
+  text-align:center;line-height:1.3;
+  animation:cueBob 1.4s ease-in-out infinite;}
+@keyframes cueBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.btnCue .arrow{font-size:24px;animation:cueArrow 1.4s ease-in-out infinite;}
+@keyframes cueArrow{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
+
 .vbody{flex:1;display:flex;flex-direction:column;align-items:center;
   gap:10px;justify-content:flex-start;padding-top:8px;}
 
@@ -362,10 +372,12 @@ textarea.kb{width:500px;height:56px;border:4px solid #cfe6ea;border-radius:14px;
     <!-- 수직선 -->
     <div class="numLineCard"><svg id="numLineSvg" width="900" height="160" viewBox="0 0 900 160"></svg></div>
     <div class="conceptCard" id="skConcept"></div>
+    <!-- ★ 버튼 바로 위 안내 (튜토리얼은 누를 버튼 근처에) -->
+    <div class="btnCue" id="skCue"><span>👇 아래 버튼을 눌러 한 번 점프!</span><span class="arrow">⬇️</span></div>
     <div class="actionRow">
-      <button class="btn btn-skip" id="skReset">↺ 처음부터</button>
-      <button class="btn btn-blue" id="skNext">🦘 다음 뛰어세기</button>
-      <button class="btn btn-go" id="skDone" style="display:none;">다음 ➡️</button>
+      <button class="btn btn-skip" id="skReset" style="font-size:19px;padding:12px 24px;">↺ 처음부터</button>
+      <button class="btn btn-blue" id="skNext" style="font-size:26px;padding:16px 36px;box-shadow:0 6px 0 #2c5fa8;">🦘 다음 뛰어세기</button>
+      <button class="btn btn-go" id="skDone" style="display:none;font-size:22px;padding:14px 32px;">다음 ➡️</button>
     </div>
   </div>
 </section>
@@ -732,10 +744,10 @@ function buildPre(){buildRecorder($('#preRec'),{rating:false,onDone:async(t,_,bl
 let motOneDone=false,motGroupDone=false;
 function startMot(){
   show('scrMot');progress($('#pgMot'),1,0);motOneDone=false;motGroupDone=false;
-  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(6,52px)';grid.innerHTML='';
+  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(6,80px)';grid.innerHTML='';
   $('#motSvg').innerHTML='';
-  for(let i=0;i<12;i++){const o=document.createElement('div');o.className='obj small';o.textContent='🍬';
-    o.style.width='48px';o.style.height='48px';o.style.fontSize='34px';
+  for(let i=0;i<12;i++){const o=document.createElement('div');o.className='obj';o.textContent='🍬';
+    o.style.width='80px';o.style.height='80px';o.style.fontSize='58px';
     o.dataset.i=i;grid.appendChild(o);}
   $('#motBtn1').disabled=false;$('#motBtn2').disabled=false;
   $('#motMsg1').classList.remove('on');$('#motMsg1').textContent='버튼을 눌러 봐요!';$('#motMsg1').style.visibility='visible';
@@ -754,30 +766,58 @@ $('#motBtn1').onclick=()=>{
     objs[i].style.background='rgba(176,123,220,.4)';objs[i].style.border='3px solid #b07bff';
     objs[i].style.borderRadius='50%';
     say(String(i+1));sndPop();i++;
-  },280);
+  },340);
 };
 /* 묶어서 세기 — 3씩 묶기 (빠르게, numBurst) */
 $('#motBtn2').onclick=()=>{
   if(motGroupDone)return;motGroupDone=true;$('#motBtn2').disabled=true;
-  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(3,52px)';
+  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(3,80px)';
   const objs=$$('#motGrid .obj');
   const grpColors=['rgba(239,68,68,.4)','rgba(34,197,94,.4)','rgba(168,85,247,.4)','rgba(249,115,22,.4)'];
   const grpBorders=['#ef4444','#22c55e','#a855f7','#f97316'];
+  $('#motMsg2').classList.add('on');
+  $('#motMsg2').innerHTML='🧺 3개씩 묶어서 세어 봐요…';
   let g=0;
-  const iv=setInterval(()=>{
-    if(g>=4){clearInterval(iv);
-      setTimeout(()=>{sizeSvg($('#motSvg'),grid);
-        for(let r=0;r<4;r++)drawRing($('#motSvg'),objs.slice(r*3,r*3+3),r);},100);
-      const [cx,cy]=centerOf(grid);numBurst(cx,cy,12,1);
-      $('#motMsg2').innerHTML='🧺 묶어 세니까 3, 6, 9, <b>12!</b> 훨씬 빨라요!';
-      $('#motMsg2').classList.add('on');sndOk();motCheck();return;}
-    for(let k=0;k<3;k++){
-      objs[g*3+k].style.background=grpColors[g];
-      objs[g*3+k].style.border=`3px solid ${grpBorders[g]}`;
-      objs[g*3+k].style.borderRadius='50%';
+  function nextGroup(){
+    if(g>=4){
+      setTimeout(()=>{
+        const [cx,cy]=centerOf(grid);numBurst(cx,cy,12,4);
+        $('#motMsg2').innerHTML='🧺 묶어 세니까 3, 6, 9, <b style="color:#ff6b35;font-size:24px;">12!</b> 4번만 세면 끝!';
+        sndOk();motCheck();
+      },600);
+      return;
     }
-    say(String((g+1)*3));sndHop();g++;
-  },550);
+    // 1) 3개 사탕 색 입히기 (천천히, 하나씩)
+    const groupObjs=objs.slice(g*3,g*3+3);
+    let i=0;
+    const colorIv=setInterval(()=>{
+      if(i>=3){
+        clearInterval(colorIv);
+        // 2) 약간 쉬고 동그라미 그리기
+        setTimeout(()=>{
+          sizeSvg($('#motSvg'),grid);
+          drawRing($('#motSvg'),groupObjs,g);
+          // 3) 누적 합계 음성·숫자 표시 (3, 6, 9, 12)
+          setTimeout(()=>{
+            const cumulative=(g+1)*3;
+            const lastObj=groupObjs[2];
+            const [cx,cy]=centerOf(lastObj);
+            numBurst(cx,cy-30,cumulative,g);
+            say(String(cumulative));
+            // 4) 다음 묶음으로
+            setTimeout(()=>{g++;nextGroup();},900);
+          },550);
+        },300);
+        return;
+      }
+      groupObjs[i].style.background=grpColors[g];
+      groupObjs[i].style.border=`3px solid ${grpBorders[g]}`;
+      groupObjs[i].style.borderRadius='50%';
+      sndPop();
+      i++;
+    },220);
+  }
+  nextGroup();
 };
 function motCheck(){
   if(motOneDone&&motGroupDone){
@@ -872,7 +912,9 @@ let SK=null;
 function startSkip(){
   show('scrSkip');SK={jumps:0};progress($('#pgSkip'),1,0);
   $('#skTitle').textContent='🦘 뛰어 세기 (수직선)';
-  $('#skInstr').innerHTML=`<b style="color:#ffd23f;">${SK_PROBLEM.size}씩</b> 뛰어 세기로 수직선에 표시해 봐요! "${SK_PROBLEM.ctx}" 묶음을 다시 봐요`;
+  $('#skInstr').innerHTML=`<b style="color:#ffd23f;">${SK_PROBLEM.size}씩</b> 묶은 사과로 수직선에 점프해요!`;
+  $('#skCue').innerHTML=`<span>👇 아래 <b style="color:#3a86ff;">'다음 뛰어세기'</b> 버튼을 눌러 ${SK_PROBLEM.size}씩 점프!</span><span class="arrow">⬇️</span>`;
+  $('#skCue').style.display='inline-flex';
   // mini grid
   const mg=$('#skMiniGrid');mg.style.gridTemplateColumns=`repeat(${SK_PROBLEM.size},42px)`;mg.innerHTML='';
   for(let i=0;i<SK_PROBLEM.size*SK_PROBLEM.groups;i++){
@@ -948,11 +990,13 @@ $('#skNext').onclick=()=>{
   say(String(SK.jumps*SK_PROBLEM.size));
   if(SK.jumps===SK_PROBLEM.groups){
     $('#skNext').disabled=true;$('#skDone').style.display='inline-block';
+    $('#skCue').innerHTML='🎉 모두 끝! 다음으로 넘어가요';
     setTimeout(()=>{confetti();toast('3, 6, 9, 12! 정말 잘했어요 🎉');},800);
   }
 };
 $('#skReset').onclick=()=>{SK.jumps=0;renderNumberLine();updateSkConcept();
-  $('#skNext').disabled=false;$('#skDone').style.display='none';};
+  $('#skNext').disabled=false;$('#skDone').style.display='none';
+  $('#skCue').innerHTML=`<span>👇 아래 <b style="color:#3a86ff;">'다음 뛰어세기'</b> 버튼을 눌러 ${SK_PROBLEM.size}씩 점프!</span><span class="arrow">⬇️</span>`;};
 $('#skDone').onclick=()=>{
   popup({q:'수직선에서 뛰어 세기는 무엇과 똑같은가요?',
     opts:[{text:'🧺 묶어 세기',right:true,fb:'딩동댕! 3씩 뛰어 세기 = 3씩 묶어 세기!'},
