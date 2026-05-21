@@ -3,249 +3,246 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>묶어 세기 탐험대</title>
+<title>묶어 세기 & 뛰어 세기 탐험대</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
   font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
-html,body{width:100%;height:100%;overflow:hidden;background:#0c2433;}
+html,body{width:100%;height:100%;overflow:hidden;background:#0c1f33;}
 #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
 #stage{position:absolute;width:1280px;height:800px;left:50%;top:50%;
   transform:translate(-50%,-50%) scale(1);transform-origin:center center;overflow:hidden;border-radius:8px;
-  background:linear-gradient(170deg,#3aa6d4 0%,#2b86b8 55%,#236d9e 100%);}
-/* 장식은 화면 가장자리에만 - 놀이 영역 절대 침범 금지 */
+  background:linear-gradient(165deg,#5fb6f0 0%,#3a86c7 55%,#1f4f9a 100%);}
 #decor{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.deco{position:absolute;opacity:.7;}
-.cloud{font-size:46px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.12));animation:drift linear infinite;}
-.float{animation:bob ease-in-out infinite;}
+.cloud{position:absolute;font-size:42px;opacity:.7;animation:drift linear infinite;}
 @keyframes drift{from{transform:translateX(-200px);}to{transform:translateX(1480px);}}
-@keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);}50%{transform:translateY(-14px) rotate(4deg);}}
-.twinkle{animation:tw 2.4s ease-in-out infinite;}
-@keyframes tw{0%,100%{opacity:.25;transform:scale(.8);}50%{opacity:.8;transform:scale(1.1);}}
-.screen{position:absolute;inset:0;display:none;padding:20px 34px;flex-direction:column;z-index:1;}
+.twinkle{position:absolute;font-size:16px;opacity:.6;animation:tw 2.4s ease-in-out infinite;}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(.8);}50%{opacity:.8;transform:scale(1.1);}}
+
+.screen{position:absolute;inset:0;display:none;padding:12px 26px;flex-direction:column;z-index:1;}
 .screen.on{display:flex;}
-.bigtxt{font-size:31px;font-weight:900;color:#fff6c9;text-align:center;
-  background:rgba(11,34,48,.55);padding:11px 30px;border-radius:999px;
-  display:inline-block;margin:0 auto;text-shadow:0 2px 4px rgba(0,0,0,.4);max-width:90%;}
-.topbar{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
-.topbar .title{font-size:23px;font-weight:900;color:#fff;
-  background:rgba(11,34,48,.5);padding:9px 22px;border-radius:999px;}
+
+.topbar{display:flex;align-items:center;gap:12px;}
+.topbar .title{font-size:22px;font-weight:900;color:#fff;
+  background:rgba(8,20,50,.5);padding:7px 22px;border-radius:999px;}
 .topbar .prog{flex:1;display:flex;gap:8px;justify-content:center;}
-.dot{width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.35);transition:.25s;}
+.dot{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.35);transition:.25s;}
 .dot.done{background:#7ee06a;box-shadow:0 0 8px #7ee06a;}
 .dot.cur{background:#ffd23f;transform:scale(1.4);box-shadow:0 0 12px #ffd23f;}
-.spk{width:54px;height:54px;border-radius:16px;border:4px solid #fff;background:#2c4a5c;color:#fff;
-  font-size:25px;cursor:pointer;font-weight:900;transition:.15s;flex-shrink:0;}
+.spk{width:46px;height:46px;border-radius:14px;border:3px solid #fff;background:#1f4f9a;color:#fff;
+  font-size:21px;cursor:pointer;font-weight:900;flex-shrink:0;}
 .spk.on{background:#ffd23f;color:#1f4258;}
-.btn{border:none;border-radius:999px;cursor:pointer;font-weight:900;transition:transform .12s,filter .12s;}
+
+.btn{border:none;border-radius:999px;cursor:pointer;font-weight:900;transition:transform .12s;}
 .btn:active{transform:scale(.93);}
-.btn-go{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:27px;
-  padding:16px 42px;box-shadow:0 8px 0 #d68a00,0 10px 18px rgba(0,0,0,.25);animation:cta 1.5s ease-in-out infinite;}
-@keyframes cta{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
-.btn-go:active{box-shadow:0 3px 0 #d68a00;animation:none;}
-.btn-go:disabled{filter:grayscale(.65);opacity:.5;animation:none;}
-.btn-sm{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:21px;
-  padding:12px 26px;box-shadow:0 5px 0 #d68a00;}
-.btn-sm:disabled{filter:grayscale(.6);opacity:.55;}
-.btn-blue{background:linear-gradient(180deg,#5ab0ff,#2f7fe0);color:#fff;font-size:22px;
-  padding:13px 30px;box-shadow:0 6px 0 #1f5cab;}
-.btn-blue:disabled{filter:grayscale(.6);opacity:.5;}
-.btn-mint{background:linear-gradient(180deg,#5fe3b6,#2eb389);color:#fff;font-size:22px;
-  padding:14px 34px;box-shadow:0 7px 0 #1f8666;}
-.btn-skip{background:rgba(255,255,255,.94);color:#356;font-size:18px;padding:11px 22px;
+.btn-go{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:20px;
+  padding:11px 28px;box-shadow:0 5px 0 #d68a00,0 7px 12px rgba(0,0,0,.2);}
+.btn-go:disabled{filter:grayscale(.5);opacity:.55;}
+.btn-blue{background:linear-gradient(180deg,#7bb8ff,#4287dd);color:#fff;font-size:19px;
+  padding:10px 22px;box-shadow:0 4px 0 #2c5fa8;}
+.btn-mint{background:linear-gradient(180deg,#5fe3b6,#2eb389);color:#fff;font-size:19px;
+  padding:11px 26px;box-shadow:0 5px 0 #1f8666;}
+.btn-skip{background:rgba(255,255,255,.95);color:#356;font-size:16px;padding:9px 18px;
   box-shadow:0 4px 0 rgba(0,0,0,.18);}
-.btn-help{background:linear-gradient(180deg,#ffb84d,#f08a14);color:#fff;font-size:20px;
-  padding:11px 22px;box-shadow:0 5px 0 #bd6a08;}
-.btn-pink{background:linear-gradient(180deg,#ff95b3,#e0556a);color:#fff;font-size:21px;
-  padding:13px 26px;box-shadow:0 6px 0 #9c3340;}
-.btn-mint:disabled{filter:grayscale(.6);opacity:.55;}
-.goal{background:linear-gradient(180deg,#fffbe0,#fff2b0);border:6px solid #ffd23f;
-  border-radius:30px;padding:22px 30px;box-shadow:0 10px 24px rgba(0,0,0,.22);}
-.goal h3{font-size:30px;color:#9a7b00;text-align:center;margin-bottom:10px;}
-.goal p{font-size:25px;font-weight:800;color:#5e4b00;line-height:1.8;}
-.goal .hl{background:#fff;border-radius:11px;padding:3px 11px;box-shadow:0 2px 4px rgba(0,0,0,.1);}
-.panel{background:#fff;border-radius:24px;box-shadow:0 8px 22px rgba(0,0,0,.2);}
-.peng{font-size:78px;animation:bob 2.6s ease-in-out infinite;display:inline-block;}
-.bubble{background:#fff;border:4px solid #ffd23f;border-radius:20px;padding:11px 17px;
-  font-size:19px;font-weight:800;color:#356;max-width:340px;box-shadow:0 5px 12px rgba(0,0,0,.2);}
-/* 튜토리얼 */
-.tut-cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.tut-card{background:#fff;border:5px solid #ff9aa2;border-radius:18px;padding:10px;display:grid;gap:7px;
-  box-shadow:0 6px 14px rgba(0,0,0,.18);animation:popIn .4s backwards;}
-.gdot{width:30px;height:30px;border-radius:50%;
-  background:radial-gradient(circle at 34% 30%,#a8f098,#4fae3e);border:3px solid #3c8c30;
-  box-shadow:0 2px 4px rgba(0,0,0,.2);}
-@keyframes popIn{from{transform:scale(.3);opacity:0;}}
-.nline{display:flex;gap:6px;justify-content:center;align-items:center;}
-.nbox{background:#fff;border:4px solid #6cb8d8;border-radius:13px;min-width:60px;height:56px;
-  display:flex;align-items:center;justify-content:center;font-size:29px;font-weight:900;
-  color:#1f4258;position:relative;box-shadow:0 4px 8px rgba(0,0,0,.15);}
-.nbox .ord,.blank .ord{position:absolute;top:-14px;background:#2f7fe0;color:#fff;font-size:14px;
-  width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 2px 4px rgba(0,0,0,.3);z-index:2;}
-.nbox .ord{right:-8px;}
-.nline .seg{width:22px;height:4px;background:#fff;border-radius:3px;}
-.frame{background:#fff;border-radius:22px;padding:13px 22px;display:flex;gap:11px;align-items:center;
-  justify-content:center;font-size:33px;font-weight:900;color:#1f4258;box-shadow:0 6px 14px rgba(0,0,0,.18);
-  flex-wrap:wrap;}
-.blank{border:4px solid #ff8a93;border-radius:13px;min-width:60px;height:58px;display:flex;
-  align-items:center;justify-content:center;background:#fff;font-size:32px;color:#e0556a;position:relative;}
-.blank.fill{border-color:#5cc24a;color:#2f7fe0;background:#eefbe9;animation:pop1 .4s;}
-@keyframes pop1{50%{transform:scale(1.25);}}
-.blank .ord{left:-8px;background:#e0556a;}
-.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:270px;}
-.key{background:linear-gradient(180deg,#3d6072,#2c4a5c);color:#fff;font-size:27px;font-weight:900;
-  border:none;border-radius:14px;height:56px;cursor:pointer;box-shadow:0 5px 0 #16313f;}
-.key:active{transform:translateY(4px);box-shadow:none;}
-.key.act{background:linear-gradient(180deg,#f0697d,#e0556a);box-shadow:0 5px 0 #9c3340;}
-.key.ok{background:linear-gradient(180deg,#4a9eff,#2f7fe0);box-shadow:0 5px 0 #1f5cab;}
-.kdisp{background:#fff;border-radius:14px;height:66px;display:flex;align-items:center;
-  justify-content:center;font-size:42px;font-weight:900;color:#1f4258;margin-bottom:8px;
-  box-shadow:inset 0 3px 8px rgba(0,0,0,.12);}
-.play{flex:1;display:flex;gap:14px;min-height:0;}
-.scene{flex:1;background:rgba(255,255,255,.18);border:3px solid rgba(255,255,255,.5);
-  border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;padding:14px;overflow:hidden;}
-/* 그리드는 폭이 명확하게 정해져야 한 줄로 무너지지 않음 */
+.btn-help{background:linear-gradient(180deg,#ffb84d,#f08a14);color:#fff;font-size:17px;
+  padding:9px 18px;box-shadow:0 4px 0 #bd6a08;}
+.btn-pink{background:linear-gradient(180deg,#ff95b3,#e0556a);color:#fff;font-size:19px;
+  padding:10px 22px;box-shadow:0 4px 0 #9c3340;}
+.btn.big{font-size:25px;padding:14px 38px;box-shadow:0 7px 0 #d68a00;}
+
+.vbody{flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:10px;justify-content:flex-start;padding-top:8px;}
+
+.picCard{background:rgba(255,255,255,.96);border-radius:22px;padding:18px 22px;
+  box-shadow:0 7px 18px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;position:relative;}
 .gridwrap{position:relative;display:inline-block;}
-#objGrid,#rgGrid,#motGrid{display:grid;gap:13px;position:relative;justify-content:center;}
-.obj{font-size:46px;cursor:pointer;width:58px;height:58px;display:flex;align-items:center;
-  justify-content:center;border-radius:50%;transition:transform .15s,background .15s,filter .2s;
-  user-select:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));}
-.obj.pick{background:#fff3a8;transform:scale(1.18) rotate(-6deg);}
-.obj.bundled{transform:translateY(-3px);}
-.obj.glow{animation:glowB .6s ease;}
-@keyframes glowB{0%,100%{filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));}
-  50%{filter:drop-shadow(0 0 14px #ffd23f) brightness(1.3);transform:scale(1.22);}}
+.objGrid{display:grid;gap:10px;position:relative;justify-content:center;}
+
+.obj{font-size:56px;cursor:pointer;width:76px;height:76px;display:flex;align-items:center;
+  justify-content:center;border-radius:50%;transition:all .18s;user-select:none;
+  filter:drop-shadow(0 3px 5px rgba(0,0,0,.22));}
+.obj:hover{transform:scale(1.08);}
+.obj.pick{background:#fff3a8;transform:scale(1.2) rotate(-6deg);box-shadow:0 0 20px #ffd23f;}
+.obj.bundled{cursor:default;}
+.obj.bundled:hover{transform:none;}
+.obj.small{width:42px;height:42px;font-size:30px;}
+.obj.cg1{background:rgba(239,68,68,.3);}
+.obj.cg2{background:rgba(34,197,94,.3);}
+.obj.cg3{background:rgba(168,85,247,.3);}
+.obj.cg4{background:rgba(249,115,22,.3);}
+.obj.cg5{background:rgba(20,184,166,.3);}
+.obj.cg6{background:rgba(236,72,153,.3);}
+
 .ringSvg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;}
-.ringSvg ellipse{fill:none;stroke-width:7;stroke-linecap:round;}
-.sidep{width:310px;display:flex;flex-direction:column;gap:10px;}
-.guidebox{background:#fff;border-radius:18px;padding:12px 16px;font-size:20px;font-weight:800;
-  color:#1f4258;line-height:1.5;text-align:center;box-shadow:0 5px 12px rgba(0,0,0,.16);}
-/* 수직선 패널 - 펭귄과 숫자가 절대 겹치지 않게 충분한 높이 */
-.nlpanel{background:#fff;border-radius:22px;margin-top:8px;padding:6px 18px 10px;
-  box-shadow:0 8px 22px rgba(0,0,0,.2);display:flex;align-items:center;gap:14px;}
-.nlpanel.dim{filter:grayscale(.7) brightness(.96);opacity:.65;}
-.numline{position:relative;height:114px;flex:1;min-width:0;}
-.nl-track{position:absolute;top:72px;left:30px;right:30px;height:6px;
-  background:linear-gradient(90deg,#cfe9f4,#9bd0e6);border-radius:4px;}
-.tick{position:absolute;top:52px;width:46px;text-align:center;}
-.tick .tk{width:6px;height:18px;background:#9bd0e6;margin:0 auto;border-radius:4px;}
-.tick .tn{font-size:23px;font-weight:900;color:#9bb8c6;margin-top:5px;transition:.3s;}
-.tick.lit .tn{color:#2f7fe0;transform:scale(1.4);}
-/* 펭귄은 트랙 위쪽에 살짝 뜨게 - 숫자 안 가림 */
-.hopper{position:absolute;top:8px;font-size:38px;transition:left .55s ease;z-index:3;
-  filter:drop-shadow(0 3px 6px rgba(0,0,0,.3));}
-.hopper.hop{animation:hopArc .55s ease;}
-@keyframes hopArc{0%,100%{transform:translateY(0);}45%{transform:translateY(-44px);}}
-.addstrip{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;
-  min-width:220px;max-width:240px;font-size:26px;font-weight:900;color:#1f4258;}
-.addtile{background:#eef6ff;border:3px solid #8fc0ee;border-radius:10px;padding:3px 10px;
-  animation:slideIn .4s;}
-@keyframes slideIn{from{transform:translateY(-22px) scale(.5);opacity:0;}}
-/* 동기유발 */
-.metric{background:#fff;border-radius:16px;padding:9px 16px;font-size:22px;font-weight:900;
-  color:#1f4258;display:flex;gap:12px;align-items:center;box-shadow:0 5px 12px rgba(0,0,0,.15);}
-.btnDone{position:relative;}
-.btnDone::after{content:'✓ 했어요';position:absolute;top:-12px;right:-8px;background:#5cc24a;
-  color:#fff;font-size:14px;padding:3px 10px;border-radius:999px;font-weight:900;
-  box-shadow:0 3px 6px rgba(0,0,0,.3);}
-.finger{position:absolute;font-size:42px;transition:left .25s,top .25s;z-index:5;pointer-events:none;}
-.obj.counted{background:#ffe27a;}
-.obj.mrow{outline:5px solid #ffd23f;}
-/* 녹음 */
-.recwrap{background:#fff;border-radius:26px;padding:18px 24px;display:flex;flex-direction:column;
-  gap:11px;align-items:center;box-shadow:0 10px 26px rgba(0,0,0,.25);max-width:680px;}
-.recnote{border-radius:20px;padding:12px 20px;font-size:21px;font-weight:800;text-align:center;line-height:1.5;}
-.recnote.pre{background:#e7f1ff;border:5px solid #8fb9e8;color:#1c3f6e;}
-.recnote.post{background:#e6f9f0;border:5px solid #7fd6b0;color:#13573c;}
-.micbtn{width:104px;height:104px;border-radius:50%;border:6px solid #fff;cursor:pointer;font-size:46px;
-  background:linear-gradient(180deg,#ff7d92,#e0455e);color:#fff;box-shadow:0 7px 0 #a8344a;}
-.micbtn.rec{animation:pulse 1s infinite;background:linear-gradient(180deg,#ff4d6a,#c5283e);}
-@keyframes pulse{50%{transform:scale(1.1);}}
-.transbox{width:540px;min-height:68px;background:#f3f9fc;border:4px solid #cfe6ea;border-radius:16px;
-  padding:10px 15px;font-size:20px;color:#1f4258;font-weight:700;}
-.transbox:empty:before{content:'여기에 말한 내용이 나타나요…';color:#9bb2bf;}
-textarea.kb{width:540px;height:68px;border:4px solid #cfe6ea;border-radius:16px;padding:9px 14px;
-  font-size:20px;font-weight:700;color:#1f4258;resize:none;display:none;}
-.stars{display:flex;gap:9px;}
-.star{font-size:46px;cursor:pointer;filter:grayscale(1) opacity(.6);transition:.14s;}
-.star.lit{filter:none;transform:scale(1.2) rotate(8deg);}
-.ov{position:absolute;inset:0;background:rgba(8,20,28,.85);display:none;
-  align-items:center;justify-content:center;z-index:50;overflow-y:auto;padding:20px;}
+.ringSvg ellipse{fill:none;stroke-width:6;stroke-linecap:round;}
+
+/* 카운터 */
+.counterCard{background:#fff;border:5px solid #ffd23f;border-radius:18px;padding:7px 22px;
+  display:flex;align-items:center;gap:16px;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+.counterCard .cnLbl{font-size:18px;font-weight:900;color:#5b7585;}
+.counterCard .cnNum{font-size:46px;font-weight:900;color:#e0556a;line-height:1;min-width:56px;
+  text-align:center;transition:transform .15s;}
+.counterCard .cnNum.bump{animation:bump .4s;}
+@keyframes bump{50%{transform:scale(1.4);color:#ffd23f;}}
+.counterCard .cnDots{display:flex;gap:8px;}
+.cnDots .d{width:24px;height:24px;border-radius:50%;background:#e1e8ee;border:3px solid #cfd8e0;transition:.2s;}
+.cnDots .d.on{background:#ffd23f;border-color:#c89c00;box-shadow:0 0 8px #ffd23f;}
+
+/* 개념 카드 */
+.conceptCard{background:#fffbe0;border:5px solid #ffd23f;border-radius:18px;padding:10px 28px;
+  font-size:26px;font-weight:900;color:#1f4258;text-align:center;line-height:1.35;
+  box-shadow:0 4px 12px rgba(0,0,0,.18);min-width:600px;}
+.conceptCard .fill{display:inline-block;min-width:48px;padding:0 10px;
+  background:#fff;border:3px dashed #aaa;border-radius:8px;margin:0 3px;color:#999;font-size:24px;}
+.conceptCard .fill.on{border-style:solid;border-color:#5cc24a;color:#1f4258;background:#eefbe9;animation:pop1 .4s;}
+@keyframes pop1{50%{transform:scale(1.3);}}
+.conceptCard .c1{color:#ef4444;}
+.conceptCard .c2{color:#22c55e;}
+.conceptCard .c3{color:#a855f7;}
+.conceptCard .c4{color:#f97316;}
+.conceptCard .c5{color:#14b8a6;}
+.conceptCard .gold{color:#d68a00;}
+
+/* 덧셈식 */
+.addLine{background:#fff;border-radius:14px;border:3px solid #4aa3ff;padding:5px 18px;
+  font-size:19px;font-weight:900;color:#1f4258;box-shadow:0 3px 8px rgba(0,0,0,.15);visibility:hidden;}
+.addLine.on{visibility:visible;}
+.addLine .lbl{background:#4aa3ff;color:#fff;padding:2px 10px;border-radius:999px;font-size:13px;margin-right:8px;}
+
+.actionRow{display:flex;gap:12px;align-items:center;justify-content:center;}
+
+.instrTxt{font-size:22px;font-weight:900;color:#fff;background:rgba(8,20,50,.5);
+  padding:7px 24px;border-radius:999px;text-align:center;text-shadow:0 2px 4px rgba(0,0,0,.4);max-width:1100px;}
+
+/* 수직선 */
+.numLineCard{background:#fff;border-radius:20px;padding:14px 22px;
+  box-shadow:0 6px 16px rgba(0,0,0,.2);}
+.numLineCard svg{display:block;}
+
+/* 0~9 키패드 */
+.keypadLinear{display:flex;gap:6px;background:rgba(8,20,50,.5);padding:9px;border-radius:16px;}
+.keyLin{background:linear-gradient(180deg,#3d6072,#2c4a5c);color:#fff;font-size:26px;font-weight:900;
+  border:none;border-radius:11px;width:64px;height:58px;cursor:pointer;box-shadow:0 4px 0 #16313f;}
+.keyLin:active{transform:translateY(3px);box-shadow:none;}
+.keyLin.act{background:linear-gradient(180deg,#f0697d,#e0556a);box-shadow:0 4px 0 #9c3340;}
+.keyLin.go{background:linear-gradient(180deg,#a8f098,#5cc24a);box-shadow:0 4px 0 #3c8c30;}
+.kdisp{background:#fff;border-radius:12px;height:48px;display:flex;align-items:center;
+  justify-content:center;font-size:30px;font-weight:900;color:#1f4258;min-width:130px;
+  box-shadow:inset 0 3px 7px rgba(0,0,0,.12);}
+
+/* 시작 */
+#scrStart{align-items:center;justify-content:center;gap:14px;}
+#scrStart .titleEm{font-size:56px;animation:bob 3s ease-in-out infinite;}
+@keyframes bob{50%{transform:translateY(-12px);}}
+#scrStart h1{font-size:42px;font-weight:900;color:#fff6e0;text-shadow:0 3px 6px rgba(0,0,0,.4);}
+.goalbox{background:linear-gradient(180deg,#fffbe0,#fff2b0);border:6px solid #ffd23f;
+  border-radius:26px;padding:18px 28px;width:780px;box-shadow:0 7px 18px rgba(0,0,0,.2);}
+.goalbox h3{font-size:24px;color:#9a7b00;text-align:center;margin-bottom:6px;}
+.goalbox p{font-size:21px;font-weight:800;color:#5e4b00;line-height:1.7;text-align:center;}
+.goalbox .hl{background:#fff;border-radius:10px;padding:2px 9px;}
+.namesel{font-size:21px;font-weight:800;padding:9px 20px;border-radius:13px;
+  border:5px solid #ffd23f;color:#1f4258;background:#fff;}
+
+/* 동기유발 친구 카드 */
+.friends{display:flex;gap:34px;justify-content:center;}
+.friendCard{background:#fff;border-radius:20px;padding:14px 22px;
+  box-shadow:0 6px 14px rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;gap:8px;min-width:300px;}
+.friendCard h3{font-size:22px;color:#1f4258;}
+.candies{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:280px;}
+.candies .obj{width:40px;height:40px;font-size:28px;transition:all .3s;}
+.motMsg{background:#fff;border-radius:16px;padding:9px 22px;font-size:20px;font-weight:900;color:#1f4258;
+  text-align:center;line-height:1.4;box-shadow:0 4px 10px rgba(0,0,0,.15);min-width:520px;visibility:hidden;}
+.motMsg.on{visibility:visible;animation:pop1 .5s;}
+.motMsg.slow{border:4px solid #b07bff;}
+.motMsg.fast{border:4px solid #5cc24a;}
+
+/* 모달 */
+.ov{position:absolute;inset:0;background:rgba(8,4,28,.85);display:none;
+  align-items:center;justify-content:center;z-index:50;padding:18px;}
 .ov.on{display:flex;}
-/* 탐구질문 팝업 - 객관식 큰 버튼 위주, 키보드 입력은 옵션 */
-.pop{background:#fff;border-radius:32px;padding:24px 30px;width:780px;text-align:center;
-  animation:popIn .4s;border:7px solid #ffd23f;box-shadow:0 16px 40px rgba(0,0,0,.4);max-height:96%;
-  overflow-y:auto;}
-.pop h2{font-size:30px;color:#2f7fe0;margin-bottom:8px;}
-.pop .q{font-size:24px;font-weight:900;color:#1f4258;line-height:1.4;margin-bottom:16px;}
-.qopts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:12px;}
-.qopt{background:linear-gradient(180deg,#fff8d6,#ffe89c);border:5px solid #ffd23f;border-radius:22px;
-  padding:18px 14px;font-size:22px;font-weight:900;color:#5e4b00;cursor:pointer;
-  box-shadow:0 6px 0 #d68a00;transition:.15s;line-height:1.3;}
-.qopt:hover{transform:translateY(-3px);box-shadow:0 9px 0 #d68a00;}
-.qopt:active{transform:translateY(3px);box-shadow:0 3px 0 #d68a00;}
-.qopt.right{background:linear-gradient(180deg,#a8f098,#5cc24a);border-color:#3c8c30;color:#fff;
-  animation:pop1 .5s;box-shadow:0 6px 0 #2d6921;}
-.qopt.wrong{background:linear-gradient(180deg,#ffc0c8,#ff8a93);border-color:#e0556a;color:#fff;
-  animation:shake .4s;}
+.pop{background:#fff;border-radius:28px;padding:22px 28px;width:760px;text-align:center;
+  border:6px solid #ffd23f;box-shadow:0 14px 36px rgba(0,0,0,.4);animation:popIn .4s;max-height:96%;overflow-y:auto;}
+@keyframes popIn{from{transform:scale(.3);opacity:0;}}
+.pop h2{font-size:28px;color:#3a86c7;margin-bottom:10px;}
+.pop .q{font-size:22px;font-weight:900;color:#1f4258;line-height:1.4;margin-bottom:14px;}
+.popResLine{font-size:21px;font-weight:900;color:#1f4258;background:#fffbe0;
+  padding:10px 20px;border-radius:13px;border:4px solid #ffd23f;margin:8px 0;line-height:1.4;}
+.popResLine.slow{background:#f5edff;border-color:#b07bff;}
+.popResLine.fast{background:#e8f9e0;border-color:#5cc24a;}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;}
+.qopt{background:linear-gradient(180deg,#fff8d6,#ffe89c);border:4px solid #ffd23f;border-radius:18px;
+  padding:14px 12px;font-size:20px;font-weight:900;color:#5e4b00;cursor:pointer;box-shadow:0 5px 0 #d68a00;line-height:1.3;}
+.qopt:hover{transform:translateY(-2px);}
+.qopt.right{background:linear-gradient(180deg,#a8f098,#5cc24a);border-color:#3c8c30;color:#fff;}
+.qopt.wrong{background:linear-gradient(180deg,#ffc0c8,#ff8a93);border-color:#e0556a;color:#fff;animation:shake .4s;}
 @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
 .qopt:disabled{cursor:default;}
-.hintbox{background:linear-gradient(180deg,#fff8d6,#fff2b0);border:5px solid #ffd23f;border-radius:18px;
-  padding:13px 18px;font-size:20px;font-weight:800;color:#5e4b00;text-align:left;line-height:1.5;
-  margin-bottom:10px;display:none;}
-.hintbox.show{display:block;animation:slideIn .4s;}
-.popMicWrap{display:none;flex-direction:column;align-items:center;gap:9px;background:#f3f9fc;
-  border-radius:18px;padding:13px;margin-bottom:10px;}
-.popMicWrap.show{display:flex;}
-.popMicBtn{width:74px;height:74px;border-radius:50%;border:5px solid #fff;cursor:pointer;font-size:32px;
+.hintbox{background:linear-gradient(180deg,#fff8d6,#fff2b0);border:4px solid #ffd23f;border-radius:14px;
+  padding:10px 16px;font-size:18px;font-weight:800;color:#5e4b00;line-height:1.5;
+  margin-bottom:10px;display:none;text-align:left;}
+.hintbox.show{display:block;}
+.popRow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;}
+
+/* 녹음 */
+.recwrap{background:#fff;border-radius:24px;padding:16px 22px;display:flex;flex-direction:column;
+  gap:10px;align-items:center;box-shadow:0 8px 22px rgba(0,0,0,.25);max-width:660px;}
+.recnote{border-radius:18px;padding:11px 18px;font-size:19px;font-weight:800;text-align:center;line-height:1.5;}
+.recnote.pre{background:#e7f1ff;border:5px solid #8fb9e8;color:#1c3f6e;}
+.recnote.post{background:#e6f9f0;border:5px solid #7fd6b0;color:#13573c;}
+.micbtn{width:84px;height:84px;border-radius:50%;border:5px solid #fff;cursor:pointer;font-size:38px;
   background:linear-gradient(180deg,#ff7d92,#e0455e);color:#fff;box-shadow:0 6px 0 #a8344a;}
-.popMicBtn.rec{animation:pulse 1s infinite;}
-.popTrans{width:100%;min-height:50px;background:#fff;border:3px solid #cfe6ea;border-radius:12px;
-  padding:8px 12px;font-size:18px;font-weight:700;color:#1f4258;}
-.popTrans:empty:before{content:'말한 내용이 여기에 나와요…';color:#9bb2bf;}
-.popKbArea{display:none;}
-.popKbArea.show{display:block;}
-textarea.popKb{width:100%;height:60px;border:4px solid #cfe6ea;border-radius:14px;padding:9px 14px;
-  font-size:19px;font-weight:700;color:#1f4258;resize:none;margin-bottom:8px;}
-.popRow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:6px;}
-.dashlist{flex:1;overflow:auto;display:flex;flex-direction:column;gap:11px;padding:4px;}
-.dashrow{background:#fff;border-radius:18px;border-left:12px solid #5cc24a;padding:14px 22px;
-  box-shadow:0 4px 10px rgba(0,0,0,.15);}
-.dashrow b{font-size:21px;color:#1f4258;}
-.dashrow span{font-size:18px;color:#5b7585;font-weight:700;}
-.kpi{display:flex;gap:15px;justify-content:center;margin:6px 0 13px;}
-.kpicard{background:#fff;border-radius:20px;padding:15px 28px;text-align:center;
-  box-shadow:0 6px 14px rgba(0,0,0,.18);}
-.kpicard .n{font-size:38px;font-weight:900;color:#2f7fe0;}
-.kpicard .l{font-size:16px;font-weight:800;color:#5b7585;}
-.cert{background:linear-gradient(180deg,#fffef6,#fff6d8);border:12px solid #ffd23f;border-radius:30px;
-  flex:1;padding:20px 34px;display:flex;flex-direction:column;align-items:center;
-  box-shadow:0 12px 30px rgba(0,0,0,.3);}
-.compare{display:flex;gap:18px;width:100%;}
-.cmp{flex:1;border-radius:20px;padding:14px 18px;}
-.cmp.pre{background:#e7f1ff;border:5px solid #8fb9e8;}
-.cmp.post{background:#e6f9f0;border:5px solid #7fd6b0;}
-.cmp h4{font-size:20px;margin-bottom:5px;}
-.cmp p{font-size:18px;font-weight:700;color:#36505e;line-height:1.5;}
-select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16px;
-  border:5px solid #ffd23f;color:#1f4258;background:#fff;box-shadow:0 4px 10px rgba(0,0,0,.2);}
-.fade{animation:fadeIn .45s;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(14px);}}
-.regIn{animation:regIn .45s backwards;}
-@keyframes regIn{from{transform:scale(.2);opacity:0;}}
+.micbtn.rec{animation:pulse 1s infinite;background:linear-gradient(180deg,#ff4d6a,#c5283e);}
+@keyframes pulse{50%{transform:scale(1.1);}}
+.transbox{width:500px;min-height:56px;background:#f3f9fc;border:4px solid #cfe6ea;border-radius:14px;
+  padding:9px 13px;font-size:18px;color:#1f4258;font-weight:700;}
+.transbox:empty:before{content:'여기에 말한 내용이 나타나요…';color:#9bb2bf;}
+textarea.kb{width:500px;height:56px;border:4px solid #cfe6ea;border-radius:14px;padding:8px 12px;
+  font-size:18px;font-weight:700;color:#1f4258;resize:none;display:none;}
+.stars{display:flex;gap:8px;}
+.star{font-size:38px;cursor:pointer;filter:grayscale(1) opacity(.5);transition:.14s;}
+.star.lit{filter:none;transform:scale(1.2) rotate(8deg);}
+.guidetxt{background:#fff;border-radius:14px;padding:8px 14px;font-size:15px;font-weight:800;color:#1f4258;
+  text-align:center;box-shadow:0 3px 8px rgba(0,0,0,.15);max-width:580px;}
+
+/* 숫자 BURST */
+.numBurst{position:absolute;font-size:200px;font-weight:900;
+  text-shadow:0 6px 0 rgba(0,0,0,.25),0 12px 26px rgba(0,0,0,.5);
+  z-index:59;pointer-events:none;animation:numA 1.5s cubic-bezier(.3,1.5,.5,1) forwards;}
+@keyframes numA{
+  0%{transform:translate(-50%,-50%) scale(.1) rotate(-25deg);opacity:0;}
+  25%{transform:translate(-50%,-50%) scale(1.6) rotate(8deg);opacity:1;}
+  55%{transform:translate(-50%,-50%) scale(1.3) rotate(-4deg);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:0;}}
+.sparkle{position:absolute;font-size:42px;z-index:58;pointer-events:none;}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.4);opacity:0;}}
+
 #confetti{position:absolute;inset:0;pointer-events:none;z-index:60;}
 .toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);
-  background:linear-gradient(180deg,#3d6072,#1f4258);color:#fff;font-size:22px;font-weight:900;
-  padding:12px 28px;border-radius:999px;z-index:55;display:none;box-shadow:0 6px 16px rgba(0,0,0,.35);
-  border:3px solid #ffd23f;}
-.burst{position:absolute;font-size:46px;z-index:58;pointer-events:none;}
-@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.4);opacity:0;}}
-.bigSticker{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(0);
-  font-size:140px;z-index:59;}
-.bigSticker.go{animation:stk .8s forwards;}
-@keyframes stk{55%{transform:translate(-50%,-50%) scale(1.35) rotate(12deg);}
-  100%{transform:translate(-50%,-50%) scale(1) rotate(0);}}
+  background:#1f4258;color:#fff;font-size:19px;font-weight:900;
+  padding:10px 24px;border-radius:999px;z-index:55;display:none;border:3px solid #ffd23f;}
+
+/* 수료증 */
+.cert{background:linear-gradient(180deg,#fffef6,#fff6d8);border:10px solid #ffd23f;border-radius:26px;
+  flex:1;padding:18px 28px;display:flex;flex-direction:column;align-items:center;gap:9px;
+  box-shadow:0 10px 26px rgba(0,0,0,.3);}
+.cert h2{font-size:28px;font-weight:900;color:#3a86c7;}
+.cert .name{font-size:30px;font-weight:900;color:#1f4258;}
+.compare{display:flex;gap:16px;width:100%;}
+.cmp{flex:1;border-radius:18px;padding:11px 14px;}
+.cmp.pre{background:#e7f1ff;border:5px solid #8fb9e8;}
+.cmp.post{background:#e6f9f0;border:5px solid #7fd6b0;}
+.cmp h4{font-size:17px;margin-bottom:4px;}
+.cmp p{font-size:16px;font-weight:700;color:#36505e;line-height:1.5;}
+
+/* 대시보드 */
+.dashWrap{flex:1;display:flex;flex-direction:column;gap:10px;}
+.kpi{display:flex;gap:12px;justify-content:center;}
+.kpicard{background:#fff;border-radius:16px;padding:12px 22px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+.kpicard .n{font-size:32px;font-weight:900;color:#3a86c7;}
+.kpicard .l{font-size:14px;font-weight:800;color:#5b7585;}
+.dashList{flex:1;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px;}
+.dashRow{background:#fff;border-radius:16px;border-left:9px solid #5cc24a;padding:10px 18px;box-shadow:0 3px 9px rgba(0,0,0,.15);}
+.dashRow b{font-size:18px;color:#1f4258;}
+.dashRow span{font-size:15px;color:#5b7585;font-weight:700;}
 </style>
 </head>
 <body>
@@ -253,163 +250,159 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
 <div id="decor"></div>
 
 <!-- 시작 -->
-<section class="screen on" id="scrStart" style="align-items:center;justify-content:center;gap:18px;">
-  <div style="font-size:66px;" class="float">🧺✨🐧</div>
-  <div class="bigtxt" style="font-size:48px;">묶어 세기 탐험대</div>
-  <div class="goal" style="width:790px;">
+<section class="screen on" id="scrStart">
+  <div class="titleEm">🧺🐧🦘</div>
+  <h1>묶어 세기 & 뛰어 세기 탐험대</h1>
+  <div class="goalbox">
     <h3>🎯 오늘의 목표</h3>
-    <p style="text-align:center;">이 활동이 끝나면 우리는<br>
-      👉 <span class="hl">물건을 ○개씩 묶어</span> 셀 수 있어요!<br>
-      👉 <span class="hl">묶음을 보고 뛰어 세기</span>를 할 수 있어요!<br>
-      👉 <span class="hl">몇씩 몇 묶음인지 말로</span> 나타낼 수 있어요!</p>
+    <p>이 활동이 끝나면 우리는<br>
+      👉 <span class="hl">묶어서 세기</span>로 빠르게 셀 수 있어요!<br>
+      👉 <span class="hl">뛰어 세기</span>로 수직선에서 묶음을 그릴 수 있어요!<br>
+      👉 <span class="hl">3씩 4묶음 = 12</span>처럼 말할 수 있어요!</p>
   </div>
-  <div style="display:flex;gap:14px;align-items:center;">
-    <span style="font-size:25px;font-weight:900;color:#fff;">이름</span>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <span style="font-size:20px;font-weight:900;color:#fff;">이름</span>
     <select class="namesel" id="nameSel"></select>
   </div>
-  <div style="display:flex;gap:14px;">
-    <button class="btn btn-go" id="startBtn">시작하기 ▶</button>
+  <div style="display:flex;gap:12px;">
+    <button class="btn btn-go big" id="startBtn">시작하기 ▶</button>
     <button class="btn btn-skip" id="toDashBtn">📒 내 학습기록 보기</button>
   </div>
-  <div style="font-size:15px;color:#cfe9f4;">※ 학생 이름·문제는 구글 시트에서 직접 바꿀 수 있어요</div>
 </section>
 
 <!-- 튜토리얼 -->
 <section class="screen" id="scrTut">
-  <div class="topbar"><div class="title">🧺 사용법 배우기</div><div class="prog" id="pgTut"></div>
-    <button class="spk" id="spkTut">🔇</button></div>
-  <div class="bigtxt">그림을 보고 빈칸에 들어갈 수를 순서대로 눌러 보세요</div>
-  <div class="play" style="margin-top:8px;">
-    <div class="scene" style="gap:14px;">
-      <div class="tut-cards" id="tutCards"></div>
-      <div class="nline" id="tutNline"></div>
-      <div class="frame">
-        <span>6씩</span><span class="blank fill"><span class="ord">①</span>5</span><span>묶음</span>
-        <span>=</span><span class="blank" id="tutAns"><span class="ord">②</span></span>
+  <div class="topbar"><div class="title">🧺 사용법 배우기</div>
+    <div class="prog" id="pgTut"></div><button class="spk" id="spkTut">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt">사과를 <b style="color:#ffd23f;">3개씩</b> 콕콕 눌러 묶어 보세요!</div>
+    <div class="picCard">
+      <div class="gridwrap">
+        <div class="objGrid" id="tutGrid"></div>
+        <svg class="ringSvg" id="tutSvg"></svg>
       </div>
     </div>
-    <div class="sidep">
-      <div class="guidebox">오른쪽 키패드로 <b style="color:#e0556a;">전체 개수</b>를 눌러요.<br>① 묶음 수 → ② 모두 몇 개?</div>
-      <div class="kdisp" id="tutDisp"></div>
-      <div class="keypad" id="tutKey"></div>
-      <button class="btn btn-go" id="tutGo" disabled style="font-size:22px;padding:13px 24px;">이해했어요, 학습 시작!</button>
+    <div class="counterCard">
+      <div class="cnLbl">지금 짚은 개수</div>
+      <div class="cnNum" id="tutCount">0</div>
+      <div class="cnDots" id="tutDots"></div>
+    </div>
+    <div class="conceptCard" id="tutConcept">
+      <span class="c1">3</span>씩 <span class="fill" id="tutBun">?</span>묶음 = 모두 <span class="fill gold" id="tutTot">?</span>개
+    </div>
+    <div class="actionRow">
+      <button class="btn btn-go" id="tutGo" disabled>이해했어요, 학습 시작!</button>
     </div>
   </div>
 </section>
 
 <!-- 사전 녹음 -->
-<section class="screen" id="scrPre" style="align-items:center;justify-content:center;gap:14px;">
-  <div class="recnote pre" style="width:780px;">📌 활동 전 녹음이에요!<br>
-    지금 알고 있는 만큼만 말해도 괜찮아요. <span style="color:#7b3fc2;">활동이 끝나고 다시 녹음해서 비교해볼 거예요!</span> 🌱</div>
-  <div class="bigtxt" style="font-size:25px;">"물건을 빨리 세는 방법"을 아는 만큼 말해 보세요</div>
+<section class="screen" id="scrPre" style="align-items:center;justify-content:center;gap:12px;">
+  <div class="recnote pre" style="width:760px;">📌 활동 전 녹음이에요!<br>
+    지금 알고 있는 만큼만 말해도 괜찮아요. <span style="color:#3a86c7;">활동 후 다시 녹음해서 비교해 볼 거예요!</span> 🌱</div>
+  <div class="instrTxt">"묶어 세기"가 뭔지 아는 만큼 말해 보세요</div>
   <div id="preRec"></div>
 </section>
 
 <!-- 동기유발 -->
 <section class="screen" id="scrMot">
-  <div class="topbar"><div class="title">🤔 어떻게 세는 게 좋을까?</div>
+  <div class="topbar"><div class="title">🍬 빠르게 세는 방법?</div>
     <div class="prog" id="pgMot"></div><button class="spk" id="spkMot">🔇</button></div>
-  <div class="bigtxt">사과가 잔뜩! <b style="color:#ffd23f;">두 가지 방법 모두</b> 해보고 비교해요</div>
-  <div class="play" style="margin-top:8px;">
-    <div class="scene"><div class="gridwrap"><div id="motGrid"></div>
-      <svg class="ringSvg" id="motSvg"></svg></div>
-      <div class="finger" id="motFinger" style="display:none;">👆</div></div>
-    <div class="sidep">
-      <div class="metric">⏱️ 걸린 시간 <span id="motTime" style="color:#e0556a;">0.0초</span></div>
-      <div class="metric">🔢 센 개수 <span id="motCount" style="color:#2f7fe0;">0</span></div>
-      <div class="guidebox" id="motMsg">두 버튼을 <b style="color:#e0556a;">모두</b> 눌러 비교해 봐요!</div>
-      <button class="btn btn-blue" id="motOne">🐌 하나씩 세어 보기</button>
-      <button class="btn btn-sm" id="motGroup">🚀 묶어서 세어 보기</button>
-      <button class="btn btn-go" id="motNext" style="display:none;font-size:22px;padding:13px 28px;">다음으로 ➡️</button>
+  <div class="vbody">
+    <div class="instrTxt">사탕 12개를 두 가지 방법으로 세어 봐요</div>
+    <div class="picCard">
+      <div class="gridwrap"><div class="objGrid" id="motGrid"></div><svg class="ringSvg" id="motSvg"></svg></div>
+    </div>
+    <div style="display:flex;gap:14px;">
+      <button class="btn btn-blue" id="motBtn1">👆 하나씩 세기</button>
+      <button class="btn btn-pink" id="motBtn2">🧺 묶어서 세기</button>
+    </div>
+    <div class="motMsg slow" id="motMsg1">버튼을 눌러 봐요!</div>
+    <div class="motMsg fast" id="motMsg2"></div>
+    <div class="actionRow">
+      <button class="btn btn-go" id="motNext" style="display:none;">다음으로 ➡️</button>
     </div>
   </div>
 </section>
 
-<!-- 묶어 세기 + 뛰어 세기 -->
-<section class="screen" id="scrLearn">
-  <div class="topbar"><div class="title" id="learnTitle">🧺 묶어 세기</div>
-    <div class="prog" id="pgLearn"></div><button class="spk" id="spkLearn">🔇</button></div>
-  <div class="bigtxt" id="learnInstr">물건을 묶어 보세요</div>
-  <div class="play" style="margin-top:8px;">
-    <div class="scene"><div class="gridwrap"><div id="objGrid"></div>
-      <svg class="ringSvg" id="ringSvg"></svg></div></div>
-    <div class="sidep">
-      <div class="guidebox" id="learnGuide"></div>
-      <div class="frame" style="font-size:28px;flex-wrap:wrap;" id="learnFrame"></div>
-      <button class="btn btn-skip" id="learnReset">↺ 다시 묶기</button>
-      <button class="btn btn-help" id="learnHelp">💡 도와줘</button>
-      <button class="btn btn-go" id="learnNext" style="display:none;font-size:22px;padding:13px 28px;">다음으로 ➡️</button>
+<!-- 묶어 세기 -->
+<section class="screen" id="scrBundle">
+  <div class="topbar"><div class="title" id="bdTitle">🧺 묶어 세기</div>
+    <div class="prog" id="pgBundle"></div><button class="spk" id="spkBd">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt" id="bdInstr"></div>
+    <div class="picCard"><div class="gridwrap">
+      <div class="objGrid" id="bdGrid"></div><svg class="ringSvg" id="bdSvg"></svg></div></div>
+    <div class="counterCard">
+      <div class="cnLbl">지금 짚은 개수</div>
+      <div class="cnNum" id="bdCount">0</div>
+      <div class="cnDots" id="bdDots"></div>
     </div>
-  </div>
-  <div class="nlpanel dim" id="nlPanel">
-    <div class="numline" id="learnNL"></div>
-    <div style="display:flex;flex-direction:column;gap:7px;align-items:center;flex-shrink:0;">
-      <div class="addstrip" id="addStrip"></div>
-      <button class="btn btn-blue" id="learnJump" disabled style="font-size:20px;padding:11px 22px;">🦘 뛰어 세기</button>
+    <div class="conceptCard" id="bdConcept"></div>
+    <div class="addLine" id="bdAdd"><span class="lbl">덧셈</span><span id="bdAddTxt">-</span></div>
+    <div class="actionRow">
+      <button class="btn btn-skip" id="bdReset">↺ 다시</button>
+      <button class="btn btn-help" id="bdHelp">💡 도와줘</button>
+      <button class="btn btn-go" id="bdNext" style="display:none;">다음 ➡️</button>
     </div>
   </div>
 </section>
 
-<!-- 같은 수 다른 묶음 -->
-<section class="screen" id="scrReg">
-  <div class="topbar"><div class="title">🔄 같은 수, 다른 묶음</div>
-    <div class="prog" id="pgReg"></div><button class="spk" id="spkReg">🔇</button></div>
-  <div class="bigtxt">컵케이크는 모두 <b style="color:#ffd23f;">12개</b>! 여러 가지로 묶어 봐요</div>
-  <div class="play" style="margin-top:8px;">
-    <div class="scene"><div class="gridwrap"><div id="rgGrid"></div>
-      <svg class="ringSvg" id="rgSvg"></svg></div></div>
-    <div class="sidep">
-      <div class="guidebox">버튼을 누르면 컵케이크가<br>그 크기로 다시 묶여요!</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="rgBtns"></div>
-      <div class="frame" style="font-size:26px;" id="rgFrame">
-        <b style="color:#e0556a;">12</b><span>은</span>
-        <span class="blank" id="rgA"></span><span>씩</span>
-        <span class="blank" id="rgB"></span><span>묶음</span></div>
-      <button class="btn btn-go" id="rgNext" style="display:none;font-size:22px;padding:13px 28px;">다음으로 ➡️</button>
+<!-- 뛰어 세기 — 수직선 -->
+<section class="screen" id="scrSkip">
+  <div class="topbar"><div class="title" id="skTitle">🦘 뛰어 세기</div>
+    <div class="prog" id="pgSkip"></div><button class="spk" id="spkSk">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt" id="skInstr"></div>
+    <!-- 작은 그림 (방금 묶은 것 다시 보여줌) -->
+    <div style="background:rgba(255,255,255,.85);border-radius:14px;padding:8px 14px;display:flex;align-items:center;gap:14px;">
+      <span style="font-size:15px;font-weight:900;color:#1f4258;">방금 묶은 것</span>
+      <div class="gridwrap"><div class="objGrid" id="skMiniGrid"></div></div>
+    </div>
+    <!-- 수직선 -->
+    <div class="numLineCard"><svg id="numLineSvg" width="900" height="160" viewBox="0 0 900 160"></svg></div>
+    <div class="conceptCard" id="skConcept"></div>
+    <div class="actionRow">
+      <button class="btn btn-skip" id="skReset">↺ 처음부터</button>
+      <button class="btn btn-blue" id="skNext">🦘 다음 뛰어세기</button>
+      <button class="btn btn-go" id="skDone" style="display:none;">다음 ➡️</button>
     </div>
   </div>
 </section>
 
 <!-- 도전 -->
 <section class="screen" id="scrChal">
-  <div class="topbar"><div class="title">⏱️ 도전! 뛰어 세기</div><div class="prog" id="pgChal"></div>
-    <button class="spk" id="spkChal">🔇</button></div>
-  <div class="bigtxt">빈칸에 들어갈 수를 순서대로 입력해 보세요</div>
-  <div class="play" style="margin-top:10px;">
-    <div class="scene" style="justify-content:center;">
-      <div style="font-size:26px;font-weight:900;color:#fff;margin-bottom:14px;
-        text-shadow:0 2px 4px rgba(0,0,0,.3);" id="chalLabel"></div>
-      <div class="nline" id="chalSeq" style="flex-wrap:wrap;"></div>
-    </div>
-    <div class="sidep">
-      <div class="guidebox">빨간 칸을 차례대로 채워요!</div>
-      <div class="kdisp" id="chalDisp"></div>
-      <div class="keypad" id="chalKey"></div>
-    </div>
+  <div class="topbar"><div class="title">⏱️ 도전!</div>
+    <div class="prog" id="pgChal"></div><button class="spk" id="spkChal">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt">그림을 보고 모두 몇 개인지 입력하세요</div>
+    <div class="picCard"><div class="gridwrap">
+      <div class="objGrid" id="chalGrid"></div><svg class="ringSvg" id="chalSvg"></svg></div></div>
+    <div class="conceptCard" id="chalConcept"></div>
+    <div class="kdisp" id="chalDisp"></div>
+    <div class="keypadLinear" id="chalKey"></div>
   </div>
 </section>
 
 <!-- 사후 녹음 -->
-<section class="screen" id="scrPost" style="align-items:center;justify-content:center;gap:12px;">
-  <div class="recnote post" style="width:780px;">🌟 활동 후 녹음이에요!<br>
-    처음 녹음과 비교해서 새롭게 알게 된 점을 말해주세요.
-    <span style="color:#7b3fc2;">"이제는 묶어 세기 박사예요!"</span> 처럼요 🌱</div>
-  <div class="bigtxt" style="font-size:24px;">묶어 세기와 뛰어 세기, 무엇을 새로 알게 되었나요?</div>
+<section class="screen" id="scrPost" style="align-items:center;justify-content:center;gap:10px;">
+  <div class="recnote post" style="width:760px;">🌟 활동 후 녹음이에요!<br>
+    새롭게 알게 된 점을 말해 주세요. 🌱</div>
+  <div class="instrTxt">"묶어 세기·뛰어 세기"로 새로 알게 된 점은?</div>
   <div id="postRec"></div>
 </section>
 
 <!-- 수료증 -->
 <section class="screen" id="scrCert">
   <div class="cert">
-    <div style="font-size:32px;font-weight:900;color:#9a7b00;">🏅 묶어 세기 탐험 수료증 🏅</div>
-    <div style="font-size:34px;font-weight:900;color:#1f4258;margin:4px 0;" id="certName"></div>
-    <div style="font-size:19px;font-weight:800;color:#5b7585;margin-bottom:10px;">
-      위 어린이는 물건을 묶어 세고 뛰어 세는 탐험을 멋지게 해냈습니다.</div>
+    <h2>🏅 묶어 세기 & 뛰어 세기 수료증 🏅</h2>
+    <div class="name" id="certName"></div>
+    <div style="font-size:17px;font-weight:800;color:#5b7585;">위 어린이는 묶어 세기와 뛰어 세기를 멋지게 탐험했습니다.</div>
     <div class="compare">
-      <div class="cmp pre"><h4 style="color:#1c3f6e;">💡 활동 전 — 내가 알던 것</h4><p id="certPre"></p></div>
-      <div class="cmp post"><h4 style="color:#13573c;">🌟 활동 후 — 새로 알게 된 것</h4><p id="certPost"></p></div>
+      <div class="cmp pre"><h4 style="color:#1c3f6e;">💡 활동 전</h4><p id="certPre"></p></div>
+      <div class="cmp post"><h4 style="color:#13573c;">🌟 활동 후</h4><p id="certPost"></p></div>
     </div>
-    <div style="display:flex;gap:24px;margin-top:10px;font-size:21px;font-weight:900;color:#1f4258;">
+    <div style="display:flex;gap:20px;font-size:18px;font-weight:900;color:#1f4258;">
       <div id="certStars"></div><div id="certStk"></div>
     </div>
     <div style="margin-top:auto;display:flex;gap:12px;">
@@ -421,42 +414,35 @@ select.namesel{font-size:25px;font-weight:800;padding:12px 24px;border-radius:16
 
 <!-- 대시보드 -->
 <section class="screen" id="scrDash">
-  <div class="topbar"><div class="title">📒 내 학습기록</div><div style="flex:1;"></div>
-    <button class="btn btn-skip" id="dashBack">← 돌아가기</button></div>
-  <div class="kpi" id="dashKpi"></div>
-  <div class="dashlist" id="dashList"></div>
-  <div style="font-size:15px;color:#cfe9f4;text-align:center;margin-top:6px;">
-    💡 활동을 마칠 때마다 내 기록이 스스로 쌓여요. 등급·점수가 아니라 "오늘 내가 한 것"이에요.</div>
+  <div class="topbar"><div class="title">📒 내 학습기록</div>
+    <div style="flex:1;"></div><button class="btn btn-skip" id="dashBack">← 돌아가기</button></div>
+  <div class="dashWrap"><div class="kpi" id="dashKpi"></div><div class="dashList" id="dashList"></div></div>
 </section>
 
-<!-- 탐구질문 팝업 -->
+<!-- 동기유발 모달 -->
+<div class="ov" id="ovMot"><div class="pop">
+  <h2>🤔 두 가지 방법!</h2>
+  <div class="popResLine slow" id="motResSlow"></div>
+  <div class="popResLine fast" id="motResFast"></div>
+  <div style="font-size:18px;color:#5b7585;font-weight:800;margin-top:10px;">
+    오늘은 <b style="color:#22c55e;">🧺 묶어 세기</b>를 잘 배워 봐요!</div>
+  <button class="btn btn-go" id="motModalGo" style="margin-top:14px;">알겠어요, 다음으로 ➡️</button>
+</div></div>
+
+<!-- 탐구질문 -->
 <div class="ov" id="ovPop"><div class="pop">
   <h2>🤔 탐구 질문</h2>
   <div class="q" id="popQ"></div>
   <div class="qopts" id="popOpts"></div>
   <div class="hintbox" id="popHint"></div>
-  <div class="popMicWrap" id="popMicWrap">
-    <div style="font-size:17px;font-weight:900;color:#1f4258;">🎤 내 생각을 말로 더 표현해 봐요 (선택)</div>
-    <button class="popMicBtn" id="popMicBtn">🎤</button>
-    <div style="font-size:14px;font-weight:800;color:#e0455e;" id="popMicStatus">마이크를 눌러 말해 보세요</div>
-    <div class="popTrans" id="popTrans"></div>
-  </div>
-  <div class="popKbArea" id="popKbArea">
-    <textarea class="popKb" id="popKb" placeholder="키보드로 내 생각을 적어 봐요 (선택)"></textarea>
-  </div>
   <div class="popRow">
     <button class="btn btn-help" id="popHintBtn">💡 힌트 보기</button>
-    <button class="btn btn-blue" id="popMicToggle" style="font-size:18px;padding:10px 18px;">🎤 말로 더 답하기</button>
-    <button class="btn btn-blue" id="popKbToggle" style="font-size:18px;padding:10px 18px;">⌨️ 키보드</button>
-  </div>
-  <div class="popRow" style="margin-top:10px;">
     <button class="btn btn-skip" id="popSkip">⏭️ 건너뛰기</button>
     <button class="btn btn-go" id="popBtn" disabled>다음으로 ➡️</button>
   </div>
 </div></div>
 
 <div class="toast" id="toast"></div>
-<div class="bigSticker" id="bigSticker"></div>
 <canvas id="confetti"></canvas>
 </div></div>
 <script>
@@ -467,92 +453,91 @@ function fit(){const s=Math.min(innerWidth/1280,innerHeight/800);
   stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
 addEventListener('resize',fit);fit();
 
-/* 장식 — 화면 상단 60px / 하단 60px 가장자리에만! 놀이 영역 침범 금지 */
+/* 조사 */
+function josa(w,withB,withoutB){if(!w)return '';const last=w.charCodeAt(w.length-1);
+  if(last<0xAC00||last>0xD7A3)return w+withoutB;
+  return w+(((last-0xAC00)%28)!==0?withB:withoutB);}
+const eul=w=>josa(w,'을','를');
+
+/* 장식 */
 (function(){const d=$('#decor');
-  // 구름은 화면 최상단(y<60)에서만 흐름
-  [[14,'30s'],[40,'36s']].forEach(([top,dur],i)=>{
-    const c=document.createElement('div');c.className='deco cloud';c.textContent='☁️';
-    c.style.top=top+'px';c.style.animationDuration=dur;c.style.animationDelay=(-i*12)+'s';d.appendChild(c);});
-  // 별·풍선은 네 모서리 가장자리에만 (놀이 영역 침범 금지)
-  [['🎈',14,'2%'],['🎈',30,'95%'],['⭐',748,'4%'],['⭐',756,'93%'],
-   ['🌟',768,'48%'],['✨',6,'48%'],['✨',748,'24%'],['✨',752,'72%']].forEach(([e,top,left],i)=>{
-    const s=document.createElement('div');s.className='deco float';s.textContent=e;
-    s.style.fontSize=(e==='🎈'?28:20)+'px';s.style.top=top+'px';s.style.left=left;
-    s.style.animationDuration=(3+i*.4)+'s';s.style.animationDelay=(-i)+'s';
-    if(e!=='🎈'){s.classList.add('twinkle');s.style.animationName='tw';}d.appendChild(s);});
-})();
+  for(let i=0;i<3;i++){const c=document.createElement('div');c.className='cloud';c.textContent='☁️';
+    c.style.top=(16+i*18)+'px';c.style.animationDuration=(30+i*5)+'s';
+    c.style.animationDelay=(-i*10)+'s';d.appendChild(c);}
+  for(let i=0;i<12;i++){const t=document.createElement('div');t.className='twinkle';t.textContent='✨';
+    t.style.top=(Math.random()*740)+'px';t.style.left=(Math.random()*1230)+'px';
+    t.style.animationDelay=(Math.random()*2.4)+'s';d.appendChild(t);}})();
 
 const NAMES=['가은','나래','다온','라엘','민준','서아','수호','시우','예준','지아','하린','현우'];
 const sel=$('#nameSel');NAMES.forEach(n=>{const o=document.createElement('option');o.textContent=n;sel.appendChild(o);});
-let S={name:'',helpUsed:0,stickers:0,stars:0,preText:'',postText:'',bundlesDone:0,chalRight:0,regTried:0};
+
+let S={name:'',helpUsed:0,stickers:0,stars:0,preText:'',postText:'',bundlesDone:0,skipsDone:0,chalRight:0};
 let speaker=false;
 
 /* TTS */
 let voice=null;
 function pickVoice(){const v=speechSynthesis.getVoices();
   voice=v.find(x=>x.lang==='ko-KR'&&x.name.toLowerCase().includes('google')&&!x.localService)
-    ||v.find(x=>/wavenet|neural2?/i.test(x.name)&&x.lang==='ko-KR')
-    ||v.find(x=>/premium|enhanced|natural/i.test(x.name)&&x.lang==='ko-KR')
     ||v.find(x=>x.lang==='ko-KR')||null;}
 if('speechSynthesis'in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
 function say(t){if(!speaker||!('speechSynthesis'in window))return;
   speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);
-  u.lang='ko-KR';u.rate=.96;u.pitch=1.0;if(voice)u.voice=voice;speechSynthesis.speak(u);}
+  u.lang='ko-KR';u.rate=.96;if(voice)u.voice=voice;speechSynthesis.speak(u);}
 
 let AC=null;
-function tone(f,d,type){if(!speaker)return;try{AC=AC||new(AudioContext||webkitAudioContext)();
+function tone(f,d,type,vol){if(!speaker)return;try{AC=AC||new(AudioContext||webkitAudioContext)();
   const o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.value=f;
-  o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(.18,AC.currentTime);
+  o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(vol||.18,AC.currentTime);
   g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.start();o.stop(AC.currentTime+d);}catch(e){}}
-function sndOk(){tone(660,.13);setTimeout(()=>tone(880,.22),120);}
-function sndNo(){tone(200,.25,'triangle');}
-function sndPop(){tone(520,.09);}
-function sndHop(){tone(440,.08);setTimeout(()=>tone(620,.12),70);}
+const sndOk=()=>{tone(660,.13);setTimeout(()=>tone(880,.22),120);};
+const sndNo=()=>tone(200,.25,'triangle');
+const sndPop=()=>tone(520,.09);
+const sndHop=()=>{tone(440,.08);setTimeout(()=>tone(620,.12),70);};
 
 $$('.spk').forEach(b=>b.onclick=()=>{speaker=!speaker;
   $$('.spk').forEach(x=>{x.textContent=speaker?'🔊':'🔇';x.classList.toggle('on',speaker);});
   if(speaker){if(AC&&AC.state==='suspended')AC.resume();say('소리가 켜졌어요.');}
   else if('speechSynthesis'in window)speechSynthesis.cancel();});
 
-function show(id){$$('.screen').forEach(s=>s.classList.remove('on'));
-  const el=$('#'+id);el.classList.add('on','fade');setTimeout(()=>el.classList.remove('fade'),460);}
+function show(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');}
 function progress(box,n,cur){box.innerHTML='';for(let i=0;i<n;i++){const d=document.createElement('div');
   d.className='dot'+(i<cur?' done':i===cur?' cur':'');box.appendChild(d);}}
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';
   clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',1800);}
 
-function rollNum(el,from,to,dur){const t0=performance.now();
-  (function step(t){let p=Math.min(1,(t-t0)/dur);p=1-Math.pow(1-p,3);
-    el.textContent=Math.round(from+(to-from)*p);
-    if(p<1)requestAnimationFrame(step);})(t0);}
-
 /* 폭죽 */
 const cv=$('#confetti'),cx=cv.getContext('2d');cv.width=1280;cv.height=800;
 let parts=[];
 function confetti(){const c=['#ffd23f','#ff6b81','#4aa3ff','#5cc24a','#b07bff','#ff9a3c'];
-  for(let i=0;i<120;i++)parts.push({x:640,y:280,vx:(Math.random()-.5)*18,vy:Math.random()*-15-4,
-    g:.45,c:c[i%6],s:Math.random()*11+5,r:Math.random()*6});}
+  for(let i=0;i<90;i++)parts.push({x:640,y:280,vx:(Math.random()-.5)*16,vy:Math.random()*-14-4,
+    g:.45,c:c[i%6],s:Math.random()*10+5,r:Math.random()*6});}
 (function loop(){cx.clearRect(0,0,1280,800);parts=parts.filter(p=>p.y<880);
   parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.r+=.2;
     cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;
     cx.fillRect(-p.s/2,-p.s/2,p.s,p.s);cx.restore();});requestAnimationFrame(loop);})();
 
-function stickerBurst(){
-  const big=$('#bigSticker');big.textContent=['🌟','💖','🌈','🏅'][S.stickers%4];
-  big.classList.remove('go');void big.offsetWidth;big.classList.add('go');
-  const ems=['⭐','💖','🌸','🎉','✨','🌟','💫','🌼'];
-  for(let i=0;i<16;i++){const sp=document.createElement('div');sp.className='burst';
-    sp.textContent=ems[i%ems.length];sp.style.left='640px';sp.style.top='350px';
-    const ang=(i/16)*Math.PI*2,dist=260+Math.random()*120;
-    sp.style.setProperty('--dx',Math.cos(ang)*dist+'px');
-    sp.style.setProperty('--dy',Math.sin(ang)*dist+'px');
-    sp.style.setProperty('--rot',(Math.random()*720-360)+'deg');
-    sp.style.animation=`fly ${.9+Math.random()*.5}s cubic-bezier(.2,.8,.3,1) forwards`;
-    stage.appendChild(sp);setTimeout(()=>sp.remove(),1500);}
-  confetti();sndOk();}
+/* 숫자 BURST */
+const RINGCOL=['#ef4444','#22c55e','#a855f7','#f97316','#14b8a6','#ec4899'];
+function numBurst(cx2,cy2,num,colorIdx){
+  const color=RINGCOL[(colorIdx||0)%6];
+  const t=document.createElement('div');t.className='numBurst';
+  t.textContent=num;t.style.left=cx2+'px';t.style.top=cy2+'px';t.style.color=color;
+  stage.appendChild(t);setTimeout(()=>t.remove(),1500);
+  const ems=['⭐','✨','🌟','💫','⭐','✨','💖','🌟'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('div');s.className='sparkle';s.textContent=ems[i];
+    s.style.left=cx2+'px';s.style.top=cy2+'px';
+    const ang=(i/8)*Math.PI*2,dist=230;
+    s.style.setProperty('--dx',Math.cos(ang)*dist+'px');
+    s.style.setProperty('--dy',Math.sin(ang)*dist+'px');
+    s.style.setProperty('--rot',(Math.random()*720-360)+'deg');
+    s.style.animation='fly 1.2s cubic-bezier(.2,.8,.3,1) forwards';
+    stage.appendChild(s);setTimeout(()=>s.remove(),1300);
+  }
+  for(let i=0;i<Math.min(num,8);i++) setTimeout(()=>tone(523+i*70,.09),i*95);
+  setTimeout(()=>{tone(880,.2);tone(1320,.28);},num*95+30);
+}
 
-/* SVG 동그라미 */
-const RINGCOL=['#ff6b81','#4aa3ff','#5cc24a','#b07bff','#ff9a3c','#2ec4c4'];
 function sizeSvg(svg,grid){svg.setAttribute('width',grid.clientWidth);
   svg.setAttribute('height',grid.clientHeight);
   svg.setAttribute('viewBox',`0 0 ${grid.clientWidth} ${grid.clientHeight}`);}
@@ -569,30 +554,39 @@ function drawRing(svg,objs,colorIdx){
   const C=2*Math.PI*Math.sqrt((rx*rx+ry*ry)/2);
   el.style.strokeDasharray=C;el.style.strokeDashoffset=C;
   svg.appendChild(el);
-  requestAnimationFrame(()=>{el.style.transition='stroke-dashoffset .55s ease';
-    el.style.strokeDashoffset=0;});
+  requestAnimationFrame(()=>{el.style.transition='stroke-dashoffset .55s ease';el.style.strokeDashoffset=0;});
   return el;
 }
 
-/* 녹음기 (사전/사후) */
+function setCounter(numEl,dotsEl,n,total){
+  numEl.textContent=n;numEl.classList.remove('bump');void numEl.offsetWidth;numEl.classList.add('bump');
+  dotsEl.innerHTML='';
+  for(let i=0;i<total;i++){const d=document.createElement('div');d.className='d'+(i<n?' on':'');dotsEl.appendChild(d);}
+}
+
+function centerOf(el){
+  const r=el.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+  return [(r.left+r.width/2-sr.left)*(1280/sr.width),(r.top+r.height/2-sr.top)*(800/sr.height)];
+}
+
+/* 녹음기 */
 function buildRecorder(host,opts){
-  host.innerHTML='';
-  const w=document.createElement('div');w.className='recwrap';
+  host.innerHTML='';const w=document.createElement('div');w.className='recwrap';
   w.innerHTML=`
-    <div class="guidebox" style="font-size:17px;">🎤 버튼을 누르고 말하거나, ⌨️ 키보드로 써도 돼요. 안 해도 건너뛸 수 있어요.</div>
+    <div class="guidetxt">🎤 버튼을 누르고 말하거나, ⌨️ 키보드로 써도 돼요. 안 해도 건너뛸 수 있어요.</div>
     <button class="micbtn" data-mic>🎤</button>
-    <div style="font-size:17px;font-weight:900;color:#e0455e;" data-status>마이크를 눌러 시작해요</div>
+    <div style="font-size:15px;font-weight:900;color:#e0455e;" data-status>마이크를 눌러 시작해요</div>
     <div class="transbox" data-trans></div>
     <textarea class="kb" data-kb placeholder="여기에 키보드로 써도 돼요"></textarea>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-skip" data-kbtoggle>⌨️ 키보드로 쓰기</button>
       <button class="btn btn-skip" data-play style="display:none;">▶️ 내 녹음 듣기</button></div>
-    <div data-rate style="display:none;flex-direction:column;align-items:center;gap:6px;">
-      <div style="font-size:19px;font-weight:900;color:#9a7b00;">⭐ 내 녹음, 어떤 것 같아요? (먼저 ▶️ 듣기를 눌러요)</div>
+    <div data-rate style="display:none;flex-direction:column;align-items:center;gap:5px;">
+      <div style="font-size:16px;font-weight:900;color:#9a7b00;">⭐ 내 녹음, 어떤 것 같아요? (먼저 ▶️ 듣기를 눌러요)</div>
       <div class="stars" data-stars></div></div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-skip" data-redo style="display:none;">🔁 다시 녹음하기</button>
-      <button class="btn btn-go" data-next style="font-size:22px;padding:13px 32px;">건너뛰기 / 다음 ➡️</button></div>`;
+      <button class="btn btn-go" data-next>건너뛰기 / 다음 ➡️</button></div>`;
   host.appendChild(w);
   const q=s=>w.querySelector(s);
   const mic=q('[data-mic]'),status=q('[data-status]'),trans=q('[data-trans]'),kb=q('[data-kb]'),
@@ -608,7 +602,7 @@ function buildRecorder(host,opts){
         next.textContent=i<=3?'🔁 다시 녹음해볼래요':'✨ 칭찬 스티커 받기!';};
       sc.appendChild(st);}}
   function startSR(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-    if(!SR){trans.textContent='(이 기기는 음성 인식이 안 돼요. 키보드로 써 주세요!)';return;}
+    if(!SR){trans.textContent='(음성 인식 안 됨. 키보드로 써 주세요!)';return;}
     recObj=new SR();recObj.lang='ko-KR';recObj.continuous=true;recObj.interimResults=true;
     let fin='';
     recObj.onresult=e=>{let itm='';for(let i=e.resultIndex;i<e.results.length;i++){
@@ -622,15 +616,14 @@ function buildRecorder(host,opts){
       if(rec&&rec.state!=='inactive')rec.stop();
       play.style.display='inline-block';redo.style.display='inline-block';return;}
     finalText='';trans.textContent='';blob=null;heard=false;
-    mic.classList.add('rec');mic.textContent='⏹️';status.textContent='🔴 녹음 중… 또박또박 말해요';
+    mic.classList.add('rec');mic.textContent='⏹️';status.textContent='🔴 녹음 중…';
     startSR();
     try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
       rec=new MediaRecorder(stream);chunks=[];
       rec.ondataavailable=e=>chunks.push(e.data);
       rec.onstop=()=>{blob=new Blob(chunks,{type:'audio/webm'});
         stream.getTracks().forEach(t=>t.stop());};
-      rec.start();}catch(e){status.textContent='🔴 녹음 중… (소리 저장은 안 되지만 글로 기록돼요)';}
-  };
+      rec.start();}catch(e){status.textContent='🔴 녹음 중… (글로만 저장)';}};
   play.onclick=()=>{heard=true;
     if(blob){new Audio(URL.createObjectURL(blob)).play();}else toast('녹음한 소리가 없어요. 글은 잘 저장돼요!');
     if(opts.rating)toast('이제 별점을 눌러 평가해요 ⭐');};
@@ -642,507 +635,414 @@ function buildRecorder(host,opts){
     opts.onDone(finalText.trim(),S.stars);};
 }
 
-/* ================= 튜토리얼 ================= */
+/* ================ 튜토리얼 ================ */
+let tutPicked=[],tutBundles=0;
 function initTut(){
   progress($('#pgTut'),1,0);
-  const tc=$('#tutCards');tc.innerHTML='';
-  for(let c=0;c<5;c++){const card=document.createElement('div');card.className='tut-card';
-    card.style.gridTemplateColumns='repeat(2,1fr)';card.style.animationDelay=(c*.08)+'s';
-    for(let i=0;i<6;i++){const d=document.createElement('div');d.className='gdot';card.appendChild(d);}
-    tc.appendChild(card);}
-  const nl=$('#tutNline');nl.innerHTML='';
-  [6,12,18,24,30].forEach((v,i)=>{if(i){const s=document.createElement('div');s.className='seg';nl.appendChild(s);}
-    const b=document.createElement('div');b.className='nbox';b.textContent=v;nl.appendChild(b);});
-  const kp=$('#tutKey'),disp=$('#tutDisp'),ans=$('#tutAns'),go=$('#tutGo');let val='';
-  kp.innerHTML='';
-  ['7','8','9','4','5','6','1','2','3','지우기','0','입력'].forEach(k=>{
-    const b=document.createElement('button');b.className='key'+(k==='지우기'?' act':k==='입력'?' ok':'');
-    b.textContent=k;b.onclick=()=>{
-      if(k==='지우기')val=val.slice(0,-1);
-      else if(k==='입력'){if(val==='30'){ans.classList.add('fill');ans.innerHTML='<span class="ord">②</span>30';
-        sndOk();confetti();say('정답이에요! 6씩 5묶음은 30이에요.');go.disabled=false;toast('잘했어요! 👏');}
-        else{sndNo();toast('수직선을 보세요. 6,12,18,24,30!');}}
-      else if(val.length<3)val+=k;
-      disp.textContent=val;sndPop();};
-    kp.appendChild(b);});
-  go.onclick=()=>{show('scrPre');buildPre();say('이제 활동 전 녹음을 해 볼까요?');};
+  const grid=$('#tutGrid');grid.style.gridTemplateColumns='repeat(3,76px)';grid.innerHTML='';
+  for(let i=0;i<9;i++){const o=document.createElement('div');o.className='obj';o.textContent='🍎';
+    grid.appendChild(o);o.onclick=()=>tutClick(o);}
+  $('#tutSvg').innerHTML='';tutPicked=[];tutBundles=0;
+  $('#tutBun').textContent='?';$('#tutBun').classList.remove('on');
+  $('#tutTot').textContent='?';$('#tutTot').classList.remove('on');
+  $('#tutGo').disabled=true;setCounter($('#tutCount'),$('#tutDots'),0,3);
+  say('사과를 3개씩 묶어서 모두 몇 개인지 빠르게 세어 봐요!');
 }
-
-/* ================= 사전 녹음 ================= */
-function buildPre(){
-  buildRecorder($('#preRec'),{rating:false,onDone:t=>{S.preText=t||'(녹음하지 않았어요)';startMot();}});
-  say('활동 전이에요. 물건을 빠르게 세는 방법을 아는 만큼 말해 주세요.');
+function tutClick(o){
+  if(o.dataset.b)return;
+  if(o.classList.contains('pick')){o.classList.remove('pick');tutPicked=tutPicked.filter(x=>x!==o);
+    setCounter($('#tutCount'),$('#tutDots'),tutPicked.length,3);sndPop();return;}
+  o.classList.add('pick');tutPicked.push(o);sndPop();
+  setCounter($('#tutCount'),$('#tutDots'),tutPicked.length,3);
+  if(tutPicked.length===3){
+    const svg=$('#tutSvg'),grid=$('#tutGrid');sizeSvg(svg,grid);
+    drawRing(svg,tutPicked,tutBundles);
+    const bi=tutBundles;
+    tutPicked.forEach(x=>{x.dataset.b='1';x.classList.remove('pick');x.classList.add('bundled','cg'+(bi+1));});
+    tutBundles++;tutPicked=[];
+    const [cx,cy]=centerOf(grid);numBurst(cx,cy,3,bi);
+    setCounter($('#tutCount'),$('#tutDots'),0,3);
+    $('#tutBun').textContent=tutBundles;$('#tutBun').classList.add('on');
+    $('#tutTot').textContent=tutBundles*3;$('#tutTot').classList.add('on');
+    say(`${tutBundles}묶음! 모두 ${tutBundles*3}개!`);
+    if(tutBundles===3){
+      setTimeout(()=>{confetti();toast('3씩 3묶음 = 모두 9개! 🎉');},800);
+      $('#tutGo').disabled=false;
+    }
+  }
 }
+$('#tutGo').onclick=()=>{show('scrPre');buildPre();};
 
-/* ================= 동기유발 — 두 버튼 모두 눌러야 다음! ================= */
+/* ================ 사전 녹음 ================ */
+function buildPre(){buildRecorder($('#preRec'),{rating:false,onDone:t=>{S.preText=t||'(녹음 안 함)';startMot();}});}
+
+/* ================ 동기유발 ================ */
 let motOneDone=false,motGroupDone=false;
 function startMot(){
-  show('scrMot');progress($('#pgMot'),1,0);
-  motOneDone=false;motGroupDone=false;
-  const grid=$('#motGrid');
-  // 5열 고정 폭, 가운데 정렬 → 한 줄로 무너지지 않음
-  grid.style.gridTemplateColumns='repeat(5,58px)';grid.innerHTML='';
-  for(let i=0;i<20;i++){const o=document.createElement('div');o.className='obj';o.textContent='🍎';
-    grid.appendChild(o);}
-  $('#motSvg').innerHTML='';$('#motTime').textContent='0.0초';$('#motCount').textContent='0';
-  $('#motMsg').innerHTML='두 버튼을 <b style="color:#e0556a;">모두</b> 눌러 비교해 봐요!';
-  $('#motOne').disabled=false;$('#motGroup').disabled=false;
-  $('#motOne').classList.remove('btnDone');$('#motGroup').classList.remove('btnDone');
+  show('scrMot');progress($('#pgMot'),1,0);motOneDone=false;motGroupDone=false;
+  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(6,52px)';grid.innerHTML='';
+  $('#motSvg').innerHTML='';
+  for(let i=0;i<12;i++){const o=document.createElement('div');o.className='obj small';o.textContent='🍬';
+    o.style.width='48px';o.style.height='48px';o.style.fontSize='34px';
+    o.dataset.i=i;grid.appendChild(o);}
+  $('#motBtn1').disabled=false;$('#motBtn2').disabled=false;
+  $('#motMsg1').classList.remove('on');$('#motMsg1').textContent='버튼을 눌러 봐요!';$('#motMsg1').style.visibility='visible';
+  $('#motMsg2').classList.remove('on');$('#motMsg2').textContent='';
   $('#motNext').style.display='none';
-  $('#motFinger').style.display='none';
-  say('사과가 스무 개나 있어요. 두 가지 방법을 모두 해 보고 비교해 봐요.');
+  say('사탕 12개를 두 가지 방법으로 세어 봐요.');
 }
-function motCheckBoth(){
-  if(motOneDone&&motGroupDone){
-    $('#motMsg').innerHTML='⚡ <b style="color:#2f7fe0;">두 방법 모두 해봤어요!</b><br>어느 게 빠르고 정확했나요?';
-    $('#motNext').style.display='inline-block';
-    confetti();say('두 방법 모두 해봤어요. 어느 게 더 빨랐나요?');
-  }else if(motOneDone&&!motGroupDone){
-    $('#motMsg').innerHTML='🐌 하나씩은 너무 오래 걸렸죠?<br>이번엔 <b style="color:#2f7fe0;">🚀 묶어서</b> 세어 봐요!';
-    $('#motGroup').disabled=false;
-  }else if(motGroupDone&&!motOneDone){
-    $('#motMsg').innerHTML='🚀 묶어 세니 빨랐죠?<br>이번엔 <b style="color:#2f7fe0;">🐌 하나씩</b>도 비교해 봐요!';
-    $('#motOne').disabled=false;
-  }
-}
-$('#motOne').onclick=()=>{
-  if(motOneDone)return;
-  const objs=$$('#motGrid .obj'),fin=$('#motFinger');
-  $('#motOne').disabled=true;$('#motGroup').disabled=true;
-  objs.forEach(o=>o.classList.remove('counted'));
-  // 묶어서 했던 동그라미 지움
-  $('#motSvg').innerHTML='';$('#motCount').textContent='0';$('#motTime').textContent='0.0초';
-  fin.style.display='block';
-  $('#motMsg').textContent='🐌 하나… 둘… 셋… 천천히 세고 있어요.';
-  let i=0,t0=performance.now();
-  const timer=setInterval(()=>$('#motTime').textContent=((performance.now()-t0)/1000).toFixed(1)+'초',100);
+/* 하나씩 세기 — 1, 2, 3 ... 12 (느리게) */
+$('#motBtn1').onclick=()=>{
+  if(motOneDone)return;motOneDone=true;$('#motBtn1').disabled=true;
+  const objs=$$('#motGrid .obj');let i=0;
   const iv=setInterval(()=>{
-    if(i>=20){clearInterval(iv);clearInterval(timer);
-      fin.style.display='none';
-      $('#motOne').classList.add('btnDone');motOneDone=true;
-      say('스무 개. 휴, 하나씩 세니 너무 오래 걸려요.');
-      motCheckBoth();return;}
-    const o=objs[i];o.classList.add('counted');
-    fin.style.left=(o.offsetLeft+8)+'px';fin.style.top=(o.offsetTop-6)+'px';
-    $('#motCount').textContent=i+1;sndPop();i++;
-  },330);
+    if(i>=12){clearInterval(iv);
+      $('#motMsg1').innerHTML='👆 하나씩 세니까 1, 2, 3, ... <b>12!</b> 시간이 오래 걸려요';
+      $('#motMsg1').classList.add('on');sndOk();motCheck();return;}
+    objs[i].style.background='rgba(176,123,220,.4)';objs[i].style.border='3px solid #b07bff';
+    objs[i].style.borderRadius='50%';
+    say(String(i+1));sndPop();i++;
+  },280);
 };
-$('#motGroup').onclick=()=>{
-  if(motGroupDone)return;
-  const objs=$$('#motGrid .obj'),svg=$('#motSvg'),grid=$('#motGrid');
-  $('#motOne').disabled=true;$('#motGroup').disabled=true;
-  objs.forEach(o=>o.classList.remove('counted'));
-  svg.innerHTML='';sizeSvg(svg,grid);
-  $('#motTime').textContent='0.0초';$('#motCount').textContent='0';
-  $('#motMsg').textContent='🚀 5개씩 묶어서… 5, 10, 15, 20!';
-  let t0=performance.now();
-  const timer=setInterval(()=>$('#motTime').textContent=((performance.now()-t0)/1000).toFixed(1)+'초',100);
-  let r=0;
+/* 묶어서 세기 — 3씩 묶기 (빠르게, numBurst) */
+$('#motBtn2').onclick=()=>{
+  if(motGroupDone)return;motGroupDone=true;$('#motBtn2').disabled=true;
+  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(3,52px)';
+  const objs=$$('#motGrid .obj');
+  const grpColors=['rgba(239,68,68,.4)','rgba(34,197,94,.4)','rgba(168,85,247,.4)','rgba(249,115,22,.4)'];
+  const grpBorders=['#ef4444','#22c55e','#a855f7','#f97316'];
+  let g=0;
   const iv=setInterval(()=>{
-    const row=objs.slice(r*5,r*5+5);
-    drawRing(svg,row,r);row.forEach(o=>o.classList.add('counted'));
-    rollNum($('#motCount'),r*5,(r+1)*5,300);sndHop();say(String((r+1)*5));
-    r++;
-    if(r>=4){clearInterval(iv);clearInterval(timer);
-      $('#motGroup').classList.add('btnDone');motGroupDone=true;
-      say('묶어 세니 훨씬 빨라요. 다섯, 열, 열다섯, 스물!');
-      motCheckBoth();}
-  },650);
-};
-$('#motNext').onclick=()=>{
-  // 쉬운 객관식 탐구질문
-  popup({
-    q:'두 가지 방법을 모두 해 봤어요!<br>어느 게 더 빠르고 정확했나요?',
-    opts:[
-      {text:'🚀 묶어서 세기',right:true,fb:'맞아요! 묶어 세면 한 번에 여러 개씩 세니까 훨씬 빨라요!'},
-      {text:'🐌 하나씩 세기',right:false,fb:'다시 봐요! 어느 쪽이 더 오래 걸렸을까요?'}
-    ],
-    hints:[
-      '⏱️ 걸린 시간을 비교해 봐요!',
-      '🐌 하나씩은 20번이나 세야 하지만,<br>🚀 묶어서는 4번만 세면 끝나요!',
-      '👉 답은 "🚀 묶어서 세기"예요'
-    ]
-  },()=>{learnIdx=0;startLearn();});
-};
-
-/* ================= 묶어 세기 + 뛰어 세기 ================= */
-const PROBLEMS=[
-  {size:2,groups:4,emoji:'🍓',ctx:'바구니에 담을 딸기'},
-  {size:3,groups:4,emoji:'🍪',ctx:'봉지에 담을 쿠키'},
-  {size:4,groups:3,emoji:'🐟',ctx:'상자에 담을 붕어빵'},
-  {size:5,groups:4,emoji:'⭐',ctx:'붙임딱지 별'}
-];
-let learnIdx=0,L=null;
-function startLearn(){show('scrLearn');renderProblem();}
-function renderProblem(){
-  const P=PROBLEMS[learnIdx];
-  L={P,picked:[],bundles:[],phase:'bundle',jumpDone:0};
-  progress($('#pgLearn'),PROBLEMS.length,learnIdx);
-  $('#learnTitle').textContent=`🧺 묶어 세기 (${learnIdx+1}/${PROBLEMS.length})`;
-  $('#learnInstr').textContent=`${P.ctx}을(를) ${P.size}개씩 손가락으로 콕콕 묶어 보세요!`;
-  $('#learnGuide').innerHTML=`한 줄(<b style="color:#2f7fe0;">${P.size}개</b>)씩 짚으면<br>동그라미가 그려져요. 묶음 <b id="bcnt">0</b>개`;
-  $('#learnFrame').innerHTML=`<span>${P.size}씩</span><span class="blank" id="lkB"></span><span>묶음</span>
-    <span>=</span><span class="blank" id="lkT"></span>`;
-  $('#learnNext').style.display='none';
-  const grid=$('#objGrid'),svg=$('#ringSvg');
-  // 묶음 크기만큼 열, 각 칸 58px 고정
-  grid.style.gridTemplateColumns=`repeat(${P.size},58px)`;grid.innerHTML='';svg.innerHTML='';
-  const total=P.size*P.groups;
-  for(let i=0;i<total;i++){const o=document.createElement('div');o.className='obj';o.textContent=P.emoji;
-    o.dataset.b='-1';grid.appendChild(o);
-    o.onclick=()=>objClick(o);}
-  $('#nlPanel').classList.add('dim');
-  $('#learnJump').disabled=true;$('#addStrip').innerHTML='';
-  buildNL($('#learnNL'),P.size,P.groups);
-  say(`${P.ctx}을 ${P.size}개씩 묶어 보세요.`);
-}
-function objClick(o){
-  if(L.phase!=='bundle')return;
-  if(o.dataset.b!=='-1')return;
-  if(o.classList.contains('pick')){o.classList.remove('pick');L.picked=L.picked.filter(x=>x!==o);sndPop();return;}
-  o.classList.add('pick');L.picked.push(o);sndPop();
-  if(L.picked.length===L.P.size)closeBundle();
-}
-function closeBundle(){
-  const grid=$('#objGrid'),svg=$('#ringSvg');
-  sizeSvg(svg,grid);
-  const bi=L.bundles.length;
-  drawRing(svg,L.picked,bi);
-  L.picked.forEach(o=>{o.dataset.b=bi;o.classList.remove('pick');o.classList.add('bundled');});
-  L.bundles.push(L.picked);L.picked=[];
-  $('#bcnt').textContent=L.bundles.length;
-  $('#lkB').textContent=L.bundles.length;$('#lkB').classList.add('fill');
-  sndOk();say(`${L.bundles.length}묶음!`);
-  if(L.bundles.length===L.P.groups){
-    L.phase='jump';
-    $('#learnInstr').textContent='다 묶었어요! 🦘 뛰어 세기로 모두 몇 개인지 알아봐요';
-    $('#learnGuide').innerHTML='아래 <b style="color:#2f7fe0;">🦘 뛰어 세기</b> 버튼을 눌러요!<br>한 묶음씩 콩콩 뛰어요.';
-    $('#nlPanel').classList.remove('dim');
-    $('#learnJump').disabled=false;
-    sndOk();say('잘했어요! 이제 뛰어 세기로 모두 몇 개인지 알아봐요.');
-  }
-}
-function buildNL(nl,size,groups){
-  nl.innerHTML='<div class="nl-track"></div>';
-  const W=nl.clientWidth||820;const L0=30,R0=30,span=(W-L0-R0);
-  for(let i=0;i<=groups;i++){
-    const t=document.createElement('div');t.className='tick';t.dataset.i=i;
-    t.style.left=(L0+i*span/groups-23)+'px';
-    t.innerHTML=`<div class="tk"></div><div class="tn">${i*size}</div>`;
-    nl.appendChild(t);}
-  const h=document.createElement('div');h.className='hopper';h.id='hopper';h.textContent='🐧';
-  // 펭귄은 트랙보다 살짝 위(top:8)에 두어 숫자(top:52+) 가리지 않음
-  h.style.left=(L0-18)+'px';nl.appendChild(h);
-  nl.querySelector('.tick').classList.add('lit');
-}
-$('#learnJump').onclick=()=>{
-  if(L.phase!=='jump')return;
-  const P=L.P,j=L.jumpDone;
-  if(j>=P.groups)return;
-  L.bundles[j].forEach(o=>{o.classList.remove('glow');void o.offsetWidth;o.classList.add('glow');});
-  const nl=$('#learnNL'),W=nl.clientWidth,span=W-60;
-  const x=30+(j+1)*span/P.groups;
-  const hop=$('#hopper');hop.classList.remove('hop');void hop.offsetWidth;hop.classList.add('hop');
-  hop.style.left=(x-18)+'px';
-  sndHop();
-  const tick=nl.querySelector(`.tick[data-i="${j+1}"]`);tick.classList.add('lit');
-  const tn=tick.querySelector('.tn');rollNum(tn,j*P.size,(j+1)*P.size,500);
-  const strip=$('#addStrip');
-  if(j>0){const plus=document.createElement('span');plus.textContent='+';strip.appendChild(plus);}
-  const tile=document.createElement('span');tile.className='addtile';tile.textContent=P.size;
-  strip.appendChild(tile);
-  const total=(j+1)*P.size;
-  say(String(total));
-  L.jumpDone++;
-  if(L.jumpDone>=P.groups){
-    const eq=document.createElement('span');eq.textContent='=';strip.appendChild(eq);
-    const res=document.createElement('span');res.className='addtile';res.style.borderColor='#5cc24a';
-    res.style.background='#eefbe9';res.textContent=total;strip.appendChild(res);
-    $('#lkT').textContent=total;$('#lkT').classList.add('fill');
-    $('#learnJump').disabled=true;
-    confetti();S.bundlesDone++;
-    $('#learnInstr').textContent=`${P.size}씩 ${P.groups}묶음은 모두 ${total}! 🎉`;
-    $('#learnNext').style.display='inline-block';
-    say(`${P.size}씩 ${P.groups}묶음은 ${total}이에요. 정말 잘했어요!`);
-  }
-};
-$('#learnReset').onclick=()=>{renderProblem();};
-$('#learnHelp').onclick=()=>{S.helpUsed++;const P=L.P;
-  if(L.phase==='bundle'){toast(`💡 ${P.size}개씩 콕콕 짚어요`);
-    say(`${P.size}개씩 짚어 묶어요.`);}
-  else{toast('💡 🦘 버튼을 눌러 한 묶음씩 뛰어요');say('뛰어 세기 버튼을 눌러요.');}
-};
-$('#learnNext').onclick=()=>{
-  learnIdx++;
-  if(learnIdx===2){
-    popup({
-      q:'한 묶음씩 콩콩 뛰어 셌어요.<br>무엇을 알 수 있었나요?',
-      opts:[
-        {text:'🎯 모두 몇 개인지<br>알 수 있어요',right:true,fb:'딩동댕! 묶음을 보고 뛰어 세면 전체 수를 빠르게 알 수 있어요!'},
-        {text:'🌈 묶음의 색깔을<br>알 수 있어요',right:false,fb:'음… 다시 생각해 봐요!'}
-      ],
-      hints:[
-        '🦘 뛸 때마다 수직선의 숫자가 어떻게 변했나요?',
-        '5, 10, 15, 20… 점점 커지면서 마지막에 무엇을 알게 됐죠?',
-        '👉 답은 "🎯 모두 몇 개인지"예요'
-      ]
-    },()=>startLearn());
-  } else if(learnIdx>=PROBLEMS.length){startReg();}
-  else startLearn();
-};
-
-/* ================= 탐구질문 팝업 — 객관식 + 힌트 + 녹음 + 키보드 + 건너뛰기 ================= */
-let popState=null;
-function popup(cfg,after){
-  popState={cfg,after,answered:false,hintIdx:0,extraText:''};
-  $('#popQ').innerHTML=cfg.q;
-  const opts=$('#popOpts');opts.innerHTML='';
-  cfg.opts.forEach(o=>{
-    const b=document.createElement('button');b.className='qopt';b.innerHTML=o.text;
-    b.onclick=()=>chooseOpt(b,o);
-    opts.appendChild(b);
-  });
-  $('#popHint').classList.remove('show');$('#popHint').innerHTML='';
-  $('#popMicWrap').classList.remove('show');$('#popKbArea').classList.remove('show');
-  $('#popTrans').textContent='';$('#popKb').value='';$('#popMicStatus').textContent='마이크를 눌러 말해 보세요';
-  $('#popBtn').disabled=true;$('#popBtn').textContent='보기를 하나 골라요';
-  $('#ovPop').classList.add('on');
-  say(cfg.q.replace(/<[^>]+>/g,' '));
-}
-function chooseOpt(btn,o){
-  if(popState.answered)return;
-  if(o.right){
-    btn.classList.add('right');popState.answered=true;sndOk();confetti();
-    [...$('#popOpts').children].forEach(c=>c.disabled=true);
-    showHint(o.fb,true);
-    $('#popBtn').disabled=false;$('#popBtn').textContent='잘했어요! 다음으로 ➡️';
-    say(o.fb);
-  }else{
-    btn.classList.add('wrong');sndNo();
-    setTimeout(()=>btn.classList.remove('wrong'),600);
-    showHint(o.fb||'다시 한 번 생각해 봐요!');
-    say(o.fb||'다시 생각해 봐요.');
-  }
-}
-function showHint(t,green){
-  const h=$('#popHint');h.classList.add('show');
-  h.innerHTML=(green?'✅ ':'💡 ')+t;
-  h.style.background=green?'linear-gradient(180deg,#dff7d6,#a8f098)':'linear-gradient(180deg,#fff8d6,#fff2b0)';
-  h.style.borderColor=green?'#5cc24a':'#ffd23f';
-  h.style.color=green?'#2d6921':'#5e4b00';
-}
-$('#popHintBtn').onclick=()=>{
-  if(!popState)return;
-  const hints=popState.cfg.hints||[];
-  if(popState.hintIdx<hints.length){
-    showHint(hints[popState.hintIdx]);
-    say(hints[popState.hintIdx].replace(/<[^>]+>/g,' '));
-    popState.hintIdx++;
-    if(popState.hintIdx>=hints.length){
-      // 마지막 힌트가 정답을 알려주면 다음 버튼 활성화
-      $('#popBtn').disabled=false;$('#popBtn').textContent='이해했어요! 다음으로 ➡️';
+    if(g>=4){clearInterval(iv);
+      setTimeout(()=>{sizeSvg($('#motSvg'),grid);
+        for(let r=0;r<4;r++)drawRing($('#motSvg'),objs.slice(r*3,r*3+3),r);},100);
+      const [cx,cy]=centerOf(grid);numBurst(cx,cy,12,1);
+      $('#motMsg2').innerHTML='🧺 묶어 세니까 3, 6, 9, <b>12!</b> 훨씬 빨라요!';
+      $('#motMsg2').classList.add('on');sndOk();motCheck();return;}
+    for(let k=0;k<3;k++){
+      objs[g*3+k].style.background=grpColors[g];
+      objs[g*3+k].style.border=`3px solid ${grpBorders[g]}`;
+      objs[g*3+k].style.borderRadius='50%';
     }
-  }else toast('힌트를 다 봤어요!');
+    say(String((g+1)*3));sndHop();g++;
+  },550);
 };
-$('#popMicToggle').onclick=()=>{
-  const w=$('#popMicWrap');w.classList.toggle('show');
-  if(w.classList.contains('show')){$('#popKbArea').classList.remove('show');startPopRec();}
-};
-$('#popKbToggle').onclick=()=>{
-  const w=$('#popKbArea');w.classList.toggle('show');
-  if(w.classList.contains('show')){$('#popMicWrap').classList.remove('show');stopPopRec();$('#popKb').focus();
-    $('#popBtn').disabled=false;$('#popBtn').textContent='다 썼어요! 다음으로 ➡️';}
-};
-let popRec=null;
-function startPopRec(){
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){$('#popTrans').textContent='(이 기기는 음성 인식이 안 돼요. ⌨️ 키보드로 써 주세요)';return;}
-  $('#popMicStatus').textContent='🎤를 눌러 시작/정지';
-}
-function stopPopRec(){if(popRec)try{popRec.stop();}catch(e){}popRec=null;}
-$('#popMicBtn').onclick=()=>{
-  const btn=$('#popMicBtn');
-  if(btn.classList.contains('rec')){btn.classList.remove('rec');btn.textContent='🎤';
-    stopPopRec();$('#popMicStatus').textContent='녹음 완료!';
-    $('#popBtn').disabled=false;$('#popBtn').textContent='말했어요! 다음으로 ➡️';return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){toast('이 기기는 음성 인식이 안 돼요. 키보드로 써 주세요');return;}
-  btn.classList.add('rec');btn.textContent='⏹️';$('#popMicStatus').textContent='🔴 녹음 중… 말해 보세요';
-  popRec=new SR();popRec.lang='ko-KR';popRec.continuous=true;popRec.interimResults=true;
-  let fin='';
-  popRec.onresult=e=>{let itm='';for(let i=e.resultIndex;i<e.results.length;i++){
-    const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else itm+=r[0].transcript;}
-    popState.extraText=(fin+itm).trim();$('#popTrans').textContent=popState.extraText;};
-  popRec.onerror=()=>{};try{popRec.start();}catch(e){}
-};
-$('#popKb').oninput=()=>{popState.extraText=$('#popKb').value;};
-$('#popSkip').onclick=()=>{
-  stopPopRec();$('#ovPop').classList.remove('on');
-  if(popState&&popState.after)popState.after();
-};
-$('#popBtn').onclick=()=>{
-  if($('#popBtn').disabled)return;
-  stopPopRec();$('#ovPop').classList.remove('on');
-  if(popState&&popState.after)popState.after();
-};
-
-/* ================= 같은 수, 다른 묶음 ================= */
-const RGOPTS=[{size:2,g:6},{size:3,g:4},{size:4,g:3},{size:6,g:2}];
-function startReg(){
-  show('scrReg');progress($('#pgReg'),1,0);
-  S.regTried=0;
-  const btns=$('#rgBtns');btns.innerHTML='';
-  RGOPTS.forEach(o=>{const b=document.createElement('button');
-    b.className='btn btn-blue';b.style.fontSize='20px';b.style.padding='12px 0';
-    b.textContent=`${o.size}씩 묶기`;b.dataset.tried='0';
-    b.onclick=()=>regroup(o,b);btns.appendChild(b);});
-  $('#rgA').textContent='';$('#rgA').classList.remove('fill');
-  $('#rgB').textContent='';$('#rgB').classList.remove('fill');
-  $('#rgNext').style.display='none';
-  const grid=$('#rgGrid');grid.style.gridTemplateColumns='repeat(4,58px)';grid.innerHTML='';
-  for(let i=0;i<12;i++){const o=document.createElement('div');o.className='obj';o.textContent='🧁';
-    grid.appendChild(o);}
-  $('#rgSvg').innerHTML='';
-  say('컵케이크 12개를 여러 가지 방법으로 묶어 봐요.');
-}
-function regroup(o,btn){
-  const grid=$('#rgGrid'),svg=$('#rgSvg');
-  grid.style.gridTemplateColumns=`repeat(${o.size},58px)`;
-  grid.innerHTML='';svg.innerHTML='';
-  const objs=[];
-  for(let i=0;i<12;i++){const e=document.createElement('div');e.className='obj regIn';e.textContent='🧁';
-    e.style.animationDelay=(i*.03)+'s';grid.appendChild(e);objs.push(e);}
-  setTimeout(()=>{
-    sizeSvg(svg,grid);
-    for(let r=0;r<o.g;r++)drawRing(svg,objs.slice(r*o.size,r*o.size+o.size),r);
-  },360);
-  $('#rgA').textContent=o.size;$('#rgA').classList.add('fill');
-  $('#rgB').textContent=o.g;$('#rgB').classList.add('fill');
-  sndOk();say(`12은 ${o.size}씩 ${o.g}묶음이에요.`);
-  if(btn.dataset.tried==='0'){btn.dataset.tried='1';S.regTried++;
-    btn.style.filter='brightness(1.15)';}
-  if(S.regTried>=3&&$('#rgNext').style.display==='none'){
-    $('#rgNext').style.display='inline-block';
-    toast('여러 방법으로 묶었어요! 🎉');confetti();
+function motCheck(){
+  if(motOneDone&&motGroupDone){
+    setTimeout(()=>{
+      $('#motResSlow').innerHTML='👆 하나씩 세기: 1, 2, 3, ... 12 (12번)';
+      $('#motResFast').innerHTML='🧺 묶어 세기: 3, 6, 9, 12 (4번만!)';
+      $('#ovMot').classList.add('on');confetti();
+    },700);
   }
 }
-$('#rgNext').onclick=()=>{
-  popup({
-    q:'12를 2씩, 3씩, 4씩 묶어 봤어요.<br>그래도 <b>똑같은 것</b>은 무엇이었나요?',
+$('#motModalGo').onclick=()=>{$('#ovMot').classList.remove('on');
+  popup({q:'묶어 세기는 왜 빠른가요?',
     opts:[
-      {text:'🔢 전체 수 12',right:true,fb:'맞아요! 묶는 방법이 달라도 모두 모으면 똑같이 12예요!'},
-      {text:'📏 한 묶음의 크기',right:false,fb:'한 묶음의 크기는 2, 3, 4로 달랐어요!'}
-    ],
-    hints:[
-      '🤔 2씩 묶어도 6묶음, 3씩 묶어도 4묶음… 모두 더하면 몇이에요?',
-      '🧁 컵케이크 개수는 처음부터 끝까지 변하지 않았어요!',
-      '👉 답은 "🔢 전체 수 12"예요'
-    ]
+      {text:'🧺 한 번에 여러 개를<br>세니까',right:true,fb:'맞아요! 한 묶음을 한 번에 세니까 빨라요!'},
+      {text:'🐢 천천히<br>세니까',right:false,fb:'아니에요! 묶어 세기는 더 빨라요!'}],
+    hints:['하나씩은 12번, 묶어 세기는 4번만 했어요',
+      '한 묶음이 3개니까 한 번에 3을 세는 거예요',
+      '👉 답은 "한 번에 여러 개를 세니까"']
+  },()=>{bdIdx=0;startBundle();});};
+
+/* ================ 묶어 세기 ================ */
+const BD_PROBLEMS=[
+  {size:2,groups:4,emoji:'🍓',ctx:'딸기'},
+  {size:3,groups:4,emoji:'🍇',ctx:'포도'},
+  {size:4,groups:3,emoji:'🥕',ctx:'당근'}
+];
+let bdIdx=0,BD=null;
+function startBundle(){show('scrBundle');renderBundle();}
+function renderBundle(){
+  const P=BD_PROBLEMS[bdIdx];
+  BD={P,picked:[],bundles:[],done:false};
+  progress($('#pgBundle'),BD_PROBLEMS.length,bdIdx);
+  $('#bdTitle').textContent=`🧺 묶어 세기 (${bdIdx+1}/${BD_PROBLEMS.length})`;
+  $('#bdInstr').innerHTML=`${eul(P.ctx)} <b style="color:#ffd23f;">${P.size}개씩</b> 콕콕 묶어 보세요!`;
+  updateBdConcept(0,0);
+  $('#bdAdd').classList.remove('on');$('#bdAddTxt').textContent='-';
+  $('#bdNext').style.display='none';
+  const grid=$('#bdGrid'),svg=$('#bdSvg');
+  grid.style.gridTemplateColumns=`repeat(${P.size},76px)`;grid.innerHTML='';svg.innerHTML='';
+  for(let i=0;i<P.size*P.groups;i++){
+    const o=document.createElement('div');o.className='obj';o.textContent=P.emoji;o.dataset.b='-1';
+    grid.appendChild(o);o.onclick=()=>bdClick(o);}
+  setCounter($('#bdCount'),$('#bdDots'),0,P.size);
+  say(`${eul(P.ctx)} ${P.size}개씩 묶어 봐요.`);
+}
+function updateBdConcept(bcnt,total){
+  const P=BD.P;const cIdx=Math.max(1,bcnt);
+  $('#bdConcept').innerHTML=
+    `<span class="c${cIdx}">${P.size}</span>씩 `+
+    `<span class="fill ${bcnt>0?'on':''}">${bcnt||'?'}</span>묶음 = 모두 `+
+    `<span class="fill gold ${total>0?'on':''}">${total||'?'}</span>개`;
+}
+function bdClick(o){
+  if(BD.done||o.dataset.b!=='-1')return;
+  if(o.classList.contains('pick')){o.classList.remove('pick');BD.picked=BD.picked.filter(x=>x!==o);
+    setCounter($('#bdCount'),$('#bdDots'),BD.picked.length,BD.P.size);sndPop();return;}
+  o.classList.add('pick');BD.picked.push(o);sndPop();
+  setCounter($('#bdCount'),$('#bdDots'),BD.picked.length,BD.P.size);
+  if(BD.picked.length===BD.P.size)bdClose();
+}
+function bdClose(){
+  const grid=$('#bdGrid'),svg=$('#bdSvg');sizeSvg(svg,grid);
+  const bi=BD.bundles.length;drawRing(svg,BD.picked,bi);
+  BD.picked.forEach(o=>{o.dataset.b=bi;o.classList.remove('pick');o.classList.add('bundled','cg'+(bi+1));});
+  BD.bundles.push(BD.picked);BD.picked=[];
+  const n=BD.bundles.length,total=n*BD.P.size;
+  const [cx,cy]=centerOf(grid);numBurst(cx,cy,BD.P.size,bi);
+  setCounter($('#bdCount'),$('#bdDots'),0,BD.P.size);
+  updateBdConcept(n,total);
+  const plus=new Array(n).fill(BD.P.size).join(' + ');
+  $('#bdAddTxt').innerHTML=`${plus} = <b style="color:#ffd23f;">${total}</b>`;
+  $('#bdAdd').classList.add('on');
+  say(`${BD.P.size}! ${n}묶음, 모두 ${total}개.`);
+  if(n===BD.P.groups){
+    BD.done=true;S.bundlesDone++;
+    $('#bdInstr').innerHTML=`🎉 ${BD.P.size}씩 ${n}묶음 = 모두 ${total}개!`;
+    $('#bdNext').style.display='inline-block';
+    setTimeout(confetti,1000);
+  }
+}
+$('#bdReset').onclick=()=>renderBundle();
+$('#bdHelp').onclick=()=>{S.helpUsed++;toast(`💡 ${BD.P.size}개씩 콕콕 짚어요!`);};
+$('#bdNext').onclick=()=>{
+  bdIdx++;
+  if(bdIdx>=BD_PROBLEMS.length){startSkip();}
+  else renderBundle();
+};
+
+/* ================ 뛰어 세기 ================ */
+const SK_PROBLEM={size:3,groups:4,emoji:'🍎',ctx:'사과'};
+let SK=null;
+function startSkip(){
+  show('scrSkip');SK={jumps:0};progress($('#pgSkip'),1,0);
+  $('#skTitle').textContent='🦘 뛰어 세기 (수직선)';
+  $('#skInstr').innerHTML=`<b style="color:#ffd23f;">${SK_PROBLEM.size}씩</b> 뛰어 세기로 수직선에 표시해 봐요! "${SK_PROBLEM.ctx}" 묶음을 다시 봐요`;
+  // mini grid
+  const mg=$('#skMiniGrid');mg.style.gridTemplateColumns=`repeat(${SK_PROBLEM.size},42px)`;mg.innerHTML='';
+  for(let i=0;i<SK_PROBLEM.size*SK_PROBLEM.groups;i++){
+    const o=document.createElement('div');o.className='obj small';o.textContent=SK_PROBLEM.emoji;
+    o.classList.add('cg'+(Math.floor(i/SK_PROBLEM.size)%6+1));mg.appendChild(o);}
+  renderNumberLine();updateSkConcept();
+  $('#skNext').disabled=false;$('#skDone').style.display='none';
+  say('뛰어 세기로 수직선에 묶음을 그려 봐요.');
+}
+function renderNumberLine(){
+  const svg=$('#numLineSvg');svg.innerHTML='';
+  const w=900,baseY=110,x0=40,x1=860,total=SK_PROBLEM.size*SK_PROBLEM.groups;
+  const unit=(x1-x0)/total;
+  // 1씩 칸 (수직선)
+  const line=document.createElementNS(SVGNS,'line');
+  line.setAttribute('x1',x0);line.setAttribute('y1',baseY);
+  line.setAttribute('x2',x1);line.setAttribute('y2',baseY);
+  line.setAttribute('stroke','#333');line.setAttribute('stroke-width','4');
+  svg.appendChild(line);
+  // 화살표 끝
+  const arrow=document.createElementNS(SVGNS,'polygon');
+  arrow.setAttribute('points',`${x1},${baseY} ${x1-10},${baseY-7} ${x1-10},${baseY+7}`);
+  arrow.setAttribute('fill','#333');svg.appendChild(arrow);
+  // 0~12 모든 정수 표시 (1씩 칸)
+  for(let i=0;i<=total;i++){
+    const x=x0+i*unit;
+    const tick=document.createElementNS(SVGNS,'line');
+    tick.setAttribute('x1',x);tick.setAttribute('x2',x);
+    tick.setAttribute('y1',baseY-6);tick.setAttribute('y2',baseY+6);
+    tick.setAttribute('stroke','#555');tick.setAttribute('stroke-width','2');
+    svg.appendChild(tick);
+    const lbl=document.createElementNS(SVGNS,'text');
+    lbl.setAttribute('x',x);lbl.setAttribute('text-anchor','middle');
+    // 묶음 끝점 (3, 6, 9, 12)은 색칠 + 큰 폰트
+    const isEndpoint=(i>0&&i%SK_PROBLEM.size===0);
+    const bi=isEndpoint?Math.floor(i/SK_PROBLEM.size)-1:-1;
+    if(isEndpoint&&bi<SK.jumps){
+      lbl.setAttribute('y',baseY+34);lbl.setAttribute('font-size','30');lbl.setAttribute('font-weight','900');
+      lbl.setAttribute('fill',RINGCOL[bi%6]);
+    } else {
+      lbl.setAttribute('y',baseY+24);lbl.setAttribute('font-size','15');lbl.setAttribute('font-weight','800');
+      lbl.setAttribute('fill','#5b7585');
+    }
+    lbl.textContent=i;svg.appendChild(lbl);
+  }
+  // 뛰어 세기 호
+  for(let j=0;j<SK.jumps;j++){
+    const startX=x0+j*SK_PROBLEM.size*unit,endX=x0+(j+1)*SK_PROBLEM.size*unit;
+    const midX=(startX+endX)/2,peakY=30;
+    const arc=document.createElementNS(SVGNS,'path');
+    arc.setAttribute('d',`M ${startX} ${baseY} Q ${midX} ${peakY} ${endX} ${baseY}`);
+    arc.setAttribute('fill','none');arc.setAttribute('stroke',RINGCOL[j%6]);
+    arc.setAttribute('stroke-width','5');arc.setAttribute('stroke-linecap','round');
+    svg.appendChild(arc);
+    const plusLbl=document.createElementNS(SVGNS,'text');
+    plusLbl.setAttribute('x',midX);plusLbl.setAttribute('y',peakY-6);
+    plusLbl.setAttribute('text-anchor','middle');plusLbl.setAttribute('font-size','22');
+    plusLbl.setAttribute('font-weight','900');plusLbl.setAttribute('fill',RINGCOL[j%6]);
+    plusLbl.textContent=`+${SK_PROBLEM.size}`;svg.appendChild(plusLbl);
+  }
+}
+function updateSkConcept(){
+  const P=SK_PROBLEM,n=SK.jumps,total=n*P.size;const cIdx=Math.max(1,n);
+  $('#skConcept').innerHTML=
+    `<span class="c${cIdx}">${P.size}</span>씩 `+
+    `<span class="fill ${n>0?'on':''}">${n||'?'}</span>묶음 = 모두 `+
+    `<span class="fill gold ${total>0?'on':''}">${total||'?'}</span>개`;
+}
+$('#skNext').onclick=()=>{
+  if(SK.jumps>=SK_PROBLEM.groups)return;
+  SK.jumps++;S.skipsDone++;renderNumberLine();updateSkConcept();
+  const [cx,cy]=centerOf($('#numLineSvg'));numBurst(cx,cy-30,SK.jumps*SK_PROBLEM.size,SK.jumps-1);
+  say(String(SK.jumps*SK_PROBLEM.size));
+  if(SK.jumps===SK_PROBLEM.groups){
+    $('#skNext').disabled=true;$('#skDone').style.display='inline-block';
+    setTimeout(()=>{confetti();toast('3, 6, 9, 12! 정말 잘했어요 🎉');},800);
+  }
+};
+$('#skReset').onclick=()=>{SK.jumps=0;renderNumberLine();updateSkConcept();
+  $('#skNext').disabled=false;$('#skDone').style.display='none';};
+$('#skDone').onclick=()=>{
+  popup({q:'수직선에서 뛰어 세기는 무엇과 똑같은가요?',
+    opts:[{text:'🧺 묶어 세기',right:true,fb:'딩동댕! 3씩 뛰어 세기 = 3씩 묶어 세기!'},
+      {text:'👆 하나씩 세기',right:false,fb:'아니에요! 뛰어 세기는 묶음으로 점프해요!'}],
+    hints:['뛰어 세기 호 하나하나가 한 묶음이에요',
+      '3, 6, 9, 12로 점프했는데, 이건 3개씩 묶음이랑 같아요',
+      '👉 답은 "🧺 묶어 세기"']
   },()=>startChal());
 };
 
-/* ================= 도전 ================= */
+/* ================ 도전 ================ */
 const CHAL=[
-  {size:2,seq:[2,4,'_',8,'_'],ans:[6,10]},
-  {size:3,seq:[3,'_',9,'_',15],ans:[6,12]},
-  {size:5,seq:['_',10,15,'_',25],ans:[5,20]}
+  {size:2,groups:5,emoji:'🍪'},
+  {size:5,groups:3,emoji:'🌟'},
+  {size:3,groups:6,emoji:'🐟'}
 ];
-let chalIdx=0;
+let chalIdx=0,CH=null;
 function startChal(){show('scrChal');chalIdx=0;S.chalRight=0;renderChal();}
 function renderChal(){
-  const C=CHAL[chalIdx];
+  const P=CHAL[chalIdx];CH={P,val:''};
   progress($('#pgChal'),CHAL.length,chalIdx);
-  $('#chalLabel').textContent=`${C.size}씩 뛰어 세기`;
-  const seq=$('#chalSeq');seq.innerHTML='';let bn=0;C._blanks=[];
-  C.seq.forEach((v,i)=>{
-    if(i){const s=document.createElement('div');s.className='seg';s.style.background='#fff';seq.appendChild(s);}
-    const b=document.createElement('div');
-    if(v==='_'){b.className='blank';bn++;b.innerHTML=`<span class="ord">${'①②③'[bn-1]}</span>`;
-      C._blanks.push(b);}
-    else{b.className='nbox';b.textContent=v;}
-    seq.appendChild(b);});
-  buildChalKey(C);
+  const grid=$('#chalGrid'),svg=$('#chalSvg');
+  grid.style.gridTemplateColumns=`repeat(${P.size},56px)`;grid.innerHTML='';svg.innerHTML='';
+  const objs=[];
+  for(let i=0;i<P.size*P.groups;i++){
+    const o=document.createElement('div');o.className='obj';o.style.width='54px';o.style.height='54px';o.style.fontSize='40px';
+    o.textContent=P.emoji;o.classList.add('cg'+(Math.floor(i/P.size)%6+1));
+    grid.appendChild(o);objs.push(o);}
+  setTimeout(()=>{sizeSvg(svg,grid);
+    for(let r=0;r<P.groups;r++)drawRing(svg,objs.slice(r*P.size,r*P.size+P.size),r);},100);
+  $('#chalConcept').innerHTML=
+    `<span class="c1">${P.size}</span>씩 <span class="fill on">${P.groups}</span>묶음 = 모두 <span class="fill">?</span>개`;
+  $('#chalDisp').textContent='';
+  buildChalKey();
 }
-function buildChalKey(C){
-  const disp=$('#chalDisp'),kp=$('#chalKey');disp.textContent='';kp.innerHTML='';
-  let val='',cur=0;
-  C._blanks[0].style.outline='5px solid #ffd23f';
-  ['7','8','9','4','5','6','1','2','3','지우기','0','입력'].forEach(k=>{
-    const b=document.createElement('button');b.className='key'+(k==='지우기'?' act':k==='입력'?' ok':'');
-    b.textContent=k;b.onclick=()=>{
-      if(k==='지우기')val=val.slice(0,-1);
-      else if(k==='입력'){
-        if(+val===C.ans[cur]){const bl=C._blanks[cur];bl.classList.add('fill');
-          bl.innerHTML=`<span class="ord">${'①②③'[cur]}</span>${val}`;bl.style.outline='none';
-          sndOk();cur++;val='';disp.textContent='';
-          if(cur>=C._blanks.length){S.chalRight++;confetti();toast('잘했어요! 🎉');
-            setTimeout(()=>{chalIdx++;
-              if(chalIdx>=CHAL.length){show('scrPost');buildPost();
-                say('도전을 마쳤어요! 이제 활동 후 녹음이에요.');}
-              else renderChal();},900);}
-          else C._blanks[cur].style.outline='5px solid #ffd23f';
-          return;}
-        else{sndNo();toast(`${C.size}씩 뛰어 세어 봐요!`);}}
-      else if(val.length<3)val+=k;
-      disp.textContent=val;sndPop();};
-    kp.appendChild(b);});
+function buildChalKey(){
+  const kp=$('#chalKey');kp.innerHTML='';
+  for(let i=0;i<=9;i++){const b=document.createElement('button');b.className='keyLin';b.textContent=i;
+    b.onclick=()=>chalPress(String(i));kp.appendChild(b);}
+  const del=document.createElement('button');del.className='keyLin act';del.textContent='←';
+  del.onclick=()=>{CH.val=CH.val.slice(0,-1);$('#chalDisp').textContent=CH.val;};kp.appendChild(del);
+  const ok=document.createElement('button');ok.className='keyLin go';ok.textContent='✓';
+  ok.onclick=chalCheck;kp.appendChild(ok);
+}
+function chalPress(n){if(CH.val.length<3){CH.val+=n;$('#chalDisp').textContent=CH.val;sndPop();}}
+function chalCheck(){
+  const P=CH.P,need=P.size*P.groups;
+  if(+CH.val===need){
+    sndOk();confetti();S.chalRight++;
+    const [cx,cy]=centerOf($('#chalGrid'));numBurst(cx,cy,need,2);
+    $('#chalConcept').innerHTML=
+      `<span class="c1">${P.size}</span>씩 <span class="fill on">${P.groups}</span>묶음 = 모두 <span class="fill gold on">${need}</span>개`;
+    setTimeout(()=>{chalIdx++;
+      if(chalIdx>=CHAL.length){show('scrPost');buildPost();}
+      else renderChal();},1300);
+  }else{sndNo();toast('묶음을 다시 세어 봐요!');}
 }
 
-/* ================= 사후 녹음 ================= */
+/* ================ 사후 녹음 ================ */
 function buildPost(){
   buildRecorder($('#postRec'),{rating:true,onDone:t=>{
-    S.postText=t||'(녹음하지 않았어요)';S.stickers++;stickerBurst();
-    setTimeout(()=>{$('#bigSticker').classList.remove('go');$('#bigSticker').textContent='';
-      finishCert();},1500);}});
-  say('활동 후 녹음이에요. 새롭게 알게 된 점을 말해 주세요.');
+    S.postText=t||'(녹음 안 함)';S.stickers++;confetti();
+    setTimeout(finishCert,800);}});
 }
 
-/* ================= 수료증 + 저장 ================= */
+/* ================ 탐구질문 ================ */
+let popState=null;
+function popup(cfg,after){
+  popState={cfg,after,answered:false,hintIdx:0};
+  $('#popQ').innerHTML=cfg.q;
+  const opts=$('#popOpts');opts.innerHTML='';
+  cfg.opts.forEach(o=>{const b=document.createElement('button');b.className='qopt';b.innerHTML=o.text;
+    b.onclick=()=>chooseOpt(b,o);opts.appendChild(b);});
+  $('#popHint').classList.remove('show');$('#popHint').innerHTML='';
+  $('#popBtn').disabled=true;$('#popBtn').textContent='보기를 하나 골라요';
+  $('#ovPop').classList.add('on');
+}
+function chooseOpt(btn,o){
+  if(popState.answered)return;
+  if(o.right){btn.classList.add('right');popState.answered=true;sndOk();confetti();
+    [...$('#popOpts').children].forEach(c=>c.disabled=true);
+    showHint(o.fb,true);$('#popBtn').disabled=false;$('#popBtn').textContent='잘했어요! 다음 ➡️';
+  }else{btn.classList.add('wrong');sndNo();setTimeout(()=>btn.classList.remove('wrong'),600);
+    showHint(o.fb||'다시 생각해 봐요!');}
+}
+function showHint(t,green){const h=$('#popHint');h.classList.add('show');
+  h.innerHTML=(green?'✅ ':'💡 ')+t;
+  h.style.background=green?'linear-gradient(180deg,#dff7d6,#a8f098)':'linear-gradient(180deg,#fff8d6,#fff2b0)';
+  h.style.borderColor=green?'#5cc24a':'#ffd23f';h.style.color=green?'#2d6921':'#5e4b00';}
+$('#popHintBtn').onclick=()=>{
+  if(!popState)return;const hints=popState.cfg.hints||[];
+  if(popState.hintIdx<hints.length){showHint(hints[popState.hintIdx]);popState.hintIdx++;
+    if(popState.hintIdx>=hints.length){$('#popBtn').disabled=false;$('#popBtn').textContent='이해했어요! 다음 ➡️';}}
+  else toast('힌트를 다 봤어요!');};
+$('#popSkip').onclick=()=>{$('#ovPop').classList.remove('on');if(popState&&popState.after)popState.after();};
+$('#popBtn').onclick=()=>{if($('#popBtn').disabled)return;
+  $('#ovPop').classList.remove('on');if(popState&&popState.after)popState.after();};
+
+/* ================ 수료증 + 저장 ================ */
 async function finishCert(){
   $('#certName').textContent=S.name+' 어린이';
   $('#certPre').textContent=S.preText;$('#certPost').textContent=S.postText;
   $('#certStars').textContent='⭐ 자기평가: '+(S.stars||0)+'개';
-  $('#certStk').textContent='🎁 칭찬 스티커: '+S.stickers+'개';
-  show('scrCert');confetti();say(S.name+' 어린이, 묶어 세기 탐험을 멋지게 마쳤어요!');
+  $('#certStk').textContent='🎁 스티커: '+S.stickers+'개';
+  show('scrCert');confetti();
   try{let log=[];
     try{const r=await window.storage.get('mult1:log');if(r)log=JSON.parse(r.value);}catch(e){}
     log.push({date:new Date().toLocaleDateString('ko-KR'),name:S.name,
-      bundles:S.bundlesDone,chal:S.chalRight,help:S.helpUsed,stars:S.stars,stickers:S.stickers,
+      bundles:S.bundlesDone,skips:S.skipsDone,chal:S.chalRight,
+      help:S.helpUsed,stars:S.stars,stickers:S.stickers,
       pre:S.preText.slice(0,60),post:S.postText.slice(0,60)});
     await window.storage.set('mult1:log',JSON.stringify(log));}catch(e){}
 }
 
-/* ================= 대시보드 ================= */
+/* ================ 대시보드 ================ */
 async function openDash(){
   show('scrDash');let log=[];
   try{const r=await window.storage.get('mult1:log');if(r)log=JSON.parse(r.value);}catch(e){}
   const mine=log.filter(x=>!S.name||x.name===S.name);
   const list=$('#dashList');list.innerHTML='';
-  if(!mine.length)list.innerHTML='<div class="dashrow" style="border-color:#9fc4d6;">'+
-    '<b>아직 기록이 없어요.</b><br><span>활동을 마치면 여기에 내 학습기록이 스스로 쌓여요! 🌱</span></div>';
-  else[...mine].reverse().forEach(x=>{const d=document.createElement('div');d.className='dashrow';
+  if(!mine.length)list.innerHTML='<div class="dashRow"><b>아직 기록이 없어요.</b><br><span>활동을 마치면 여기에 학습기록이 스스로 쌓여요! 🌱</span></div>';
+  else[...mine].reverse().forEach(x=>{const d=document.createElement('div');d.className='dashRow';
     d.innerHTML=`<b>📅 ${x.date} · ${x.name}</b><br>
-      <span>🧺 묶어 세기 ${x.bundles}문제 · ⏱️ 도전 ${x.chal}문제 · 💡 도움 ${x.help}번 · 🎁 스티커 ${x.stickers}개</span><br>
-      <span>🌱 활동 후 생각: "${x.post||'-'}"</span>`;list.appendChild(d);});
-  const tb=mine.reduce((a,x)=>a+x.bundles,0),tc=mine.reduce((a,x)=>a+x.chal,0),
-    ts=mine.reduce((a,x)=>a+x.stickers,0);
+      <span>🧺 묶어세기 ${x.bundles} · 🦘 뛰어세기 ${x.skips} · ⏱️ 도전 ${x.chal} · 🎁 ${x.stickers}</span><br>
+      <span>🌱 활동 후: "${x.post||'-'}"</span>`;list.appendChild(d);});
+  const tb=mine.reduce((a,x)=>a+x.bundles,0),tsk=mine.reduce((a,x)=>a+x.skips,0),ts=mine.reduce((a,x)=>a+x.stickers,0);
   $('#dashKpi').innerHTML=`
     <div class="kpicard"><div class="n">${mine.length}</div><div class="l">활동한 날</div></div>
-    <div class="kpicard"><div class="n">${tb}</div><div class="l">묶어 센 문제</div></div>
-    <div class="kpicard"><div class="n">${tc}</div><div class="l">도전 성공</div></div>
-    <div class="kpicard"><div class="n">${ts}</div><div class="l">칭찬 스티커</div></div>`;
+    <div class="kpicard"><div class="n">${tb}</div><div class="l">묶어세기</div></div>
+    <div class="kpicard"><div class="n">${tsk}</div><div class="l">뛰어세기</div></div>
+    <div class="kpicard"><div class="n">${ts}</div><div class="l">스티커</div></div>`;
 }
 
-/* ================= 시작 ================= */
 $('#startBtn').onclick=async()=>{S.name=sel.value;
   try{await navigator.mediaDevices.getUserMedia({audio:true})
     .then(s=>s.getTracks().forEach(t=>t.stop()));}catch(e){}
-  show('scrTut');initTut();say(S.name+' 어린이, 함께 묶어 세기를 배워 봐요!');};
+  show('scrTut');initTut();};
 $('#toDashBtn').onclick=()=>{S.name=sel.value;openDash();};
 $('#dashBack').onclick=()=>show(S.preText?'scrCert':'scrStart');
 $('#certDash').onclick=openDash;
 $('#certAgain').onclick=()=>{S={name:S.name,helpUsed:0,stickers:0,stars:0,preText:'',postText:'',
-  bundlesDone:0,chalRight:0,regTried:0};show('scrTut');initTut();};
+  bundlesDone:0,skipsDone:0,chalRight:0};show('scrTut');initTut();};
 </script>
 </body>
 </html>
