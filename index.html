@@ -179,6 +179,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#0a1a30;}
 .motMsg.on{visibility:visible;animation:pop1 .5s;}
 .motMsg.slow{border:4px solid #b07bff;}
 .motMsg.fast{border:4px solid #5cc24a;}
+/* scrMot 컴팩트 — 하단 motMsg 잘림 방지 (여백 최소) */
+#scrMot .vbody{gap:6px;}
+#scrMot .instrTxt{font-size:24px;padding:8px 22px;}
+#scrMot .picCard{padding:10px 18px;}
+#scrMot .motMsg{font-size:20px;padding:8px 22px;border-width:3px;}
+#scrMot .actionRow{margin-top:2px;}
 
 /* 모달 */
 .ov{position:absolute;inset:0;background:rgba(8,4,28,.85);display:none;
@@ -752,8 +758,8 @@ body,.bubble,.mascotBubble,#bubble,.instrTxt,.goal,.goal p,.tutCard,.tutCard *,.
       <div class="gridwrap"><div class="objGrid" id="motGrid"></div><svg class="ringSvg" id="motSvg"></svg></div>
     </div>
     <div style="display:flex;gap:14px;">
-      <button class="btn btn-blue" id="motBtn1" style="font-size:32px;padding:22px 46px;">👆 하나씩</button>
-      <button class="btn btn-pink" id="motBtn2" style="font-size:32px;padding:22px 46px;">🧺 묶어서</button>
+      <button class="btn btn-blue" id="motBtn1" style="font-size:26px;padding:14px 36px;">👆 하나씩</button>
+      <button class="btn btn-pink" id="motBtn2" style="font-size:26px;padding:14px 36px;">🧺 묶어서</button>
     </div>
     <div class="motMsg slow" id="motMsg1">버튼을 눌러 봐요!</div>
     <div class="motMsg fast" id="motMsg2"></div>
@@ -1665,7 +1671,7 @@ $('#bdNext').onclick=()=>{
 const SK_PROBLEM={size:3,groups:4,emoji:'🍎',ctx:'사과'};
 let SK=null;
 
-const SK_CHAPTER = ('🦘', '🦘 점프 챌린지', '🦘 캥거루: <span class="who">이제 수직선에서 묶음만큼 점프! 따라와!</span>');
+const SK_CHAPTER = ['🦘', '🦘 점프 챌린지', '🦘 캥거루: <span class="who">이제 수직선에서 묶음만큼 점프! 따라와!</span>'];
 function showSkChapter(cb){ showChapter(SK_CHAPTER[0],SK_CHAPTER[1],SK_CHAPTER[2],cb); }
 
 function startSkip(){showSkChapter(()=>{ show('scrSkip');SK={jumps:0};progress($('#pgSkip'),1,0);
