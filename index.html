@@ -1237,10 +1237,12 @@ function miniNum(cx2,cy2,n,color){
   t.textContent=n;t.style.left=cx2+'px';t.style.top=cy2+'px';t.style.color=color||'#e0556a';
   stage.appendChild(t);setTimeout(()=>t.remove(),900);
 }
-function numBurst(cx2,cy2,num,colorIdx){
+function numBurst(cx2,cy2,num,colorIdx,opts){
+  opts=opts||{};
   const color=RINGCOL[(colorIdx||0)%6];
   const t=document.createElement('div');t.className='numBurst';
   t.textContent=num;t.style.left=cx2+'px';t.style.top=cy2+'px';t.style.color=color;
+  if(opts.size)t.style.fontSize=opts.size+'px';
   stage.appendChild(t);setTimeout(()=>t.remove(),1500);
   const ems=['⭐','✨','🌟','💫','⭐','✨','💖','🌟'];
   for(let i=0;i<8;i++){
@@ -1767,7 +1769,7 @@ function updateSkConcept(){
 $('#skNext').onclick=()=>{
   if(SK.jumps>=SK_PROBLEM.groups)return;
   SK.jumps++;S.skipsDone++;renderNumberLine();updateSkConcept();
-  const [cx,cy]=centerOf($('#numLineSvg'));numBurst(cx,cy-30,SK.jumps*SK_PROBLEM.size,SK.jumps-1);
+  const [cx,cy]=centerOf($('#numLineSvg'));numBurst(cx,cy-90,SK.jumps*SK_PROBLEM.size,SK.jumps-1,{size:80});
   say(String(SK.jumps*SK_PROBLEM.size));
   if(SK.jumps===SK_PROBLEM.groups){
     $('#skNext').disabled=true;$('#skDone').style.display='inline-block';
