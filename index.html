@@ -1,1 +1,2260 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>묶어 세기 & 뛰어 세기 탐험대</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+  font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a1a30;}
+#wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;}
+#stage{position:absolute;width:1280px;height:800px;left:50%;top:50%;
+  transform:translate(-50%,-50%) scale(1);transform-origin:center center;overflow:hidden;border-radius:8px;
+  background:linear-gradient(165deg,#5fb6f0 0%,#3a86c7 55%,#1f4f9a 100%);}
+#decor{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.cloud{position:absolute;font-size:42px;opacity:.7;animation:drift linear infinite;}
+@keyframes drift{from{transform:translateX(-200px);}to{transform:translateX(1480px);}}
+.twinkle{position:absolute;font-size:18px;opacity:.6;animation:tw 2.4s ease-in-out infinite;}
+@keyframes tw{0%,100%{opacity:.2;transform:scale(.8);}50%{opacity:.8;transform:scale(1.1);}}
 
+.screen{position:absolute;inset:0;display:none;padding:6px 14px;flex-direction:column;z-index:1;}
+.screen.on{display:flex;}
+
+.topbar{display:flex;align-items:center;gap:10px;}
+.topbar .title{font-size:28px;font-weight:900;color:#fff;
+  background:rgba(8,20,50,.5);padding:9px 22px;border-radius:999px;}
+.topbar .prog{flex:1;display:flex;gap:8px;justify-content:center;}
+.dot{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,.35);transition:.25s;}
+.dot.done{background:#7ee06a;box-shadow:0 0 8px #7ee06a;}
+.dot.cur{background:#ffd23f;transform:scale(1.4);box-shadow:0 0 12px #ffd23f;}
+
+/* 홈 버튼 */
+.homeBtn{width:46px;height:46px;border-radius:14px;border:3px solid #fff;
+  background:rgba(20,8,40,.55);color:#fff;font-size:22px;cursor:pointer;font-weight:900;
+  flex-shrink:0;transition:all .15s;}
+.homeBtn:hover{background:#ffd23f;color:#1f4258;transform:scale(1.06);}
+
+
+.backBtn{width:46px;height:46px;border-radius:14px;border:3px solid #fff;
+  background:rgba(20,8,40,.55);color:#fff;font-size:24px;cursor:pointer;font-weight:900;
+  flex-shrink:0;transition:all .15s;}
+.backBtn:hover{background:#7ee06a;color:#1f4258;transform:scale(1.06);}
+.backBtn:disabled{opacity:.35;cursor:not-allowed;}
+
+.spk{width:46px;height:46px;border-radius:14px;border:3px solid #fff;background:#1f4f9a;color:#fff;
+  font-size:21px;cursor:pointer;font-weight:900;flex-shrink:0;}
+.spk.on{background:#ffd23f;color:#1f4258;}
+
+.btn{border:none;border-radius:999px;cursor:pointer;font-weight:900;transition:transform .12s;}
+.btn:active{transform:scale(.92) translateY(2px);}
+.btn:hover{transform:translateY(-1px);}
+.btn-go{background:linear-gradient(180deg,#ffd86b,#ffb01f);color:#7a4d00;font-size:28px;
+  padding:16px 36px;box-shadow:0 5px 0 #d68a00,0 7px 12px rgba(0,0,0,.2);}
+.btn-go:disabled{filter:grayscale(.5);opacity:.55;}
+.btn-blue{background:linear-gradient(180deg,#7bb8ff,#4287dd);color:#fff;font-size:26px;
+  padding:14px 28px;box-shadow:0 4px 0 #2c5fa8;}
+.btn-mint{background:linear-gradient(180deg,#5fe3b6,#2eb389);color:#fff;font-size:19px;
+  padding:11px 26px;box-shadow:0 5px 0 #1f8666;}
+.btn-skip{background:rgba(255,255,255,.95);color:#356;font-size:24px;padding:13px 22px;
+  box-shadow:0 4px 0 rgba(0,0,0,.18);}
+.btn-help{background:linear-gradient(180deg,#ffb84d,#f08a14);color:#fff;font-size:17px;
+  padding:9px 18px;box-shadow:0 4px 0 #bd6a08;}
+.btn-pink{background:linear-gradient(180deg,#ff95b3,#e0556a);color:#fff;font-size:26px;
+  padding:14px 28px;box-shadow:0 4px 0 #9c3340;}
+.btn.big{font-size:25px;padding:14px 38px;box-shadow:0 7px 0 #d68a00;}
+
+/* 버튼 바로 옆 안내 — 누를 버튼을 가리키며 까딱까딱 */
+.btnCue{background:linear-gradient(180deg,#fffbe0,#ffe89c);border:4px solid #ffd23f;
+  color:#5e4b00;font-size:19px;font-weight:900;padding:9px 22px;border-radius:16px;
+  display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 0 #d68a00;
+  text-align:center;line-height:1.3;
+  animation:cueBob 1.4s ease-in-out infinite;}
+@keyframes cueBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+.btnCue .arrow{font-size:24px;animation:cueArrow 1.4s ease-in-out infinite;}
+@keyframes cueArrow{0%,100%{transform:translateX(0);}50%{transform:translateX(6px);}}
+
+.vbody{flex:1;display:flex;flex-direction:column;align-items:center;
+  gap:5px;justify-content:flex-start;padding-top:2px;}
+
+.picCard{background:rgba(255,255,255,.96);border-radius:22px;padding:18px 22px;
+  box-shadow:0 7px 18px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;position:relative;}
+.gridwrap{position:relative;display:inline-block;}
+.objGrid{display:grid;gap:10px;position:relative;justify-content:center;}
+
+.obj{font-size:56px;cursor:pointer;width:76px;height:76px;display:flex;align-items:center;
+  justify-content:center;border-radius:50%;transition:all .18s;user-select:none;
+  filter:drop-shadow(0 3px 5px rgba(0,0,0,.22));}
+.obj:hover{transform:scale(1.08);}
+.obj.pick{background:#fff3a8;transform:scale(1.2) rotate(-6deg);box-shadow:0 0 20px #ffd23f;}
+.obj.bundled{cursor:default;}
+.obj.bundled:hover{transform:none;}
+.obj.small{width:42px;height:42px;font-size:30px;}
+.obj.cg1{background:rgba(239,68,68,.3);}
+.obj.cg2{background:rgba(34,197,94,.3);}
+.obj.cg3{background:rgba(168,85,247,.3);}
+.obj.cg4{background:rgba(249,115,22,.3);}
+.obj.cg5{background:rgba(20,184,166,.3);}
+.obj.cg6{background:rgba(236,72,153,.3);}
+
+.ringSvg{position:absolute;left:0;top:0;pointer-events:none;overflow:visible;}
+.ringSvg ellipse{fill:none;stroke-width:6;stroke-linecap:round;}
+
+/* 카운터 */
+.counterCard{background:rgba(255,255,255,.85);border:3px solid #ffd23f;border-radius:14px;padding:5px 18px;
+  display:flex;align-items:center;gap:12px;box-shadow:0 3px 8px rgba(0,0,0,.12);}
+.counterCard .cnLbl{font-size:22px;font-weight:900;color:#5b7585;}
+.counterCard .cnNum{font-size:38px;font-weight:900;color:#e0556a;line-height:1;min-width:46px;
+  text-align:center;transition:transform .15s;}
+.counterCard .cnNum.bump{animation:bump .4s;}
+@keyframes bump{50%{transform:scale(1.2);color:#ffd23f;}}
+.counterCard .cnDots{display:flex;gap:8px;}
+.cnDots .d{width:18px;height:18px;border-radius:50%;background:#e1e8ee;border:2px solid #cfd8e0;transition:.2s;}
+.cnDots .d.on{background:#ffd23f;border-color:#c89c00;box-shadow:0 0 8px #ffd23f;}
+
+/* 개념 카드 */
+.conceptCard{background:#fffbe0;border:5px solid #ffd23f;border-radius:18px;padding:10px 28px;
+  font-size:26px;font-weight:900;color:#1f4258;text-align:center;line-height:1.35;
+  box-shadow:0 4px 12px rgba(0,0,0,.18);min-width:600px;}
+.conceptCard .fill{display:inline-block;min-width:48px;padding:0 10px;
+  background:#fff;border:3px dashed #aaa;border-radius:8px;margin:0 3px;color:#999;font-size:26px;}
+.conceptCard .fill.on{border-style:solid;border-color:#5cc24a;color:#1f4258;background:#eefbe9;animation:pop1 .4s;}
+@keyframes pop1{50%{transform:scale(1.3);}}
+.conceptCard .c1{color:#ef4444;}
+.conceptCard .c2{color:#22c55e;}
+.conceptCard .c3{color:#a855f7;}
+.conceptCard .c4{color:#f97316;}
+.conceptCard .c5{color:#14b8a6;}
+.conceptCard .gold{color:#d68a00;}
+
+/* 덧셈식 */
+.addLine{background:#fff;border-radius:14px;border:3px solid #4aa3ff;padding:8px 22px;
+  font-size:24px;font-weight:900;color:#1f4258;box-shadow:0 3px 8px rgba(0,0,0,.15);visibility:hidden;}
+.addLine.on{visibility:visible;}
+.addLine .lbl{background:#4aa3ff;color:#fff;padding:2px 10px;border-radius:999px;font-size:17px;margin-right:8px;}
+
+.actionRow{display:flex;gap:12px;align-items:center;justify-content:center;}
+
+.instrTxt{font-size:30px;font-weight:900;color:#fff;background:rgba(8,20,50,.5);
+  padding:11px 30px;border-radius:999px;text-align:center;text-shadow:0 2px 4px rgba(0,0,0,.4);max-width:1180px;}
+
+/* 수직선 */
+.numLineCard{background:#fff;border-radius:20px;padding:10px 18px;
+  box-shadow:0 6px 16px rgba(0,0,0,.2);}
+.numLineCard svg{display:block;}
+
+/* 0~9 키패드 */
+.keypadLinear{display:flex;gap:6px;background:rgba(8,20,50,.5);padding:9px;border-radius:16px;}
+.keyLin{background:linear-gradient(180deg,#3d6072,#2c4a5c);color:#fff;font-size:32px;font-weight:900;
+  border:none;border-radius:13px;width:74px;height:68px;cursor:pointer;box-shadow:0 5px 0 #16313f;}
+.keyLin:active{transform:translateY(3px);box-shadow:none;}
+.keyLin.act{background:linear-gradient(180deg,#f0697d,#e0556a);box-shadow:0 4px 0 #9c3340;}
+.keyLin.go{background:linear-gradient(180deg,#a8f098,#5cc24a);box-shadow:0 4px 0 #3c8c30;}
+.kdisp{background:#fff;border-radius:12px;height:48px;display:flex;align-items:center;
+  justify-content:center;font-size:30px;font-weight:900;color:#1f4258;min-width:130px;
+  box-shadow:inset 0 3px 7px rgba(0,0,0,.12);}
+
+/* 시작 */
+#scrStart{align-items:center;justify-content:center;gap:14px;}
+#scrStart .titleEm{font-size:56px;animation:bob 3s ease-in-out infinite;}
+@keyframes bob{50%{transform:translateY(-12px);}}
+#scrStart h1{font-size:42px;font-weight:900;color:#fff6e0;text-shadow:0 3px 6px rgba(0,0,0,.4);}
+.goalbox{background:linear-gradient(180deg,#fffbe0,#fff2b0);border:6px solid #ffd23f;
+  border-radius:26px;padding:18px 28px;width:780px;box-shadow:0 7px 18px rgba(0,0,0,.2);}
+.goalbox h3{font-size:24px;color:#9a7b00;text-align:center;margin-bottom:6px;}
+.goalbox p{font-size:25px;font-weight:800;color:#5e4b00;line-height:1.7;text-align:center;}
+.goalbox .hl{background:#fff;border-radius:10px;padding:2px 9px;}
+.namesel{font-size:21px;font-weight:800;padding:9px 20px;border-radius:13px;
+  border:5px solid #ffd23f;color:#1f4258;background:#fff;}
+
+/* 동기유발 친구 카드 */
+.friends{display:flex;gap:34px;justify-content:center;}
+.friendCard{background:#fff;border-radius:20px;padding:14px 22px;
+  box-shadow:0 6px 14px rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;gap:8px;min-width:300px;}
+.friendCard h3{font-size:22px;color:#1f4258;}
+.candies{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;max-width:280px;}
+.candies .obj{width:40px;height:40px;font-size:28px;transition:all .3s;}
+.motMsg{background:#fff;border-radius:18px;padding:14px 28px;font-size:26px;font-weight:900;color:#1f4258;
+  text-align:center;line-height:1.4;box-shadow:0 4px 10px rgba(0,0,0,.15);min-width:680px;visibility:hidden;}
+.motMsg.on{visibility:visible;animation:pop1 .5s;}
+.motMsg.slow{border:4px solid #b07bff;}
+.motMsg.fast{border:4px solid #5cc24a;}
+/* scrMot 컴팩트 — 하단 motMsg 잘림 방지 (여백 최소) */
+#scrMot .vbody{gap:6px;}
+#scrMot .instrTxt{font-size:24px;padding:8px 22px;}
+#scrMot .picCard{padding:10px 18px;}
+#scrMot .motMsg{font-size:20px;padding:8px 22px;border-width:3px;}
+#scrMot .actionRow{margin-top:2px;}
+
+/* 모달 */
+.ov{position:absolute;inset:0;background:rgba(8,4,28,.85);display:none;
+  align-items:center;justify-content:center;z-index:50;padding:18px;}
+.ov.on{display:flex;}
+.pop{background:#fff;border-radius:28px;padding:30px 40px;width:880px;text-align:center;
+  border:6px solid #ffd23f;box-shadow:0 14px 36px rgba(0,0,0,.4);animation:popIn .4s;max-height:96%;overflow-y:auto;}
+@keyframes popIn{from{transform:scale(.3);opacity:0;}}
+.pop h2{font-size:28px;color:#3a86c7;margin-bottom:10px;}
+.pop .q{font-size:26px;font-weight:900;color:#1f4258;line-height:1.4;margin-bottom:14px;}
+.popResLine{font-size:21px;font-weight:900;color:#1f4258;background:#fffbe0;
+  padding:10px 20px;border-radius:13px;border:4px solid #ffd23f;margin:8px 0;line-height:1.4;}
+.popResLine.slow{background:#f5edff;border-color:#b07bff;}
+.popResLine.fast{background:#e8f9e0;border-color:#5cc24a;}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;}
+.qopt{background:linear-gradient(180deg,#fff8d6,#ffe89c);border:4px solid #ffd23f;border-radius:18px;
+  padding:14px 12px;font-size:20px;font-weight:900;color:#5e4b00;cursor:pointer;box-shadow:0 5px 0 #d68a00;line-height:1.3;}
+.qopt:hover{transform:translateY(-2px);}
+.qopt.right{background:linear-gradient(180deg,#a8f098,#5cc24a);border-color:#3c8c30;color:#fff;}
+.qopt.wrong{background:linear-gradient(180deg,#ffc0c8,#ff8a93);border-color:#e0556a;color:#fff;animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+.qopt:disabled{cursor:default;}
+.hintbox{background:linear-gradient(180deg,#fff8d6,#fff2b0);border:4px solid #ffd23f;border-radius:14px;
+  padding:10px 16px;font-size:18px;font-weight:800;color:#5e4b00;line-height:1.5;
+  margin-bottom:10px;display:none;text-align:left;}
+.hintbox.show{display:block;}
+.popRow{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;}
+
+/* 녹음 */
+.recwrap{background:#fff;border-radius:24px;padding:18px 30px;display:flex;flex-direction:column;
+  gap:12px;align-items:center;box-shadow:0 8px 22px rgba(0,0,0,.25);max-width:780px;}
+.recStatus{font-size:20px;font-weight:900;color:#1f4258;text-align:center;min-height:24px;}
+.recBtnRow{display:flex;gap:12px;align-items:center;}
+.recnote{border-radius:18px;padding:10px 22px;font-size:20px;font-weight:800;text-align:center;line-height:1.4;}
+.recnote.pre{background:#e7f1ff;border:4px solid #8fb9e8;color:#1c3f6e;}
+.recnote.post{background:#e6f9f0;border:4px solid #7fd6b0;color:#13573c;}
+.micbtn{width:120px;height:120px;border-radius:50%;border:5px solid #fff;cursor:pointer;font-size:60px;
+  background:linear-gradient(180deg,#ff7d92,#e0455e);color:#fff;box-shadow:0 6px 0 #a8344a;}
+.micbtn.rec{animation:pulse 1s infinite;background:linear-gradient(180deg,#ff4d6a,#c5283e);}
+@keyframes pulse{50%{transform:scale(1.1);}}
+.transbox{width:680px;min-height:56px;background:#f3f9fc;border:3px solid #cfe6ea;border-radius:14px;
+  padding:10px 18px;font-size:20px;color:#1f4258;font-weight:700;}
+.transbox:empty:before{content:'여기에 말한 내용이 나타나요…';color:#9bb2bf;}
+textarea.kb{width:500px;height:50px;border:3px solid #cfe6ea;border-radius:12px;padding:8px 12px;
+  font-size:18px;font-weight:700;color:#1f4258;resize:none;display:none;}
+.stars{display:flex;gap:6px;}
+.star{font-size:32px;cursor:pointer;filter:grayscale(1) opacity(.5);transition:.14s;}
+.star.lit{filter:none;transform:scale(1.2) rotate(8deg);}
+.guidetxt{background:#fff;border-radius:12px;padding:6px 12px;font-size:16px;font-weight:800;color:#1f4258;
+  text-align:center;box-shadow:0 3px 8px rgba(0,0,0,.15);max-width:580px;}
+
+/* 숫자 BURST */
+.numBurst{position:absolute;font-size:200px;font-weight:900;
+  text-shadow:0 6px 0 rgba(0,0,0,.25),0 12px 26px rgba(0,0,0,.5);
+  z-index:59;pointer-events:none;animation:numA 1.5s cubic-bezier(.3,1.5,.5,1) forwards;}
+@keyframes numA{
+  0%{transform:translate(-50%,-50%) scale(.1) rotate(-25deg);opacity:0;}
+  25%{transform:translate(-50%,-50%) scale(1.6) rotate(8deg);opacity:1;}
+  55%{transform:translate(-50%,-50%) scale(1.3) rotate(-4deg);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(1) rotate(0);opacity:0;}}
+.sparkle{position:absolute;font-size:42px;z-index:58;pointer-events:none;}
+/* 작은 숫자 팝업 — 클릭 위치 옆에 잠깐 떴다 사라짐 */
+.miniNum{position:absolute;font-size:46px;font-weight:900;z-index:58;pointer-events:none;
+  text-shadow:0 3px 0 rgba(0,0,0,.15),0 6px 14px rgba(0,0,0,.35);
+  animation:miniNumA 1.2s cubic-bezier(.2,.9,.4,1) forwards;}
+@keyframes miniNumA{
+  0%{transform:translate(-50%,-50%) scale(.3);opacity:0;}
+  30%{transform:translate(-50%,-65%) scale(1.4);opacity:1;}
+  70%{transform:translate(-50%,-75%) scale(1.1);opacity:1;}
+  100%{transform:translate(-50%,-100%) scale(.8);opacity:0;}}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot)) scale(.4);opacity:0;}}
+
+
+/* === 마스코트 동반자 (모든 화면 우하단) === */
+.mascot{position:absolute;right:8px;top:38%;z-index:45;
+  display:flex;flex-direction:column;align-items:flex-end;gap:4px;pointer-events:none;}
+.mascot.hide{display:none;}
+.mascotChar{font-size:100px;animation:mascotBob 3.5s ease-in-out infinite;
+  filter:drop-shadow(0 5px 7px rgba(0,0,0,.35));}
+@keyframes mascotBob{0%,100%{transform:translateY(0) rotate(-3deg);}50%{transform:translateY(-10px) rotate(3deg);}}
+.mascotBubble{background:#fff;border:4px solid #ffd23f;border-radius:20px;
+  padding:12px 20px;font-size:21px;font-weight:900;color:#1f4258;
+  max-width:300px;line-height:1.35;position:relative;margin-bottom:4px;
+  word-break:keep-all;
+  box-shadow:0 4px 10px rgba(0,0,0,.25);
+  opacity:0;transform:scale(.3);transition:all .55s cubic-bezier(.3,1.5,.5,1);}
+.mascotBubble.on{opacity:1;transform:scale(1);}
+
+/* topbar progress dots 숨김 — stageBar로 충분 */
+.topbar .prog{visibility:hidden;}
+.mascotBubble::after{content:'';position:absolute;right:24px;bottom:-14px;
+  border:8px solid transparent;border-top-color:#ffd23f;}
+
+.mascotChar.jump{animation:mascotJump .7s cubic-bezier(.3,1.6,.5,1);}
+@keyframes mascotJump{
+  0%{transform:translateY(0) rotate(0) scale(1);}
+  30%{transform:translateY(-60px) rotate(-15deg) scale(1.25);}
+  60%{transform:translateY(-30px) rotate(10deg) scale(1.15);}
+  100%{transform:translateY(0) rotate(0) scale(1);}}
+
+.mascotBubble::before{content:'';position:absolute;right:26px;bottom:-9px;
+  border:6px solid transparent;border-top-color:#fff;z-index:1;}
+
+/* === 공책 화면 === */
+.notebookBox{background:linear-gradient(180deg,#fffbe0,#fff2b0);border:6px solid #ffd23f;
+  border-radius:26px;padding:22px 32px;width:760px;box-shadow:0 8px 22px rgba(0,0,0,.25);}
+.notebookBox h2{font-size:30px;color:#9a7b00;text-align:center;margin-bottom:10px;}
+.notebookBox .nbList{font-size:21px;font-weight:800;color:#5e4b00;line-height:1.9;text-align:center;}
+
+/* === 영구 안내 (활동 중에도 사라지지 않는 힌트) === */
+.persistentHint{background:linear-gradient(180deg,#ffe89c,#ffd23f);color:#5e4b00;
+  font-size:17px;font-weight:900;padding:8px 22px;border-radius:999px;
+  border:3px solid #d68a00;box-shadow:0 3px 0 #d68a00;
+  display:inline-flex;align-items:center;gap:8px;
+  animation:hintBob 2.2s ease-in-out infinite;}
+@keyframes hintBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+
+
+/* 정보 패널 (카운터·개념·덧셈식 통합) */
+.infoPanel{background:rgba(255,255,255,.96);border-radius:18px;padding:8px 14px;
+  display:flex;flex-direction:column;gap:5px;box-shadow:0 6px 16px rgba(0,0,0,.22);
+  min-width:600px;align-items:center;}
+.infoPanel .counterCard,
+.infoPanel .conceptCard,
+.infoPanel .addLine,
+.infoPanel .addEqCard,
+.infoPanel .mulEqCard{background:transparent;border:none;box-shadow:none;
+  padding:4px 12px;border-radius:10px;}
+.infoPanel .counterCard{border-bottom:2px dashed #ffd23f;border-radius:0;padding-bottom:6px;}
+.infoPanel .conceptCard{background:#fffbe0;border:2px solid #ffd23f;}
+.infoPanel .addLine{background:#e7f1ff;border:2px solid #4aa3ff;font-size:22px;}
+.infoPanel .addEqCard{background:#e7f1ff;border:2px solid #4aa3ff;}
+.infoPanel .mulEqCard{background:#fffbe0;border:2px solid #ffd23f;}
+
+
+/* 회고/미리보기 카드 — scrPost에 처음 녹음 회상 */
+.recapCard{background:linear-gradient(180deg,#e0f3ff,#bce0ff);border:4px solid #4aa3ff;
+  border-radius:22px;padding:14px 22px;width:680px;display:flex;align-items:center;gap:18px;
+  box-shadow:0 6px 0 #2c5fa8;animation:cardFloatIn .8s cubic-bezier(.2,1.2,.4,1) both;}
+.recapCard .lbl{font-size:22px;font-weight:900;color:#2c5fa8;flex-shrink:0;}
+.recapCard .txt{font-size:21px;font-weight:800;color:#1f4258;line-height:1.4;
+  font-style:italic;flex:1;}
+
+/* 미리보기 카드 — scrPre에 오늘 배울 것 시각 */
+.previewCard{background:linear-gradient(180deg,#fff8d6,#ffe89c);border:4px solid #ffd23f;
+  border-radius:22px;padding:14px 28px;display:flex;align-items:center;gap:24px;
+  box-shadow:0 6px 0 #d68a00;animation:cardFloatIn .8s cubic-bezier(.2,1.2,.4,1) both;}
+.previewCard .pItem{font-size:22px;font-weight:900;color:#5e4b00;
+  display:flex;flex-direction:column;align-items:center;gap:4px;}
+.previewCard .pItem .pIco{font-size:42px;animation:bob 2.5s ease-in-out infinite;}
+.previewCard .pSep{font-size:24px;color:#d68a00;font-weight:900;}
+
+@keyframes cardFloatIn{
+  from{opacity:0;transform:translateY(40px) scale(.92);}
+  to{opacity:1;transform:translateY(0) scale(1);}}
+
+/* 마이크 버튼 항상 살짝 박동 — 영상 같은 느낌 */
+.micbtn:not(.rec){animation:micPulse 2.2s ease-in-out infinite;}
+@keyframes micPulse{0%,100%{box-shadow:0 8px 0 #a8344a,0 0 0 0 rgba(255,125,146,.4);}
+  50%{box-shadow:0 8px 0 #a8344a,0 0 0 14px rgba(255,125,146,0);}}
+
+/* 시작 버튼·메인 버튼 - 살짝 박동 */
+.btn-go{animation:btnPulse 2.8s ease-in-out infinite;}
+@keyframes btnPulse{0%,100%{box-shadow:0 5px 0 #d68a00,0 7px 12px rgba(0,0,0,.2);}
+  50%{box-shadow:0 7px 0 #d68a00,0 10px 22px rgba(255,176,31,.5);}}
+
+/* 카드들 staggered 등장 — 화면 들어올 때 순차적으로 */
+.screen.on > * { animation-delay: var(--delay, 0s); }
+.screen.on > *:nth-child(1){animation-delay:0s;}
+.screen.on > *:nth-child(2){animation-delay:.08s;}
+.screen.on > *:nth-child(3){animation-delay:.16s;}
+.screen.on > *:nth-child(4){animation-delay:.24s;}
+.screen.on > *:nth-child(5){animation-delay:.32s;}
+.screen.on > *:nth-child(6){animation-delay:.40s;}
+
+/* 떠다니는 별 배경 — 더 풍부하게 */
+.bgFloat{position:absolute;font-size:24px;opacity:.4;pointer-events:none;
+  animation:bgFloatA 8s ease-in-out infinite;}
+@keyframes bgFloatA{
+  0%,100%{transform:translateY(0) rotate(0);}
+  50%{transform:translateY(-30px) rotate(180deg);}}
+
+/* picCard·infoPanel hover로 살짝 떠오름 */
+.picCard{transition:transform .25s ease;}
+.picCard:hover{transform:scale(1.01) translateY(-3px);}
+
+/* 키패드 키 hover 효과 */
+.keyLin{transition:transform .12s ease, box-shadow .12s ease;}
+.keyLin:hover{transform:translateY(-3px);box-shadow:0 8px 0 #16313f;}
+.keyH:hover{transform:translateY(-3px);}
+
+
+/* 탐구 질문 영역 — 단계별 질문 + 선택지 */
+.inquiryArea{display:flex;flex-direction:column;align-items:center;gap:10px;
+  background:linear-gradient(180deg,#fff8d6,#ffe89c);border:5px solid #ffd23f;
+  border-radius:24px;padding:14px 28px;box-shadow:0 6px 0 #d68a00;
+  min-width:680px;animation:cardFloatIn .6s cubic-bezier(.2,1.2,.4,1) both;}
+.iquestion{font-size:28px;font-weight:900;color:#5e4b00;line-height:1.3;text-align:center;}
+.iquestion b{color:#c4500a;font-size:32px;}
+.ichoices{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.choiceBtn{background:linear-gradient(180deg,#7bb8ff,#4287dd);color:#fff;
+  font-size:28px;font-weight:900;border:none;border-radius:18px;
+  padding:14px 28px;cursor:pointer;box-shadow:0 6px 0 #2c5fa8;
+  transition:transform .15s, box-shadow .15s;min-width:120px;}
+.choiceBtn:hover{transform:translateY(-2px);}
+.choiceBtn:active{transform:translateY(3px);box-shadow:0 3px 0 #2c5fa8;}
+.choiceBtn.right{background:linear-gradient(180deg,#7ee06a,#3ea83c);
+  box-shadow:0 6px 0 #2c8a2c;animation:rightFlash .5s;}
+.choiceBtn.wrong{background:linear-gradient(180deg,#ffb0b0,#e0556a);
+  box-shadow:0 6px 0 #b03a4f;animation:wrongShake .4s;}
+.choiceBtn:disabled{opacity:.5;cursor:not-allowed;}
+@keyframes rightFlash{50%{transform:scale(1.1);}}
+@keyframes wrongShake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+
+/* 미션 배너 — 시작 화면 */
+.missionBanner{background:linear-gradient(135deg,#7e3fdc 0%,#4a1e8a 100%);
+  border:4px solid #ffd23f;border-radius:22px;padding:18px 32px;
+  display:flex;align-items:center;gap:16px;box-shadow:0 8px 22px rgba(0,0,0,.3);}
+.missionBanner .mIcon{font-size:54px;animation:bob 2s ease-in-out infinite;}
+.missionBanner .mText{color:#fff;}
+.missionBanner .mTitle{font-size:26px;font-weight:900;text-shadow:0 2px 4px rgba(0,0,0,.4);}
+.missionBanner .mSub{font-size:18px;font-weight:700;color:#ffd23f;margin-top:4px;}
+
+/* 트로피 — 수료증에 박힘 */
+.trophy{font-size:96px;animation:trophyShine 2s ease-in-out infinite;
+  filter:drop-shadow(0 6px 8px rgba(0,0,0,.3));}
+@keyframes trophyShine{0%,100%{transform:rotate(-3deg) scale(1);}
+  50%{transform:rotate(3deg) scale(1.05);filter:drop-shadow(0 6px 12px gold);}}
+
+
+/* 챕터 인트로 카드 (overlay) */
+.chapterCard{background:linear-gradient(180deg,#fff,#fffbe0);border:6px solid #ffd23f;
+  border-radius:30px;padding:30px 48px;display:flex;flex-direction:column;align-items:center;
+  gap:16px;box-shadow:0 12px 30px rgba(0,0,0,.4);max-width:720px;
+  animation:chapterIn .6s cubic-bezier(.2,1.3,.4,1) both;}
+.chIcon{font-size:96px;animation:chIconBob 1.8s ease-in-out infinite;
+  filter:drop-shadow(0 6px 8px rgba(0,0,0,.25));}
+@keyframes chIconBob{0%,100%{transform:translateY(0) rotate(-3deg);}
+  50%{transform:translateY(-10px) rotate(3deg);}}
+.chTitle{font-size:36px;font-weight:900;color:#c4500a;text-align:center;}
+.chStory{font-size:24px;font-weight:800;color:#1f4258;text-align:center;line-height:1.4;
+  max-width:600px;background:#f3f9ff;border:3px solid #4aa3ff;border-radius:18px;padding:14px 22px;}
+.chStory .who{color:#c4500a;font-weight:900;}
+@keyframes chapterIn{from{opacity:0;transform:translateY(40px) scale(.85);}
+  to{opacity:1;transform:translateY(0) scale(1);}}
+
+/* 마스코트 작게 (겹침 줄임) */
+.mascotChar{font-size:80px !important;}
+.mascotBubble{font-size:21px !important;max-width:240px !important;padding:11px 16px !important;
+  border-width:3px !important;}
+
+
+/* 핵심개념 키워드 강조 — 묶음 / 배 / 곱셈식 / 뛰어 세기 */
+.kw{display:inline-block;padding:1px 8px;border-radius:8px;font-weight:900;line-height:1.1;}
+.kw-bd{color:#a86b00;background:rgba(255,210,63,.35);}  /* 묶음 — 노랑 */
+.kw-bae{color:#0a6a3a;background:rgba(34,197,94,.25);}  /* 배 — 초록 */
+.kw-mul{color:#8a2a0a;background:rgba(255,107,53,.25);} /* 곱셈식 — 주황 */
+.kw-skip{color:#1a4a8a;background:rgba(74,163,255,.25);}/* 뛰어세기 — 파랑 */
+
+
+/* 학습목표 카드 — 시작화면에 알찬 목표 표시 */
+.goalCardsRow{display:flex;gap:14px;justify-content:center;margin-top:8px;}
+.goalCard{background:#fff;border-radius:18px;padding:14px 18px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;box-shadow:0 5px 14px rgba(0,0,0,.15);min-width:200px;
+  border:4px solid #ffd23f;animation:cardFloatIn .6s cubic-bezier(.2,1.2,.4,1) both;}
+.goalCard .gIco{font-size:42px;}
+.goalCard .gTitle{font-size:18px;font-weight:900;color:#9a7b00;text-align:center;}
+.goalCard .gSub{font-size:15px;font-weight:700;color:#5b7585;text-align:center;line-height:1.3;}
+
+
+/* 핵심정리 화면 — 오늘 배운 것 시각 요약 */
+.summaryWrap{display:flex;flex-direction:column;align-items:center;gap:14px;}
+.summaryTitle{font-size:34px;font-weight:900;color:#fff;background:rgba(8,20,50,.55);
+  padding:11px 32px;border-radius:999px;text-shadow:0 2px 4px rgba(0,0,0,.4);}
+.summaryCards{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;}
+.sumCard{background:#fff;border-radius:22px;padding:24px 26px;width:320px;
+  box-shadow:0 8px 22px rgba(0,0,0,.25);display:flex;flex-direction:column;
+  align-items:center;gap:10px;animation:cardFloatIn .7s cubic-bezier(.2,1.2,.4,1) both;
+  border:5px solid #ffd23f;}
+.sumCard .sIco{font-size:54px;}
+.sumCard .sLbl{font-size:24px;font-weight:900;color:#9a7b00;}
+.sumCard .sTxt{font-size:25px;font-weight:800;color:#1f4258;text-align:center;line-height:1.35;}
+.sumCard .sEq{font-size:28px;font-weight:900;color:#c4500a;background:#fff8d6;
+  padding:8px 18px;border-radius:14px;border:3px solid #ffd23f;}
+
+
+/* 단계 진행 표시 — 상단 가운데 고정, 활동 화면들에서만 표시 */
+.stageBar{position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  display:flex;gap:5px;padding:5px 10px;background:rgba(8,20,50,.55);
+  border-radius:999px;z-index:35;box-shadow:0 4px 12px rgba(0,0,0,.25);
+  border:2px solid rgba(255,210,63,.4);}
+.stageBar.hidden{display:none;}
+.stageStep{padding:5px 13px;border-radius:999px;font-size:14px;font-weight:900;
+  color:rgba(255,255,255,.45);transition:.3s;letter-spacing:-.3px;}
+.stageStep.cur{background:#ffd23f;color:#5e4b00;box-shadow:0 0 12px rgba(255,210,63,.6);transform:scale(1.05);}
+.stageStep.done{color:#7ee06a;}
+.stageArrow{color:rgba(255,255,255,.35);font-weight:900;font-size:14px;
+  display:flex;align-items:center;padding:0 1px;}
+
+
+/* === 빠른 연산 도전 — 칭호 선택 모달 === */
+.speedPick{padding:18px 26px;max-width:820px;}
+.speedPick h2{font-size:30px;font-weight:900;color:#c4500a;text-align:center;margin-bottom:6px;}
+.speedPick .sLead{font-size:18px;font-weight:700;color:#5b7585;text-align:center;margin-bottom:14px;}
+.speedGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.speedCard{padding:14px 18px;border-radius:18px;cursor:pointer;display:flex;flex-direction:column;
+  gap:6px;transition:.18s;border:4px solid transparent;color:#fff;text-align:left;
+  box-shadow:0 6px 14px rgba(0,0,0,.15);}
+.speedCard:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(0,0,0,.22);}
+.speedCard .sBadge{display:inline-block;font-size:13px;font-weight:900;
+  background:rgba(255,255,255,.32);padding:4px 12px;border-radius:999px;align-self:flex-start;}
+.speedCard .sName{font-size:22px;font-weight:900;letter-spacing:-.5px;}
+.speedCard .sDesc{font-size:13px;font-weight:700;opacity:.9;}
+.speedCard .sExtra{font-size:12px;font-weight:700;opacity:.85;}
+.speedCard.c1{background:linear-gradient(135deg,#f6c244,#e09918);}
+.speedCard.c2{background:linear-gradient(135deg,#ff8c4a,#e35a17);}
+.speedCard.c3{background:linear-gradient(135deg,#4aa3ff,#2563eb);}
+.speedCard.c4{background:linear-gradient(135deg,#5cc24a,#15803d);}
+.speedCard.cn{background:linear-gradient(135deg,#9ca3af,#4b5563);grid-column:1/3;}
+
+/* === 타이머 막대 (도전 상단) === */
+.timerBar{display:flex;align-items:center;gap:10px;background:#fff;padding:6px 12px;
+  border-radius:14px;box-shadow:0 4px 10px rgba(0,0,0,.18);margin:0 0 8px 0;
+  border:3px solid #ffd23f;}
+.timerBar.hidden{display:none;}
+.timerIco{font-size:22px;}
+.timerTrackOuter{flex:1;height:14px;background:#e5e7eb;border-radius:99px;overflow:hidden;}
+.timerTrackInner{height:100%;background:linear-gradient(90deg,#ffd23f,#ff6b35,#dc2626);
+  border-radius:99px;transition:width .3s linear;}
+.timerNum{font-size:20px;font-weight:900;color:#1f4258;font-variant-numeric:tabular-nums;min-width:36px;text-align:right;}
+.timerNum.warn{color:#dc2626;animation:pulseWarn .6s ease infinite;}
+@keyframes pulseWarn{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+
+/* === 수료증 학습 결과 페이지 === */
+.certResult{display:flex;gap:14px;align-items:stretch;margin:8px 0;width:100%;justify-content:center;}
+.donutCell{background:#fff;border-radius:18px;padding:14px 20px;display:flex;flex-direction:column;
+  align-items:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,.18);border:3px solid #ffd23f;min-width:170px;}
+.donutCell .dLbl{font-size:13px;font-weight:900;color:#9a7b00;letter-spacing:-.3px;}
+.donutWrap{position:relative;width:92px;height:92px;}
+.donutSvg{width:100%;height:100%;transform:rotate(-90deg);}
+.donutTrack{fill:none;stroke:#f3f4f6;stroke-width:13;}
+.donutFill{fill:none;stroke-width:13;stroke-linecap:round;transition:stroke-dashoffset .8s ease;}
+.donutPct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:900;color:#1f4258;}
+.donutFrac{font-size:13px;font-weight:700;color:#5b7585;}
+
+.titleBadge{background:linear-gradient(135deg,#fef3c7,#fde68a);border:4px solid #ffd23f;
+  border-radius:18px;padding:14px 22px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  box-shadow:0 4px 14px rgba(245,158,11,.3);min-width:200px;}
+.titleBadge.locked{background:#f3f4f6;border-color:#d1d5db;color:#9ca3af;}
+.titleBadge .tLbl{font-size:13px;font-weight:900;color:#9a7b00;letter-spacing:-.3px;}
+.titleBadge.locked .tLbl{color:#9ca3af;}
+.titleBadge .tIco{font-size:44px;line-height:1;}
+.titleBadge .tName{font-size:20px;font-weight:900;color:#78350f;letter-spacing:-.5px;}
+.titleBadge.locked .tName{color:#6b7280;}
+.titleBadge .tDesc{font-size:12px;font-weight:700;color:#9a6b00;}
+.titleBadge.locked .tDesc{color:#9ca3af;}
+
+.heroChip{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;
+  font-size:18px;font-weight:900;letter-spacing:-.3px;border:3px solid transparent;
+  background:linear-gradient(135deg,#fef3c7,#fde68a);color:#78350f;
+  box-shadow:0 3px 10px rgba(245,158,11,.25);max-width:90%;}
+.heroChip.mood-best{background:linear-gradient(135deg,#dcfce7,#a7f3d0);color:#14532d;border-color:rgba(34,197,94,.32);}
+.heroChip.mood-good{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#78350f;border-color:rgba(245,158,11,.32);}
+.heroChip.mood-tip{background:linear-gradient(135deg,#dbeafe,#bfdbfe);color:#1e3a8a;border-color:rgba(59,130,246,.32);}
+.heroChip .hcEm{font-size:24px;}
+
+
+/* ⚡ 빠른 연산 — 도전 단계 선택 화면 */
+.fastPickWrap{display:flex;flex-direction:column;align-items:center;gap:18px;padding:14px;}
+.fastPickTitle{font-size:38px;font-weight:900;color:#fff;text-shadow:0 3px 6px rgba(0,0,0,.4);text-align:center;}
+.fastPickIcon{font-size:74px;animation:bob 2s ease-in-out infinite;}
+.fastPickSub{font-size:22px;font-weight:800;color:#fff;text-align:center;
+  background:rgba(8,20,50,.45);padding:10px 24px;border-radius:999px;}
+.fastPickGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:920px;}
+.fastCard{padding:22px 26px;border-radius:22px;cursor:pointer;color:#fff;text-align:center;
+  display:flex;flex-direction:column;gap:10px;align-items:flex-start;
+  box-shadow:0 8px 22px rgba(0,0,0,.25);border:5px solid rgba(255,255,255,.45);
+  transition:transform .15s,box-shadow .15s;animation:cardFloatIn .6s cubic-bezier(.2,1.2,.4,1) both;}
+.fastCard:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 14px 30px rgba(0,0,0,.4);}
+.fastCard.lv1{background:linear-gradient(135deg,#ffd23f,#ffa800);}  /* 🌠 묶음의 별 */
+.fastCard.lv2{background:linear-gradient(135deg,#ff8c5a,#ff5a1f);}  /* ⚡ 번개 캥거루 */
+.fastCard.lv3{background:linear-gradient(135deg,#5fb6f0,#3b82f6);}  /* 🦘 점프 챔피언 */
+.fastCard.lv4{background:linear-gradient(135deg,#5cc24a,#16a34a);}  /* 🌳 차분한 나무늘보 */
+.fastCard .fcTimeBadge{background:rgba(255,255,255,.35);padding:4px 14px;border-radius:999px;
+  font-size:16px;font-weight:900;letter-spacing:-.3px;}
+.fastCard .fcTitle{font-size:34px;font-weight:900;text-shadow:0 2px 4px rgba(0,0,0,.3);}
+.fastCard .fcSub{font-size:22px;font-weight:800;opacity:.95;}
+.fastCard .fcDesc{font-size:18px;font-weight:700;opacity:.92;margin-top:auto;}
+
+/* ⚡ 빠른 연산 — 실제 도전 화면 */
+.fastWrap{display:flex;flex-direction:column;align-items:center;gap:18px;padding:14px 24px;width:100%;}
+.fastHeader{display:flex;justify-content:space-between;align-items:center;width:100%;
+  padding:0 8px;font-size:18px;font-weight:900;color:#fff;}
+.fastScore{display:flex;gap:14px;}
+.fastScore .sok{color:#7ee06a;background:rgba(0,0,0,.3);padding:4px 14px;border-radius:999px;}
+.fastScore .sno{color:#ff7a7a;background:rgba(0,0,0,.3);padding:4px 14px;border-radius:999px;}
+.fastProg{font-size:16px;color:#fff;background:rgba(0,0,0,.3);padding:4px 14px;border-radius:999px;}
+.fastTimerBar{width:100%;height:32px;background:rgba(255,255,255,.85);border-radius:999px;
+  padding:5px;display:flex;align-items:center;gap:10px;box-shadow:inset 0 2px 4px rgba(0,0,0,.2);}
+.fastTimerFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#ffa800,#ff3b30);
+  transition:width .9s linear;min-width:8px;}
+.fastTimerNum{padding:0 14px;font-size:22px;font-weight:900;color:#c4500a;min-width:60px;text-align:right;}
+.fastQuestion{font-size:88px;font-weight:900;color:#fff;text-align:center;
+  background:rgba(8,20,50,.4);padding:30px 60px;border-radius:30px;
+  border:6px dashed rgba(255,210,63,.6);min-width:600px;
+  display:flex;align-items:center;justify-content:center;gap:18px;}
+.fastQuestion .qa{color:#5fb6f0;}
+.fastQuestion .qb{color:#b07bff;}
+.fastQuestion .qbox{background:#fff;color:#1f4258;border-radius:18px;padding:10px 30px;min-width:130px;
+  border:5px dashed #4aa3ff;font-size:80px;}
+.fastKeypad{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;width:100%;max-width:900px;}
+.fastKey{background:#fff;color:#1f4258;border-radius:14px;padding:18px 0;font-size:30px;font-weight:900;
+  cursor:pointer;border:3px solid #cfd8e0;box-shadow:0 4px 10px rgba(0,0,0,.15);transition:.1s;}
+.fastKey:hover{background:#fff8d6;border-color:#ffd23f;transform:translateY(-2px);}
+.fastKey:active{transform:translateY(1px);}
+.fastKey.del{background:#fde6e6;color:#c4380a;border-color:#f5b5b5;}
+.fastKey.ok{background:#3b82f6;color:#fff;border-color:#1e4ea3;}
+.fastKey.ok:hover{background:#1e4ea3;}
+
+/* ⚡ 결과 화면 */
+.fastResultWrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:14px;}
+.fastResultTrophy{font-size:120px;animation:trophyShine 1.2s ease-in-out infinite alternate;}
+.fastResultTitle{font-size:40px;font-weight:900;color:#fff;text-shadow:0 3px 6px rgba(0,0,0,.4);text-align:center;}
+.fastResultSub{font-size:22px;font-weight:800;color:#fff;background:rgba(8,20,50,.45);
+  padding:10px 24px;border-radius:999px;}
+.fastResultStats{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;}
+.fastResultStat{background:#fff;border-radius:18px;padding:14px 22px;min-width:160px;
+  text-align:center;box-shadow:0 6px 16px rgba(0,0,0,.2);border:4px solid #ffd23f;}
+.fastResultStat .frVal{font-size:38px;font-weight:900;color:#c4500a;}
+.fastResultStat .frLbl{font-size:15px;font-weight:800;color:#5b7585;}
+
+#confetti{position:absolute;inset:0;pointer-events:none;z-index:60;}
+.toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);
+  background:#1f4258;color:#fff;font-size:19px;font-weight:900;
+  padding:10px 24px;border-radius:999px;z-index:55;display:none;border:3px solid #ffd23f;}
+
+/* 수료증 */
+.cert{background:linear-gradient(180deg,#fffef6,#fff6d8);border:10px solid #ffd23f;border-radius:26px;
+  flex:1;padding:18px 28px;display:flex;flex-direction:column;align-items:center;gap:9px;
+  box-shadow:0 10px 26px rgba(0,0,0,.3);}
+.cert h2{font-size:28px;font-weight:900;color:#3a86c7;}
+.cert .name{font-size:30px;font-weight:900;color:#1f4258;}
+.compare{display:flex;gap:16px;width:100%;}
+.cmp{flex:1;border-radius:18px;padding:11px 14px;}
+.cmp.pre{background:#e7f1ff;border:5px solid #8fb9e8;}
+.cmp.post{background:#e6f9f0;border:5px solid #7fd6b0;}
+.cmp h4{font-size:17px;margin-bottom:4px;}
+.cmp p{font-size:18px;font-weight:700;color:#36505e;line-height:1.5;}
+
+/* 대시보드 */
+.dashWrap{flex:1;display:flex;flex-direction:column;gap:10px;}
+.kpi{display:flex;gap:12px;justify-content:center;}
+.kpicard{background:#fff;border-radius:16px;padding:12px 22px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+.kpicard .n{font-size:32px;font-weight:900;color:#3a86c7;}
+.kpicard .l{font-size:17px;font-weight:800;color:#5b7585;}
+.dashList{flex:1;overflow:auto;display:flex;flex-direction:column;gap:9px;padding:4px;}
+.dashRow{background:#fff;border-radius:16px;border-left:9px solid #5cc24a;padding:10px 18px;box-shadow:0 3px 9px rgba(0,0,0,.15);}
+.dashRow b{font-size:18px;color:#1f4258;}
+.dashRow span{font-size:18px;color:#5b7585;font-weight:700;}
+/* 빈 박스 숨김 — 화면 진입 직후 빈 상태 가림 */
+.instrTxt:empty,.picCard:empty,.evalCard:has(>.evalQ:empty){visibility:hidden;}
+/* 줄바꿈 — 한국어 어절 단위로 자연스럽게 */
+body,.bubble,.mascotBubble,#bubble,.instrTxt,.goal,.goal p,.tutCard,.tutCard *,.chapMsg,
+.chMsg,.tutBox,.tip,.instr,.fbBox,.helpBox,.miniInstr,.bigtxt,.title,
+.sitQBox,.sitQ,.evalQ,.swapQ,.danIntro,.tutSub,.assistTxt,h1,h2,h3,h4,p,span,div,button{
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  line-break: strict;
+}
+/* 인라인 코드/숫자 등은 끊지 않음 */
+.qa,.qb,.qbox,.q,.ans,.num,.numBig,.cnt,.eOpt,.eOpt *,
+.balloon,.balQ,.fcAns,.evalInput,.quizInput,.timerNum{
+  word-break: normal;
+  overflow-wrap: normal;
+}
+/* 탐구 모달 — 사물 클릭으로 직접 묶기 */
+.inquireOv{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:9999;animation:fadeIn .25s;}
+.inquireBox{background:#fff;border:6px solid #ffd23f;border-radius:28px;padding:22px 36px;max-width:780px;width:92%;max-height:92vh;overflow:auto;
+  box-shadow:0 18px 50px rgba(0,0,0,.32);display:flex;flex-direction:column;align-items:center;gap:14px;
+  animation:popIn .35s cubic-bezier(.34,1.56,.64,1);}
+.inquireHead{font-size:28px;font-weight:900;color:#1a4a6e;}
+.inquireQ{font-size:22px;font-weight:800;color:#1a4a6e;text-align:center;background:#fff8d6;padding:10px 18px;border-radius:12px;border:3px dashed #ffb01f;}
+.inquirePics{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 8px;background:#f5f9ff;padding:16px 20px;border-radius:14px;border:2px solid #c9def0;max-width:640px;}
+.iObj{cursor:pointer;transition:.15s;font-size:38px;line-height:1;padding:4px;border-radius:10px;border:3px solid transparent;user-select:none;}
+.iObj:hover{background:#fff8d6;}
+.iObj.iOn{transform:scale(1.2);background:#fff8d6;border-color:#ff5a1f;box-shadow:0 0 0 3px #ffd23f;}
+.inquireCount{font-size:20px;font-weight:800;color:#1a4a6e;}
+.inquireCount #iCount{color:#ff5a1f;font-size:30px;font-weight:900;padding:0 6px;}
+.inquireDone{font-size:22px;padding:12px 38px;}
+.inquireFb{font-size:18px;font-weight:800;min-height:28px;text-align:center;line-height:1.4;}
+.inquireFb.ok{color:#2d7d22;background:#e6f9f0;padding:10px 16px;border-radius:12px;}
+.inquireFb.hint{color:#7841c4;background:#f0e8ff;padding:10px 16px;border-radius:12px;border:2px dashed #b07bff;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+<div id="decor"></div>
+
+<!-- 시작 -->
+<div class="stageBar hidden" id="stageBar">
+  <span class="stageStep" data-stg="mot">1️⃣ 동기</span><span class="stageArrow">▸</span>
+  <span class="stageStep" data-stg="act">2️⃣ 활동</span><span class="stageArrow">▸</span>
+  <span class="stageStep" data-stg="sum">3️⃣ 정리</span><span class="stageArrow">▸</span>
+  <span class="stageStep" data-stg="chal">4️⃣ 도전</span>
+</div>
+<section class="screen on" id="scrStart">
+  
+  <div class="missionBanner"><span class="mIcon">🦘</span><div class="mText"><div class="mTitle">캥거루의 묶기 모험</div><div class="mSub">묶음의 비밀을 풀고 트로피 받기!</div></div></div>
+  <div class="titleEm">🧺🐧🦘</div>
+  <h1>묶어 세기 & 뛰어 세기 탐험대</h1>
+  <div class="goalCardsRow">
+    <div class="goalCard"><div class="gIco">🧺</div><div class="gTitle">묶어 세기</div><div class="gSub">같은 수씩 묶어 빠르게</div></div>
+    <div class="goalCard"><div class="gIco">🦘</div><div class="gTitle">뛰어 세기</div><div class="gSub">수직선에서 묶음만큼 점프</div></div>
+    <div class="goalCard"><div class="gIco">🏆</div><div class="gTitle">묶음 5문제</div><div class="gSub">+ 도전 5문제로 마무리</div></div>
+  </div>  <div style="display:flex;gap:12px;align-items:center;">
+    <span style="font-size:20px;font-weight:900;color:#fff;">이름</span>
+    <select class="namesel" id="nameSel"></select>
+  </div>
+  <div style="display:flex;gap:12px;">
+    <button class="btn btn-go big" id="startBtn">시작하기 ▶</button>
+    <button class="btn btn-skip" id="toDashBtn">📒 학습기록 보기</button>
+  </div>
+</section>
+
+<!-- 튜토리얼 -->
+<section class="screen" id="scrTut">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><button class="backBtn" id="backBtn" onclick="goBack()" title="직전 화면">⬅️</button><div class="title">🧺 연습</div>
+    <div class="prog" id="pgTut"></div><button class="spk" id="spkTut">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt">사과를 <b style="color:#ffd23f;">3개씩</b> 콕콕 눌러 묶어 보세요!</div>
+    <div class="picCard">
+      <div class="gridwrap">
+        <div class="objGrid" id="tutGrid"></div>
+        <svg class="ringSvg" id="tutSvg"></svg>
+      </div>
+    </div>
+    <div class="infoPanel">
+      <div class="counterCard">
+        <div class="cnLbl">지금 짚은 개수</div>
+        <div class="cnNum" id="tutCount">0</div>
+        <div class="cnDots" id="tutDots"></div>
+      </div>
+      <div class="conceptCard" id="tutConcept">
+      <span class="c1">3</span>씩 <span class="fill" id="tutBun">?</span>묶음 = 모두 <span class="fill gold" id="tutTot">?</span>개
+    </div>
+    </div>
+    <div class="actionRow">
+      <button class="btn btn-go" id="tutGo" disabled>이해했어요, 학습 시작!</button>
+    </div>
+  </div>
+</section>
+
+<!-- 사전 녹음 -->
+<section class="screen" id="scrPre" style="align-items:center;justify-content:flex-start;gap:14px;padding-top:12px;">
+  <div class="recnote pre" style="width:780px;">📌 <b>활동 전 녹음</b><br>지금 아는 만큼만 말해도 OK 🌱</div>
+  <div class="instrTxt">"<span class="kw kw-bd">묶어 세기</span>"가 뭔지 아는 만큼 말해 보세요</div>
+  <div class="previewCard"><div class="pItem"><span class="pIco">🧺</span>묶기</div><span class="pSep">→</span><div class="pItem"><span class="pIco">🦘</span>뛰기</div><span class="pSep">→</span><div class="pItem"><span class="pIco">📏</span>수직선</div></div>
+  <div id="preRec"></div>
+</section>
+
+<!-- 동기유발 -->
+<section class="screen" id="scrMot">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><button class="backBtn" id="backBtn" onclick="goBack()" title="직전 화면">⬅️</button><div class="title">🍬 빠르게 세는 방법?</div>
+    <div class="prog" id="pgMot"></div><button class="spk" id="spkMot">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt">사탕 12개를 두 가지 방법으로 세어 봐요</div>
+    <div class="picCard">
+      <div class="gridwrap"><div class="objGrid" id="motGrid"></div><svg class="ringSvg" id="motSvg"></svg></div>
+    </div>
+    <div style="display:flex;gap:14px;">
+      <button class="btn btn-blue" id="motBtn1" style="font-size:26px;padding:14px 36px;">👆 하나씩</button>
+      <button class="btn btn-pink" id="motBtn2" style="font-size:26px;padding:14px 36px;">🧺 묶어서</button>
+    </div>
+    <div class="motMsg slow" id="motMsg1">버튼을 눌러 봐요!</div>
+    <div class="motMsg fast" id="motMsg2"></div>
+    <div class="actionRow">
+      <button class="btn btn-go" id="motNext" style="display:none;">다음으로 ➡️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 묶어 세기 -->
+<section class="screen" id="scrBundle">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><button class="backBtn" id="backBtn" onclick="goBack()" title="직전 화면">⬅️</button><div class="title" id="bdTitle">🧺 묶어 세기</div>
+    <div class="prog" id="pgBundle"></div><button class="spk" id="spkBd">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt" id="bdInstr"></div>
+    <div class="picCard"><div class="gridwrap">
+      <div class="objGrid" id="bdGrid"></div><svg class="ringSvg" id="bdSvg"></svg></div></div>
+    <div class="infoPanel">
+      <div class="counterCard">
+        <div class="cnLbl">지금 짚은 개수</div>
+        <div class="cnNum" id="bdCount">0</div>
+        <div class="cnDots" id="bdDots"></div>
+      </div>
+      <div class="conceptCard" id="bdConcept"></div>
+      <div class="addLine" id="bdAdd"><span class="lbl">덧셈</span><span id="bdAddTxt">-</span></div>
+    </div>
+    <div class="actionRow">
+      <button class="btn btn-skip" id="bdReset">↺ 다시</button>
+      <button class="btn btn-help" id="bdHelp">💡 도와줘</button>
+      <button class="btn btn-go" id="bdNext" style="display:none;">다음 ➡️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 뛰어 세기 — 수직선 -->
+<section class="screen" id="scrSkip">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><button class="backBtn" id="backBtn" onclick="goBack()" title="직전 화면">⬅️</button><div class="title" id="skTitle">🦘 뛰어 세기</div>
+    <div class="prog" id="pgSkip"></div><button class="spk" id="spkSk">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt" id="skInstr"></div>
+    <!-- 작은 그림 (방금 묶은 것 다시 보여줌) -->
+    <div style="background:rgba(255,255,255,.85);border-radius:14px;padding:8px 14px;display:flex;align-items:center;gap:14px;">
+      <span style="font-size:18px;font-weight:900;color:#1f4258;">방금 묶은 것</span>
+      <div class="gridwrap"><div class="objGrid" id="skMiniGrid"></div></div>
+    </div>
+    <!-- 수직선 -->
+    <div class="numLineCard"><svg id="numLineSvg" width="1100" height="140" viewBox="0 0 1100 140"></svg></div>
+    <div class="conceptCard" id="skConcept"></div>
+    <div class="actionRow" style="gap:16px;">
+      <div class="btnCue" id="skCue"><span class="arrow" style="font-size:30px;">👉</span><span>버튼 눌러 점프!</span></div>
+      <button class="btn btn-blue" id="skNext" style="font-size:26px;padding:16px 36px;box-shadow:0 6px 0 #2c5fa8;">🦘 다음 뛰어세기</button>
+      <button class="btn btn-go" id="skDone" style="display:none;font-size:22px;padding:14px 32px;">다음 ➡️</button>
+    </div>
+  </div>
+</section>
+
+<!-- 핵심 정리 -->
+<section class="screen" id="scrSummary" style="align-items:center;justify-content:center;">
+  <div class="summaryWrap">
+    <div class="summaryTitle">📌 오늘 알게 된 것</div>
+    <div class="summaryCards">
+      <div class="sumCard"><div class="sIco">🧺</div><div class="sLbl">묶어 세기</div>
+        <div class="sTxt"><span class="kw kw-bd">같은 수씩 묶어</span> 빠르게 셀 수 있다</div>
+        <div class="sEq">3씩 4묶음 = 12</div></div>
+      <div class="sumCard"><div class="sIco">🦘</div><div class="sLbl">뛰어 세기</div>
+        <div class="sTxt"><span class="kw kw-skip">수직선</span>에서 묶음만큼 점프!</div>
+        <div class="sEq">3, 6, 9, 12</div></div>
+      <div class="sumCard"><div class="sIco">✨</div><div class="sLbl">중요!</div>
+        <div class="sTxt">묶음 수 = 점프 횟수</div>
+        <div class="sEq">묶음 = 뛰어 세기 칸</div></div>
+    </div>
+    <button class="btn btn-go" id="sumNext" style="margin-top:8px;">📔 공책 시간 ➡️</button>
+  </div>
+</section>
+<!-- 도전 -->
+<section class="screen" id="scrChal">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><button class="backBtn" id="backBtn" onclick="goBack()" title="직전 화면">⬅️</button><div class="title">⏱️ 도전</div>
+  <div class="timerBar hidden" id="timerBar"><span class="timerIco">⏱️</span><div class="timerTrackOuter"><div class="timerTrackInner" id="timerInner" style="width:100%;"></div></div><span class="timerNum" id="timerNum">--</span></div>
+    <div class="prog" id="pgChal"></div><button class="spk" id="spkChal">🔇</button></div>
+  <div class="vbody">
+    <div class="instrTxt">그림을 보고 모두 몇 개인지 입력하세요</div>
+    <div class="picCard"><div class="gridwrap">
+      <div class="objGrid" id="chalGrid"></div><svg class="ringSvg" id="chalSvg"></svg></div></div>
+    <div class="conceptCard" id="chalConcept"></div>
+    <div class="kdisp" id="chalDisp"></div>
+    <div class="keypadLinear" id="chalKey"></div>
+  </div>
+</section>
+
+
+<!-- 공책 시간 -->
+<section class="screen" id="scrNotebook">
+  <div class="vbody" style="justify-content:center;align-items:center;gap:18px;padding-top:30px;">
+    <div style="font-size:96px;animation:bob 2.5s ease-in-out infinite;">📔✏️</div>
+    <h2 style="font-size:34px;color:#fff;text-shadow:0 3px 6px rgba(0,0,0,.4);font-weight:900;">잠깐! 공책 시간</h2>
+    <div class="notebookBox">
+      <div class="nbList">
+        <div>📓 공책에 사과를 그리고 직접 묶어봐요</div>
+        <div>✏️ 다른 수씩 묶어서도 그려봐요</div>
+        <div>⏰ 천천히 해도 괜찮아요</div>
+      </div>
+    </div>
+    <div style="font-size:18px;color:#fff;font-weight:800;text-shadow:0 2px 3px rgba(0,0,0,.4);">⏰ 충분히 했으면 아래 버튼을 눌러요</div>
+    <button class="btn btn-go big" id="notebookDone" style="margin-top:6px;">✅ 다 했어요!</button>
+  </div>
+</section>
+
+<!-- 사후 녹음 -->
+<section class="screen" id="scrPost" style="align-items:center;justify-content:flex-start;gap:10px;padding-top:6px;">
+  <div class="recnote post" style="width:780px;">🌟 <b>활동 후 녹음</b> · 새로 알게 된 점을 말해 봐요! 🌱</div>
+  <div class="instrTxt">"<span class="kw kw-bd">묶어 세기</span>·<span class="kw kw-skip">뛰어 세기</span>"로 새로 알게 된 점은?</div>
+  <div class="recapCard"><span class="lbl">📝 처음엔</span><span class="txt" id="recapPre">…</span></div>
+  <div id="postRec"></div>
+</section>
+
+
+<!-- ⚡ 빠른 연산 — 도전 단계 선택 -->
+<section class="screen" id="scrFastPick">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><button class="backBtn" onclick="goBack()" title="직전 화면">⬅️</button><div class="title">⚡ 빠른 연산</div>
+    <div class="prog"></div><button class="spk">🔇</button></div>
+  <div class="fastPickWrap">
+    <div class="fastPickIcon">⚡</div>
+    <div class="fastPickTitle">도전 단계를 골라요!</div>
+    <div class="fastPickSub">5문제를 정해진 시간 안에! 어떤 칭호에 도전할까요?</div>
+    <div class="fastPickGrid">
+      <div class="fastCard lv1" onclick="startFast(1)">
+        <span class="fcTimeBadge">30초 도전</span>
+        <div class="fcTitle">🌠 묶음의 별</div>
+        <div class="fcSub">묶음 마스터</div>
+        <div class="fcDesc">⚡ 극한 도전!</div>
+      </div>
+      <div class="fastCard lv2" onclick="startFast(2)">
+        <span class="fcTimeBadge">1분 도전</span>
+        <div class="fcTitle">⚡ 번개 캥거루</div>
+        <div class="fcSub">아주 빠른 점프꾼</div>
+        <div class="fcDesc">⚡ 빠른 도전!</div>
+      </div>
+      <div class="fastCard lv3" onclick="startFast(3)">
+        <span class="fcTimeBadge">1분 30초 도전</span>
+        <div class="fcTitle">🦘 점프 챔피언</div>
+        <div class="fcSub">안정된 점프꾼</div>
+        <div class="fcDesc">🛡️ 안정 도전!</div>
+      </div>
+      <div class="fastCard lv4" onclick="startFast(4)">
+        <span class="fcTimeBadge">2분 도전 도전</span>
+        <div class="fcTitle">🌳 차분한 나무늘보</div>
+        <div class="fcSub">천천히 정확하게</div>
+        <div class="fcDesc">🐢 차분히 도전!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ⚡ 빠른 연산 — 실제 도전 -->
+<section class="screen" id="scrFast">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><div class="title" id="fastTitle">⚡ 빠른 연산</div>
+    <div class="prog"></div><button class="spk">🔇</button></div>
+  <div class="fastWrap">
+    <div class="fastHeader">
+      <div class="fastScore">
+        <span class="sok">✓ <span id="fastOk">0</span></span>
+        <span class="sno">✗ <span id="fastNo">0</span></span>
+      </div>
+      <div class="fastProg">진행 <span id="fastIdx">1</span>/10</div>
+    </div>
+    <div class="fastTimerBar">
+      <div class="fastTimerFill" id="fastTimerFill" style="width:100%;"></div>
+      <div class="fastTimerNum" id="fastTimerNum">25</div>
+    </div>
+    <div class="fastQuestion" id="fastQ"></div>
+    <div class="fastKeypad" id="fastKeypad"></div>
+  </div>
+</section>
+
+<!-- ⚡ 빠른 연산 — 결과 -->
+<section class="screen" id="scrFastResult">
+  <div class="fastResultWrap">
+    <div class="fastResultTrophy" id="fastRTrophy">🏆</div>
+    <div class="fastResultTitle" id="fastRTitle">대단해요!</div>
+    <div class="fastResultSub" id="fastRSub">칭호 획득!</div>
+    <div class="fastResultStats">
+      <div class="fastResultStat"><div class="frVal" id="fastROk">0</div><div class="frLbl">맞춘 문제</div></div>
+      <div class="fastResultStat"><div class="frVal" id="fastRAcc">0%</div><div class="frLbl">정답률</div></div>
+      <div class="fastResultStat"><div class="frVal" id="fastRTime">0초</div><div class="frLbl">남은 시간</div></div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button class="btn btn-skip" onclick="show('scrFastPick')">🔁 다른 단계 도전</button>
+      <button class="btn btn-go" onclick="show('scrCert')">🏠 수료증으로</button>
+    </div>
+  </div>
+</section>
+
+<section class="screen" id="scrCert">
+  <div class="cert">
+    <div class="trophy">🦘🏆</div>
+    <div id="certHero" class="heroChip mood-good" style="margin:4px 0;"><span class="hcEm">💪</span><span>잘했어요!</span></div>
+    <h2>🏅 묶어 세기 & 뛰어 세기 수료증 🏅</h2>
+    <div class="name" id="certName"></div>
+    <div class="certResult" id="certResult"></div>
+    <div style="font-size:17px;font-weight:800;color:#5b7585;">위 어린이는 묶어 세기와 뛰어 세기를 멋지게 탐험했습니다.</div>
+    <div class="compare">
+      <div class="cmp pre"><h4 style="color:#1c3f6e;">💡 활동 전</h4><p id="certPre"></p></div>
+      <div class="cmp post"><h4 style="color:#13573c;">🌟 활동 후</h4><p id="certPost"></p></div>
+    </div>
+    <div style="display:flex;gap:20px;font-size:18px;font-weight:900;color:#1f4258;">
+      <div id="certStars"></div><div id="certStk"></div>
+    </div>
+    <div style="margin-top:auto;display:flex;gap:12px;">
+      <button class="btn btn-mint" id="certDash">📒 학습기록 보기</button>
+      <button class="btn btn-skip" id="certAgain">🔁 다시 하기</button> <button class="btn btn-go" id="certFast" onclick="show('scrFastPick')" style="background:linear-gradient(135deg,#ff8c5a,#ff5a1f);">⚡ 빠른 연산 도전!</button>
+    </div>
+  </div>
+</section>
+
+<!-- 대시보드 -->
+<section class="screen" id="scrDash">
+  <div class="topbar"><button class="homeBtn" onclick="goHome()" title="처음으로">🏠</button><button class="backBtn" id="backBtn" onclick="goBack()" title="직전 화면">⬅️</button><div class="title">📒 학습기록</div>
+    <div style="flex:1;"></div><button class="btn btn-skip" id="dashBack">← 돌아가기</button></div>
+  <div class="dashWrap"><div class="kpi" id="dashKpi"></div><div class="dashList" id="dashList"></div></div>
+</section>
+
+<!-- 동기유발 모달 -->
+<div class="ov" id="ovMot"><div class="pop">
+  <h2>🤔 두 가지 방법!</h2>
+  <div class="popResLine slow" id="motResSlow"></div>
+  <div class="popResLine fast" id="motResFast"></div>
+  <div style="font-size:18px;color:#5b7585;font-weight:800;margin-top:10px;">
+    오늘은 <b style="color:#22c55e;">🧺 묶어 세기</b>를 잘 배워 봐요!</div>
+  <button class="btn btn-go" id="motModalGo" style="margin-top:14px;">알겠어요, 다음으로 ➡️</button>
+</div></div>
+
+<!-- 탐구질문 -->
+<div class="ov" id="ovPop"><div class="pop">
+  <h2>🤔 탐구 질문</h2>
+  <div class="q" id="popQ"></div>
+  <div class="qopts" id="popOpts"></div>
+  <div class="hintbox" id="popHint"></div>
+  <div class="popRow">
+    <button class="btn btn-help" id="popHintBtn">💡 힌트 보기</button>
+    <button class="btn btn-skip" id="popSkip">⏭️ 건너뛰기</button>
+    <button class="btn btn-go" id="popBtn" disabled>다음으로 ➡️</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<!-- 마스코트 동반자 -->
+<div class="mascot hide" id="mascot">
+  <div class="mascotBubble" id="mascotBubble"></div>
+  <div class="mascotChar" id="mascotChar">🦘</div>
+</div>
+
+
+  <span class="bgFloat" style="left:8%;top:20%;color:#ffd23f;">✨</span>
+  <span class="bgFloat" style="left:88%;top:62%;animation-delay:1s;color:#fff;">⭐</span>
+  <span class="bgFloat" style="left:14%;top:78%;animation-delay:2.5s;color:#ffb01f;">🌟</span>
+  <span class="bgFloat" style="left:82%;top:18%;animation-delay:3.5s;color:#ffd23f;">✨</span>
+  <span class="bgFloat" style="left:5%;top:48%;animation-delay:4s;color:#fff;">⭐</span>
+<canvas id="confetti"></canvas>
+</div></div>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+
+/* ============== 🔗 APPS SCRIPT 백엔드 연결 ==============
+ * 1. Apps Script에서 code.gs 배포 → 웹앱 URL 받기
+ * 2. 그 URL을 아래 따옴표 안에 붙여넣기 (HTML 3개 파일 모두 같은 URL)
+ * 3. 비워두면 백엔드 호출 없이 브라우저에만 저장됨 (정상 동작)
+ */
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxW4qThxnT7HF0AiZ7wvVZUWUENWU9pX9ksGvr0ooBKqAAcoQbIdCRSu5jnRxp_y-BB/exec';
+
+/* URL에서 sid 추출 — 선생님 복사본 시트 ID (마스터 시트 메뉴에서 자동 전달) */
+const SHEET_ID = new URLSearchParams(location.search).get('sid') || '';
+
+async function postBackend(payload){
+  if(!BACKEND_URL) return null;
+  /* 모든 API 호출에 sid 자동 첨부 → 백엔드가 그 시트에 기록 */
+  if(SHEET_ID && !payload.sid) payload.sid = SHEET_ID;
+  try{
+    const res=await fetch(BACKEND_URL,{
+      method:'POST',mode:'cors',redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    return await res.json();
+  }catch(e){console.error('Backend error:',e);return null;}
+}
+async function uploadAudio(blob,phase,appNum){
+  if(!BACKEND_URL||!blob) return '';
+  try{
+    const base64=await new Promise((resolve,reject)=>{
+      const r=new FileReader();
+      r.onload=()=>resolve(String(r.result).split(',')[1]||'');
+      r.onerror=reject;r.readAsDataURL(blob);
+    });
+    const res=await postBackend({action:'saveAudio',base64,mime:blob.type||'audio/webm',
+      name:S.name,app:String(appNum),phase});
+    return (res&&res.ok)?res.url:'';
+  }catch(e){return '';}
+}
+const SVGNS='http://www.w3.org/2000/svg';
+const stage=$('#stage');
+function fit(){const s=Math.min(innerWidth/1280,innerHeight/800);
+  stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+/* 조사 */
+function josa(w,withB,withoutB){if(!w)return '';const last=w.charCodeAt(w.length-1);
+  if(last<0xAC00||last>0xD7A3)return w+withoutB;
+  return w+(((last-0xAC00)%28)!==0?withB:withoutB);}
+const eul=w=>josa(w,'을','를');
+
+/* 장식 */
+(function(){const d=$('#decor');
+  for(let i=0;i<3;i++){const c=document.createElement('div');c.className='cloud';c.textContent='☁️';
+    c.style.top=(16+i*18)+'px';c.style.animationDuration=(30+i*5)+'s';
+    c.style.animationDelay=(-i*10)+'s';d.appendChild(c);}
+  for(let i=0;i<12;i++){const t=document.createElement('div');t.className='twinkle';t.textContent='✨';
+    t.style.top=(Math.random()*740)+'px';t.style.left=(Math.random()*1230)+'px';
+    t.style.animationDelay=(Math.random()*2.4)+'s';d.appendChild(t);}})();
+
+const NAMES=['가은','나래','다온','라엘','민준','서아','수호','시우','예준','지아','하린','현우'];
+const sel=$('#nameSel');NAMES.forEach(n=>{const o=document.createElement('option');o.textContent=n;sel.appendChild(o);});
+
+// 백엔드 학생명단 시트에서 동적으로 가져오기 (URL 있으면)
+(async()=>{
+  if(!BACKEND_URL) return;
+  const r=await postBackend({action:'getStudents'});
+  if(r&&r.ok&&Array.isArray(r.students)&&r.students.length>0){
+    sel.innerHTML='';
+    r.students.forEach(st=>{const o=document.createElement('option');o.textContent=st.name;sel.appendChild(o);});
+  }
+})();
+
+let S={name:'',helpUsed:0,stickers:0,stars:0,preText:'',postText:'',preAudioUrl:'',postAudioUrl:'',bundlesDone:0,skipsDone:0,chalRight:0};
+let speaker=false;
+
+/* TTS */
+let voice=null;
+function pickVoice(){const v=speechSynthesis.getVoices();
+  // 우선순위: 1) Google 클라우드 한국어  2) Wavenet/Neural2  3) Natural/Premium  4) 아무 ko-KR
+  voice =
+    v.find(x=>x.lang==='ko-KR' && x.name.toLowerCase().includes('google') && !x.localService) ||
+    v.find(x=>x.lang==='ko-KR' && /wavenet|neural2/i.test(x.name)) ||
+    v.find(x=>x.lang==='ko-KR' && /natural|premium|enhanced/i.test(x.name)) ||
+    v.find(x=>x.lang==='ko-KR') ||
+    null;
+}
+if('speechSynthesis'in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(t){if(!speaker||!('speechSynthesis'in window))return;
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);
+  // 갈라짐 방지 + 자연스러운 톤 (pitch 1.0 기본, rate 약간 느리게)
+  u.lang='ko-KR'; u.rate=0.92; u.pitch=1.0; u.volume=1.0;
+  if(voice) u.voice=voice;
+  speechSynthesis.speak(u);
+}
+
+let AC=null;
+function tone(f,d,type,vol){if(!speaker)return;try{AC=AC||new(AudioContext||webkitAudioContext)();
+  const o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.value=f;
+  o.connect(g);g.connect(AC.destination);g.gain.setValueAtTime(vol||.18,AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.start();o.stop(AC.currentTime+d);}catch(e){}}
+const sndOk=()=>{tone(660,.13);setTimeout(()=>tone(880,.22),120);};
+const sndNo=()=>tone(200,.25,'triangle');
+const sndPop=()=>tone(520,.09);
+
+$$('.spk').forEach(b=>b.onclick=()=>{speaker=!speaker;
+  $$('.spk').forEach(x=>{x.textContent=speaker?'🔊':'🔇';x.classList.toggle('on',speaker);});
+  if(speaker){if(AC&&AC.state==='suspended')AC.resume();say('소리가 켜졌어요.');}
+  else if('speechSynthesis'in window)speechSynthesis.cancel();});
+
+
+/* 홈으로 가기 (확인 후) */
+function goHome(){
+  if(confirm('처음 화면으로 돌아갈까요? (지금 한 것은 저장되지 않아요)')){
+    show('scrStart');
+  }
+}
+
+function show(id){$$('.screen').forEach(s=>s.classList.remove('on'));$('#'+id).classList.add('on');}
+
+/* === 마스코트 동반자 === */
+const MASCOT_MSGS = {"scrTut": "🍎 사과를 콕콕 짚어봐!", "scrMot": "🤔 어떻게 세야 빠를까?", "scrBundle": "👀 같은 수가 반복돼!", "scrSkip": "🦘 묶음만큼 점프!", "scrNotebook": "✏️ 직접 그려봐!", "scrChal": "💪 이제 직접 묶어봐!", "scrPost": "뭐가 새로 알게 됐어?", "scrCert": "와! 멋져!"};
+let _mascotBubbleTimer = null;
+function setMascot(msg, dur){
+  const b = $('#mascotBubble');
+  if(!msg){ b.classList.remove('on'); return; }
+  b.textContent = msg;
+  // 한 프레임 늦춰서 transition 발동
+  requestAnimationFrame(()=>b.classList.add('on'));
+  clearTimeout(_mascotBubbleTimer);
+  if(dur) _mascotBubbleTimer = setTimeout(()=>b.classList.remove('on'), dur);
+}
+
+function mascotCelebrate(msg){
+  const ch=document.getElementById('mascotChar');
+  if(!ch) return;
+  ch.classList.remove('jump');void ch.offsetWidth;ch.classList.add('jump');
+  if(msg) setMascot(msg, 5000);
+}
+
+/* 챕터 인트로 보여주기 */
+function showChapter(icon, title, story, onStart){
+  const ov=document.createElement('div');
+  ov.className='ov on';ov.style.zIndex='80';
+  ov.innerHTML=`
+    <div class="chapterCard">
+      <div class="chIcon">${icon}</div>
+      <div class="chTitle">${title}</div>
+      <div class="chStory">${story}</div>
+      <button class="btn btn-go big" id="chStartBtn">🚀 출발!</button>
+    </div>`;
+  document.getElementById('stage').appendChild(ov);
+  ov.querySelector('#chStartBtn').onclick=()=>{
+    ov.remove();
+    if(onStart)onStart();
+  };
+}
+
+
+// show 함수 augment — 화면 바뀔 때마다 마스코트 메시지 자동
+const _origShow = show;
+show = function(id){
+  _origShow(id);
+  const mascot = $('#mascot');
+  if(['scrStart','scrSummary','scrFastPick','scrFast','scrCert','scrChal','scrNotebook'].includes(id)){ mascot.classList.add('hide'); }
+  else{ mascot.classList.remove('hide'); }
+  const msg = MASCOT_MSGS[id];
+  if(msg) setMascot(msg);
+};
+
+/* 화면 히스토리 (직전으로) */
+window._scrHist = [];
+function _trackShow(id){
+  if(window._scrHist[window._scrHist.length-1] !== id){
+    window._scrHist.push(id);
+    if(window._scrHist.length>30) window._scrHist.shift();
+  }
+  // 뒤로 버튼 활성 여부
+  const bb = document.getElementById('backBtn');
+  if(bb) bb.disabled = window._scrHist.length<2;
+}
+function goBack(){
+  if(window._scrHist.length<2){show('scrStart');return;}
+  window._scrHist.pop();              // 현재
+  const prev = window._scrHist.pop(); // 직전
+  if(prev) show(prev);
+}
+
+// show augment for history
+const _origShow2=show;
+show=function(id){_trackShow(id);_origShow2(id);};
+
+function progress(box,n,cur){box.innerHTML='';for(let i=0;i<n;i++){const d=document.createElement('div');
+  d.className='dot'+(i<cur?' done':i===cur?' cur':'');box.appendChild(d);}}
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';
+  clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',1800);}
+
+/* 폭죽 */
+const cv=$('#confetti'),cx=cv.getContext('2d');cv.width=1280;cv.height=800;
+let parts=[];
+function confetti(){const c=['#ffd23f','#ff6b81','#4aa3ff','#5cc24a','#b07bff','#ff9a3c'];
+  for(let i=0;i<90;i++)parts.push({x:640,y:280,vx:(Math.random()-.5)*16,vy:Math.random()*-14-4,
+    g:.45,c:c[i%6],s:Math.random()*10+5,r:Math.random()*6});}
+(function loop(){cx.clearRect(0,0,1280,800);parts=parts.filter(p=>p.y<880);
+  parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.r+=.2;
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;
+    cx.fillRect(-p.s/2,-p.s/2,p.s,p.s);cx.restore();});requestAnimationFrame(loop);})();
+
+/* 숫자 BURST */
+const RINGCOL=['#ef4444','#22c55e','#a855f7','#f97316','#14b8a6','#ec4899'];
+
+/* 작은 숫자 떴다 사라지기 (지금 짚은 개수, 누적 카운트용) */
+function miniNum(cx2,cy2,n,color){
+  const t=document.createElement('div');t.className='miniNum';
+  t.textContent=n;t.style.left=cx2+'px';t.style.top=cy2+'px';t.style.color=color||'#e0556a';
+  stage.appendChild(t);setTimeout(()=>t.remove(),900);
+}
+function numBurst(cx2,cy2,num,colorIdx,opts){
+  opts=opts||{};
+  const color=RINGCOL[(colorIdx||0)%6];
+  const t=document.createElement('div');t.className='numBurst';
+  t.textContent=num;t.style.left=cx2+'px';t.style.top=cy2+'px';t.style.color=color;
+  if(opts.size)t.style.fontSize=opts.size+'px';
+  stage.appendChild(t);setTimeout(()=>t.remove(),1500);
+  const ems=['⭐','✨','🌟','💫','⭐','✨','💖','🌟'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('div');s.className='sparkle';s.textContent=ems[i];
+    s.style.left=cx2+'px';s.style.top=cy2+'px';
+    const ang=(i/8)*Math.PI*2,dist=230;
+    s.style.setProperty('--dx',Math.cos(ang)*dist+'px');
+    s.style.setProperty('--dy',Math.sin(ang)*dist+'px');
+    s.style.setProperty('--rot',(Math.random()*720-360)+'deg');
+    s.style.animation='fly 1.2s cubic-bezier(.2,.8,.3,1) forwards';
+    stage.appendChild(s);setTimeout(()=>s.remove(),1300);
+  }
+  for(let i=0;i<Math.min(num,8);i++) setTimeout(()=>tone(523+i*70,.09),i*95);
+  setTimeout(()=>{tone(880,.2);tone(1320,.28);},num*95+30);
+}
+
+function sizeSvg(svg,grid){svg.setAttribute('width',grid.clientWidth);
+  svg.setAttribute('height',grid.clientHeight);
+  svg.setAttribute('viewBox',`0 0 ${grid.clientWidth} ${grid.clientHeight}`);}
+function drawRing(svg,objs,colorIdx){
+  if(!objs||objs.length===0)return;
+  const color=RINGCOL[colorIdx%6];
+  const pad=30;
+  const g=document.createElementNS(SVGNS,'g');
+  objs.forEach((o,i)=>{
+    const cx=o.offsetLeft+o.offsetWidth/2;
+    const cy=o.offsetTop+o.offsetHeight/2;
+    const c=document.createElementNS(SVGNS,'circle');
+    c.setAttribute('cx',cx);c.setAttribute('cy',cy);c.setAttribute('r',pad);
+    c.setAttribute('stroke',color);c.style.fill='none';c.style.strokeWidth='3.5';
+    const C=2*Math.PI*pad;
+    c.style.strokeDasharray=C;c.style.strokeDashoffset=C;
+    g.appendChild(c);
+    requestAnimationFrame(()=>{
+      c.style.transition='stroke-dashoffset .4s ease '+(i*0.07)+'s';
+      c.style.strokeDashoffset='0';
+    });
+  });
+  // 인접 사물 사이만 점선 연결 (거리 제한 — 멀리 떨어진 사물은 연결 X)
+  for(let i=0;i<objs.length-1;i++){
+    const o1=objs[i],o2=objs[i+1];
+    const x1=o1.offsetLeft+o1.offsetWidth/2,y1=o1.offsetTop+o1.offsetHeight/2;
+    const x2=o2.offsetLeft+o2.offsetWidth/2,y2=o2.offsetTop+o2.offsetHeight/2;
+    const dx=x2-x1,dy=y2-y1,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<pad*2||dist>180)continue;
+    const ux=dx/dist,uy=dy/dist;
+    const ln=document.createElementNS(SVGNS,'line');
+    ln.setAttribute('x1',x1+ux*pad);ln.setAttribute('y1',y1+uy*pad);
+    ln.setAttribute('x2',x2-ux*pad);ln.setAttribute('y2',y2-uy*pad);
+    ln.setAttribute('stroke',color);ln.style.strokeWidth='3';ln.style.strokeDasharray='5,4';ln.style.opacity='0.5';
+    g.appendChild(ln);
+  }
+  svg.appendChild(g);
+  return g;
+}
+
+
+function setCounter(numEl,dotsEl,n,total){
+  numEl.textContent=n;numEl.classList.remove('bump');void numEl.offsetWidth;numEl.classList.add('bump');
+  dotsEl.innerHTML='';
+  for(let i=0;i<total;i++){const d=document.createElement('div');d.className='d'+(i<n?' on':'');dotsEl.appendChild(d);}
+}
+
+function centerOf(el){
+  const r=el.getBoundingClientRect(),sr=stage.getBoundingClientRect();
+  return [(r.left+r.width/2-sr.left)*(1280/sr.width),(r.top+r.height/2-sr.top)*(800/sr.height)];
+}
+
+/* 녹음기 */
+
+
+function buildRecorder(host,opts){
+  host.innerHTML='';const w=document.createElement('div');w.className='recwrap';
+  w.innerHTML=`
+    <div class="recStatus" data-status>🎤 마이크를 눌러 시작해요!</div>
+    <button class="micbtn" data-mic>🎤</button>
+    <div class="transbox" data-trans></div>
+    <div data-rate style="display:none;flex-direction:column;align-items:center;gap:8px;">
+      <div style="font-size:17px;font-weight:900;color:#9a7b00;">⭐ 내 녹음, 어땠어요?</div>
+      <div style="font-size:17px;color:#888;font-weight:700;">📓 공책에 써봐도 좋아요</div>
+      <div class="stars" data-stars></div>
+    </div>
+    <div class="recBtnRow">
+      <button class="btn btn-blue" data-play style="display:none;font-size:18px;padding:12px 22px;">▶️ 듣기</button>
+      <button class="btn btn-go" data-next style="font-size:20px;padding:12px 26px;">⏭️ 건너뛰기</button>
+    </div>`;
+  host.appendChild(w);
+  const q=s=>w.querySelector(s);
+  const mic=q('[data-mic]'),status=q('[data-status]'),trans=q('[data-trans]'),
+    play=q('[data-play]'),next=q('[data-next]'),rate=q('[data-rate]');
+  let rec=null,recObj=null,chunks=[],blob=null,heard=false,finalText='';
+  if(opts.rating){
+    rate.style.display='flex';const sc=q('[data-stars]');
+    for(let i=1;i<=5;i++){const st=document.createElement('span');st.className='star';st.textContent='⭐';
+      st.onclick=()=>{if(!heard){toast('먼저 ▶️ 듣기를 눌러요');return;}
+        S.stars=i;[...sc.children].forEach((x,k)=>x.classList.toggle('lit',k<i));
+        sndPop();
+        next.textContent=i<=3?'🔁 다시 해볼래요':'✨ 끝!';};
+      sc.appendChild(st);}
+  }
+  function startSR(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(!SR){trans.textContent='(음성 인식 안 됨)';return;}
+    recObj=new SR();recObj.lang='ko-KR';recObj.continuous=true;recObj.interimResults=true;
+    let fin='';
+    recObj.onresult=e=>{let itm='';for(let i=e.resultIndex;i<e.results.length;i++){
+      const r=e.results[i];if(r.isFinal)fin+=r[0].transcript;else itm+=r[0].transcript;}
+      finalText=(fin+itm).trim();trans.textContent=finalText;};
+    recObj.onerror=()=>{};try{recObj.start();}catch(e){}}
+  mic.onclick=async()=>{
+    if(mic.classList.contains('rec')){
+      mic.classList.remove('rec');mic.textContent='🎤';
+      status.textContent='✨ 녹음 완료!';
+      if(recObj)try{recObj.stop();}catch(e){}
+      if(rec&&rec.state!=='inactive')rec.stop();
+      play.style.display='inline-block';
+      next.textContent=opts.rating?'✨ 끝!':'✅ 다음';
+      return;
+    }
+    finalText='';trans.textContent='';blob=null;heard=false;
+    mic.classList.add('rec');mic.textContent='⏹️';status.textContent='🔴 녹음 중…';
+    startSR();
+    try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      rec=new MediaRecorder(stream);chunks=[];
+      rec.ondataavailable=e=>chunks.push(e.data);
+      rec.onstop=()=>{blob=new Blob(chunks,{type:'audio/webm'});
+        stream.getTracks().forEach(t=>t.stop());};
+      rec.start();}catch(e){status.textContent='🔴 녹음 중… (글로만)';}};
+  play.onclick=()=>{heard=true;
+    if(blob){new Audio(URL.createObjectURL(blob)).play();}else toast('녹음한 소리가 없어요');
+    if(opts.rating)toast('이제 별점을 눌러요 ⭐');};
+  next.onclick=()=>{
+    if(opts.rating&&S.stars>0&&S.stars<=3&&next.textContent.includes('다시')){
+      // 다시 녹음하기: 상태 초기화
+      finalText='';trans.textContent='';blob=null;heard=false;S.stars=0;
+      [...w.querySelectorAll('.star')].forEach(x=>x.classList.remove('lit'));
+      play.style.display='none';
+      status.textContent='🎤 다시 녹음해 봐요!';
+      next.textContent='⏭️ 건너뛰기';
+      return;
+    }
+    opts.onDone(finalText.trim(),S.stars,blob);
+  };
+}
+
+/* ================ 튜토리얼 ================ */
+let tutPicked=[],tutBundles=0;
+function initTut(){
+  progress($('#pgTut'),1,0);
+  const grid=$('#tutGrid');grid.style.gridTemplateColumns='repeat(3,76px)';grid.innerHTML='';
+  for(let i=0;i<9;i++){const o=document.createElement('div');o.className='obj';o.textContent='🍎';
+    grid.appendChild(o);o.onclick=()=>tutClick(o);}
+  $('#tutSvg').innerHTML='';tutPicked=[];tutBundles=0;
+  $('#tutBun').textContent='?';$('#tutBun').classList.remove('on');
+  $('#tutTot').textContent='?';$('#tutTot').classList.remove('on');
+  $('#tutGo').disabled=true;setCounter($('#tutCount'),$('#tutDots'),0,3);
+  say('사과를 3개씩 묶어서 모두 몇 개인지 빠르게 세어 봐요!');
+}
+function tutClick(o){
+  if(o.dataset.b)return;
+  if(o.classList.contains('pick')){o.classList.remove('pick');tutPicked=tutPicked.filter(x=>x!==o);
+    setCounter($('#tutCount'),$('#tutDots'),tutPicked.length,3);sndPop();return;}
+  o.classList.add('pick');tutPicked.push(o);sndPop();
+  const [_tcx,_tcy]=centerOf(o);miniNum(_tcx,_tcy,tutPicked.length,'#3a86ff');
+  setCounter($('#tutCount'),$('#tutDots'),tutPicked.length,3);
+  if(tutPicked.length===3){
+    const svg=$('#tutSvg'),grid=$('#tutGrid');sizeSvg(svg,grid);
+    drawRing(svg,tutPicked,tutBundles);
+    const bi=tutBundles;
+    tutPicked.forEach(x=>{x.dataset.b='1';x.classList.remove('pick');x.classList.add('bundled','cg'+(bi+1));});
+    tutBundles++;tutPicked=[];
+    const [cx,cy]=centerOf(grid);numBurst(cx,cy,3,bi);
+    setCounter($('#tutCount'),$('#tutDots'),0,3);
+    $('#tutBun').textContent=tutBundles;$('#tutBun').classList.add('on');
+    $('#tutTot').textContent=tutBundles*3;$('#tutTot').classList.add('on');
+    say(`${tutBundles}<span class="kw kw-bd">묶음</span>! 모두 ${tutBundles*3}개!`);
+    if(tutBundles===3){
+      setTimeout(()=>{confetti();toast('3씩 3묶음 = 모두 9개! 🎉');},800);
+      $('#tutGo').disabled=false;
+    }
+  }
+}
+$('#tutGo').onclick=()=>{show('scrPre');buildPre();};
+
+/* ================ 사전 녹음 ================ */
+function buildPre(){buildRecorder($('#preRec'),{rating:false,onDone:async(t,_,blob)=>{S.preText=t||'(녹음 안 함)';S.preAudioUrl=await uploadAudio(blob,'pre',1);startMot();}});}
+
+/* ================ 동기유발 ================ */
+let motOneDone=false,motGroupDone=false;
+function startMot(){
+  show('scrMot');progress($('#pgMot'),1,0);motOneDone=false;motGroupDone=false;
+  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(6,96px)';grid.innerHTML='';
+  $('#motSvg').innerHTML='';
+  for(let i=0;i<12;i++){const o=document.createElement('div');o.className='obj';o.textContent='🍬';
+    o.style.width='96px';o.style.height='96px';o.style.fontSize='70px';
+    o.dataset.i=i;grid.appendChild(o);}
+  $('#motBtn1').disabled=false;$('#motBtn2').disabled=false;
+  $('#motMsg1').classList.remove('on');$('#motMsg1').textContent='버튼을 눌러 봐요!';$('#motMsg1').style.visibility='visible';
+  $('#motMsg2').classList.remove('on');$('#motMsg2').textContent='';
+  $('#motNext').style.display='none';
+  say('사탕 12개를 두 가지 방법으로 세어 봐요.');
+}
+/* 하나씩 세기 — 1, 2, 3 ... 12 (느리게) */
+$('#motBtn1').onclick=()=>{
+  if(motOneDone)return;motOneDone=true;$('#motBtn1').disabled=true;
+  const objs=$$('#motGrid .obj');let i=0;
+  const iv=setInterval(()=>{
+    if(i>=12){clearInterval(iv);
+      $('#motMsg1').innerHTML='👆 하나씩 세니까 1, 2, 3, ... <b style="color:#b07bff;font-size:26px;">12!</b> 12번이나 세야 해요…';
+      $('#motMsg1').classList.add('on');sndOk();motCheck();return;}
+    objs[i].style.background='rgba(176,123,220,.4)';objs[i].style.border='3px solid #b07bff';
+    objs[i].style.borderRadius='50%';
+    // ★ 사탕 옆에 숫자 잠깐 떴다 사라짐 (누적 카운트)
+    const [cx,cy]=centerOf(objs[i]);
+    miniNum(cx,cy-40,i+1,'#b07bff');
+    say(String(i+1));sndPop();i++;
+  },340);
+};
+/* 묶어서 세기 — 3씩 묶기 (빠르게, numBurst) */
+$('#motBtn2').onclick=()=>{
+  if(motGroupDone)return;motGroupDone=true;$('#motBtn2').disabled=true;
+  const grid=$('#motGrid');grid.style.gridTemplateColumns='repeat(3,96px)';
+  const objs=$$('#motGrid .obj');
+  const grpColors=['rgba(239,68,68,.4)','rgba(34,197,94,.4)','rgba(168,85,247,.4)','rgba(249,115,22,.4)'];
+  const grpBorders=['#ef4444','#22c55e','#a855f7','#f97316'];
+  $('#motMsg2').classList.add('on');
+  $('#motMsg2').innerHTML='🧺 3개씩 묶어서 세어 봐요…';
+  let g=0;
+  function nextGroup(){
+    if(g>=4){
+      setTimeout(()=>{
+        const [cx,cy]=centerOf(grid);numBurst(cx,cy,12,4);
+        $('#motMsg2').innerHTML='🧺 묶어 세니까 3, 6, 9, <b style="color:#ff6b35;font-size:24px;">12!</b> 4번만 세면 끝!';
+        sndOk();motCheck();
+      },600);
+      return;
+    }
+    // 1) 3개 사탕 색 입히기 (천천히, 하나씩)
+    const groupObjs=objs.slice(g*3,g*3+3);
+    let i=0;
+    const colorIv=setInterval(()=>{
+      if(i>=3){
+        clearInterval(colorIv);
+        // 2) 동그라미 그리기 — 천천히 보여주기
+        setTimeout(()=>{
+          sizeSvg($('#motSvg'),grid);
+          drawRing($('#motSvg'),groupObjs,g);
+          // 3) 누적 합계 음성·숫자 표시 (3, 6, 9, 12) — 동그라미 다 그려진 후
+          setTimeout(()=>{
+            const cumulative=(g+1)*3;
+            const lastObj=groupObjs[2];
+            const [cx,cy]=centerOf(lastObj);
+            numBurst(cx,cy-30,cumulative,g);
+            say(String(cumulative));
+            // 4) 다음 묶음으로 — 저학년이 충분히 인지할 시간
+            setTimeout(()=>{g++;nextGroup();},1300);
+          },1000);
+        },450);
+        return;
+      }
+      groupObjs[i].style.background=grpColors[g];
+      groupObjs[i].style.border=`3px solid ${grpBorders[g]}`;
+      groupObjs[i].style.borderRadius='50%';
+      sndPop();
+      i++;
+    },280);
+  }
+  nextGroup();
+};
+function motCheck(){
+  if(motOneDone&&motGroupDone){
+    setTimeout(()=>{
+      $('#motResSlow').innerHTML='👆 하나씩 세기: 1, 2, 3, ... 12 (12번)';
+      $('#motResFast').innerHTML='🧺 묶어 세기: 3, 6, 9, 12 (4번만!)';
+      $('#ovMot').classList.add('on');confetti();
+    },700);
+  }
+}
+$('#motModalGo').onclick=()=>{$('#ovMot').classList.remove('on');
+  popup({q:'묶어 세기는 왜 빠른가요?',
+    opts:[
+      {text:'🧺 한 번에 여러 개를<br>세니까',right:true,fb:'맞아요! 한 묶음을 한 번에 세니까 빨라요!'},
+      {text:'🐢 천천히<br>세니까',right:false,fb:'아니에요! 묶어 세기는 더 빨라요!'}],
+    hints:['하나씩은 12번, 묶어 세기는 4번만 했어요',
+      '한 묶음이 3개니까 한 번에 3을 세는 거예요',
+      '👉 답은 "한 번에 여러 개를 세니까"']
+  },()=>{bdIdx=0;startBundle();});};
+
+/* ================ 묶어 세기 ================ */
+const BD_PROBLEMS=[
+  {size:2,groups:4,emoji:'🍓',ctx:'딸기'},
+  {size:3,groups:4,emoji:'🍇',ctx:'포도'},
+  {size:4,groups:3,emoji:'🥕',ctx:'당근'},
+  {size:5,groups:2,emoji:'🌟',ctx:'별'},
+  {size:3,groups:5,emoji:'🎈',ctx:'풍선'}
+];
+let bdIdx=0,BD=null;
+
+/* 챕터 인트로 wrap — A1_PROBLEMS 각 항목 시작 시 한 번만 */
+const A1_CHAPTERS = [['🍎', '🍎 1막. 사과 농장', '🦘 캥거루: <span class="who">와! 사과가 한가득이야! 3개씩 묶어볼까?</span>'], ['🌸', '🌸 2막. 꽃밭에서', '🦘 캥거루: <span class="who">예쁜 꽃 8송이! 2송이씩 묶어주자!</span>'], ['🎁', '🎁 3막. 선물 가게', '🦘 캥거루: <span class="who">생일 선물 12개! 4개씩 묶어보자!</span>'], ['🌟', '🌟 4막. 별 줍기', '🦘 캥거루: <span class="who">밤하늘 별 10개! 5개씩 묶어보자!</span>'], ['🎈', '🎈 5막. 풍선 가게', '🦘 캥거루: <span class="who">생일 풍선 15개! 3개씩 묶어주자!</span>']];
+function showA1Chapter(idx, cb){
+  const ch=A1_CHAPTERS[idx];
+  if(ch) showChapter(ch[0],ch[1],ch[2],cb);
+  else cb();
+}
+
+function startBundle(){show('scrBundle');showInquireBundle();}
+
+/* 탐구 모달 — 사물을 직접 클릭해서 묶음 만들기 (키패드 없음) */
+let _iPicked=[];
+function showInquireBundle(){
+  const P=BD_PROBLEMS[bdIdx];
+  const total=P.size*P.groups;
+  document.querySelectorAll('.inquireOv').forEach(o=>o.remove());
+  const ov=document.createElement('div');
+  ov.className='inquireOv';
+  let picsHtml='';
+  for(let i=0;i<total;i++)picsHtml+=`<span class="iObj" data-i="${i}">${P.emoji}</span>`;
+  ov.innerHTML=`<div class="inquireBox">
+    <div class="inquireHead">🤔 ${P.ctx} <b style="color:#ff5a1f;">${total}개</b>를 어떻게 묶을까요?</div>
+    <div class="inquireQ">💭 사물을 클릭해서 <b style="color:#ff5a1f;">한 묶음</b>을 직접 만들어 봐요!</div>
+    <div class="inquirePics" id="iPics">${picsHtml}</div>
+    <div class="inquireCount">짚은 개수: <span id="iCount">0</span> 개</div>
+    <button class="btn btn-go inquireDone" id="iDone" onclick="iComplete(${total})">✓ 이 크기로 묶기</button>
+    <div class="inquireFb" id="iFb">&nbsp;</div>
+  </div>`;
+  document.body.appendChild(ov);
+  _iPicked=[];
+  // 사물 클릭 핸들러
+  ov.querySelectorAll('.iObj').forEach(o=>{
+    o.onclick=()=>{
+      const i=+o.dataset.i;
+      if(_iPicked.includes(i)){
+        _iPicked=_iPicked.filter(x=>x!==i);
+        o.classList.remove('iOn');
+      } else {
+        _iPicked.push(i);
+        o.classList.add('iOn');
+      }
+      document.getElementById('iCount').textContent=_iPicked.length;
+    };
+  });
+}
+function iComplete(total){
+  const N=_iPicked.length;
+  const fb=document.getElementById('iFb');
+  if(N<2){
+    fb.innerHTML='💡 적어도 2개는 짚어 봐요!';
+    fb.className='inquireFb hint';
+    return;
+  }
+  if(total%N!==0){
+    fb.innerHTML=`💭 ${N}씩 묶으면 <b>${Math.floor(total/N)}묶음</b>에 <b>${total%N}개가 남아요</b>. 딱 떨어지는 크기로 다시 짚어봐요!`;
+    fb.className='inquireFb hint';
+    return;
+  }
+  fb.innerHTML=`🎉 <b>${N}씩 ${total/N}묶음</b>으로 묶을 수 있어요!`;
+  fb.className='inquireFb ok';
+  BD_PROBLEMS[bdIdx]={...BD_PROBLEMS[bdIdx],size:N,groups:total/N};
+  setTimeout(()=>{
+    document.querySelector('.inquireOv')?.remove();
+    _iPicked=[];
+    renderBundle();
+  },1600);
+}
+
+function renderBundle(){
+  const P=BD_PROBLEMS[bdIdx];
+  BD={P,picked:[],bundles:[],done:false};
+  progress($('#pgBundle'),BD_PROBLEMS.length,bdIdx);
+  $('#bdTitle').innerHTML=`🧺 <span class="kw kw-bd">묶어 세기</span> (${bdIdx+1}/${BD_PROBLEMS.length})`;
+  $('#bdInstr').innerHTML=`✨ <b style="color:#ffd23f;">${P.size}씩</b> 묶어 봐요! (총 ${P.size*P.groups}개)`;
+  updateBdConcept(0,0);
+  $('#bdAdd').classList.remove('on');$('#bdAddTxt').textContent='-';
+  $('#bdNext').style.display='none';
+  const grid=$('#bdGrid'),svg=$('#bdSvg');
+  const total=P.size*P.groups;
+  const sz=total<=8?76:total<=10?64:total<=14?54:46;
+  const gp=total<=8?10:6;
+  grid.style.gridTemplateColumns=`repeat(${P.size},${sz}px)`;
+  grid.style.gap=gp+'px';
+  grid.innerHTML='';svg.innerHTML='';
+  for(let i=0;i<total;i++){
+    const o=document.createElement('div');o.className='obj';
+    o.style.fontSize=(sz*0.74)+'px';o.style.width=sz+'px';o.style.height=sz+'px';
+    o.textContent=P.emoji;o.dataset.b='-1';
+    grid.appendChild(o);o.onclick=()=>bdClick(o);}
+  setCounter($('#bdCount'),$('#bdDots'),0,P.size);
+  say(`${eul(P.ctx)} ${P.size}개씩 묶어 봐요.`);
+}
+function updateBdConcept(bcnt,total){
+  const P=BD.P;const cIdx=Math.max(1,bcnt);
+  $('#bdConcept').innerHTML=
+    `<span class="c${cIdx}">${P.size}</span>씩 `+
+    `<span class="fill ${bcnt>0?'on':''}">${bcnt||'?'}</span><span class="kw kw-bd">묶음</span> = 모두 `+
+    `<span class="fill gold ${total>0?'on':''}">${total||'?'}</span>개`;
+}
+function bdClick(o){
+  if(BD.done||o.dataset.b!=='-1')return;
+  if(o.classList.contains('pick')){o.classList.remove('pick');BD.picked=BD.picked.filter(x=>x!==o);
+    setCounter($('#bdCount'),$('#bdDots'),BD.picked.length,BD.P.size);sndPop();return;}
+  o.classList.add('pick');BD.picked.push(o);sndPop();
+  const [_bcx,_bcy]=centerOf(o);miniNum(_bcx,_bcy,BD.picked.length,'#3a86ff');
+  setCounter($('#bdCount'),$('#bdDots'),BD.picked.length,BD.P.size);
+  if(BD.picked.length===BD.P.size)bdClose();
+}
+function bdClose(){
+  const grid=$('#bdGrid'),svg=$('#bdSvg');sizeSvg(svg,grid);
+  const bi=BD.bundles.length;drawRing(svg,BD.picked,bi);
+  BD.picked.forEach(o=>{o.dataset.b=bi;o.classList.remove('pick');o.classList.add('bundled','cg'+(bi+1));});
+  BD.bundles.push(BD.picked);BD.picked=[];
+  const n=BD.bundles.length,total=n*BD.P.size;
+  const [cx,cy]=centerOf(grid);numBurst(cx,cy,BD.P.size,bi);
+  setCounter($('#bdCount'),$('#bdDots'),0,BD.P.size);
+  updateBdConcept(n,total);
+  const plus=new Array(n).fill(BD.P.size).join(' + ');
+  $('#bdAddTxt').innerHTML=`${plus} = <b style="color:#ffd23f;">${total}</b>`;
+  $('#bdAdd').classList.add('on');
+  say(`${BD.P.size}! ${n}<span class="kw kw-bd">묶음</span>, 모두 ${total}개.`);
+  if(n===BD.P.groups){
+    BD.done=true;S.bundlesDone++;
+    $('#bdInstr').innerHTML=`🎉 ${BD.P.size}씩 ${n}<span class="kw kw-bd">묶음</span> = 모두 ${total}개!`;
+    $('#bdNext').style.display='inline-block';
+    setTimeout(confetti,1000);
+  }
+}
+$('#bdReset').onclick=()=>renderBundle();
+$('#bdHelp').onclick=()=>{S.helpUsed++;toast(`💡 ${BD.P.size}개씩 콕콕 짚어요!`);};
+$('#bdNext').onclick=()=>{
+  bdIdx++;
+  if(bdIdx>=BD_PROBLEMS.length){startSkip();}
+  else showInquireBundle();
+};
+
+/* ================ 뛰어 세기 ================ */
+const SK_PROBLEM={size:3,groups:4,emoji:'🍎',ctx:'사과'};
+let SK=null;
+
+const SK_CHAPTER = ['🦘', '🦘 점프 챌린지', '🦘 캥거루: <span class="who">이제 수직선에서 묶음만큼 점프! 따라와!</span>'];
+function showSkChapter(cb){ showChapter(SK_CHAPTER[0],SK_CHAPTER[1],SK_CHAPTER[2],cb); }
+
+function startSkip(){showSkChapter(()=>{ show('scrSkip');SK={jumps:0};progress($('#pgSkip'),1,0);
+  $('#skTitle').textContent='🦘 뛰어 세기';
+  $('#skInstr').innerHTML=`<b style="color:#ffd23f;">${SK_PROBLEM.size}씩</b> 묶은 사과로 수직선에 점프해요!`;
+  $('#skCue').innerHTML=`<span class="arrow" style="font-size:30px;">👉</span><span>버튼 눌러 <b style="color:#3a86ff;">${SK_PROBLEM.size}씩</b> 점프!</span>`;
+  $('#skCue').style.display='inline-flex';
+  // mini grid — 묶음 카드 가로 나열 (각 묶음을 색 박스로 분리 표시)
+  const mg=$('#skMiniGrid');mg.innerHTML='';
+  mg.style.cssText='display:flex;gap:12px;align-items:center;';
+  const grpColors=[
+    {bg:'rgba(239,68,68,.18)',bd:'#ef4444'},
+    {bg:'rgba(34,197,94,.18)',bd:'#22c55e'},
+    {bg:'rgba(168,85,247,.18)',bd:'#a855f7'},
+    {bg:'rgba(249,115,22,.18)',bd:'#f97316'},
+    {bg:'rgba(59,130,246,.18)',bd:'#3b82f6'},
+    {bg:'rgba(236,72,153,.18)',bd:'#ec4899'}
+  ];
+  for(let b=0;b<SK_PROBLEM.groups;b++){
+    const card=document.createElement('div');
+    const c=grpColors[b%grpColors.length];
+    card.style.cssText=`display:flex;gap:3px;padding:5px 9px;border-radius:14px;border:3px solid ${c.bd};background:${c.bg};`;
+    for(let i=0;i<SK_PROBLEM.size;i++){
+      const sp=document.createElement('span');sp.textContent=SK_PROBLEM.emoji;
+      sp.style.cssText='font-size:32px;line-height:1;';
+      card.appendChild(sp);
+    }
+    mg.appendChild(card);
+  }
+  renderNumberLine();updateSkConcept();
+  $('#skNext').disabled=false;$('#skDone').style.display='none';
+  say('뛰어 세기로 수직선에 묶음을 그려 봐요.');
+});}
+function renderNumberLine(){
+  const svg=$('#numLineSvg');svg.innerHTML='';
+  const w=1100,baseY=95,x0=50,x1=1050,total=SK_PROBLEM.size*SK_PROBLEM.groups;
+  const unit=(x1-x0)/total;
+  // 1씩 칸 (수직선)
+  const line=document.createElementNS(SVGNS,'line');
+  line.setAttribute('x1',x0);line.setAttribute('y1',baseY);
+  line.setAttribute('x2',x1);line.setAttribute('y2',baseY);
+  line.setAttribute('stroke','#333');line.setAttribute('stroke-width','4');
+  svg.appendChild(line);
+  // 화살표 끝
+  const arrow=document.createElementNS(SVGNS,'polygon');
+  arrow.setAttribute('points',`${x1},${baseY} ${x1-10},${baseY-7} ${x1-10},${baseY+7}`);
+  arrow.setAttribute('fill','#333');svg.appendChild(arrow);
+  // 0~12 모든 정수 표시 (1씩 칸)
+  for(let i=0;i<=total;i++){
+    const x=x0+i*unit;
+    const tick=document.createElementNS(SVGNS,'line');
+    tick.setAttribute('x1',x);tick.setAttribute('x2',x);
+    tick.setAttribute('y1',baseY-6);tick.setAttribute('y2',baseY+6);
+    tick.setAttribute('stroke','#555');tick.setAttribute('stroke-width','2');
+    svg.appendChild(tick);
+    const lbl=document.createElementNS(SVGNS,'text');
+    lbl.setAttribute('x',x);lbl.setAttribute('text-anchor','middle');
+    // 묶음 끝점 (3, 6, 9, 12)은 색칠 + 큰 폰트
+    const isEndpoint=(i>0&&i%SK_PROBLEM.size===0);
+    const bi=isEndpoint?Math.floor(i/SK_PROBLEM.size)-1:-1;
+    if(isEndpoint&&bi<SK.jumps){
+      lbl.setAttribute('y',baseY+34);lbl.setAttribute('font-size','30');lbl.setAttribute('font-weight','900');
+      lbl.setAttribute('fill',RINGCOL[bi%6]);
+    } else {
+      lbl.setAttribute('y',baseY+24);lbl.setAttribute('font-size','15');lbl.setAttribute('font-weight','800');
+      lbl.setAttribute('fill','#5b7585');
+    }
+    lbl.textContent=i;svg.appendChild(lbl);
+  }
+  // 뛰어 세기 호
+  for(let j=0;j<SK.jumps;j++){
+    const startX=x0+j*SK_PROBLEM.size*unit,endX=x0+(j+1)*SK_PROBLEM.size*unit;
+    const midX=(startX+endX)/2,peakY=30;
+    const arc=document.createElementNS(SVGNS,'path');
+    arc.setAttribute('d',`M ${startX} ${baseY} Q ${midX} ${peakY} ${endX} ${baseY}`);
+    arc.setAttribute('fill','none');arc.setAttribute('stroke',RINGCOL[j%6]);
+    arc.setAttribute('stroke-width','5');arc.setAttribute('stroke-linecap','round');
+    svg.appendChild(arc);
+    const plusLbl=document.createElementNS(SVGNS,'text');
+    plusLbl.setAttribute('x',midX);plusLbl.setAttribute('y',peakY-6);
+    plusLbl.setAttribute('text-anchor','middle');plusLbl.setAttribute('font-size','22');
+    plusLbl.setAttribute('font-weight','900');plusLbl.setAttribute('fill',RINGCOL[j%6]);
+    plusLbl.textContent=`+${SK_PROBLEM.size}`;svg.appendChild(plusLbl);
+  }
+}
+function updateSkConcept(){
+  const P=SK_PROBLEM,n=SK.jumps,total=n*P.size;const cIdx=Math.max(1,n);
+  $('#skConcept').innerHTML=
+    `<span class="c${cIdx}">${P.size}</span>씩 `+
+    `<span class="fill ${n>0?'on':''}">${n||'?'}</span><span class="kw kw-bd">묶음</span> = 모두 `+
+    `<span class="fill gold ${total>0?'on':''}">${total||'?'}</span>개`;
+}
+$('#skNext').onclick=()=>{
+  if(SK.jumps>=SK_PROBLEM.groups)return;
+  SK.jumps++;S.skipsDone++;renderNumberLine();updateSkConcept();
+  const [cx,cy]=centerOf($('#numLineSvg'));numBurst(cx,cy-90,SK.jumps*SK_PROBLEM.size,SK.jumps-1,{size:80});
+  say(String(SK.jumps*SK_PROBLEM.size));
+  if(SK.jumps===SK_PROBLEM.groups){
+    $('#skNext').disabled=true;$('#skDone').style.display='inline-block';
+    $('#skCue').innerHTML='🎉 모두 끝! 다음으로 넘어가요';
+    setTimeout(()=>{confetti();toast('3, 6, 9, 12! 정말 잘했어요 🎉');},800);
+  }
+};
+$('#skDone').onclick=()=>{
+  popup({q:'수직선에서 뛰어 세기는 무엇과 똑같은가요?',
+    opts:[{text:'🧺 묶어 세기',right:true,fb:'딩동댕! 3씩 뛰어 세기 = 3씩 묶어 세기!'},
+      {text:'👆 하나씩 세기',right:false,fb:'아니에요! 뛰어 세기는 묶음으로 점프해요!'}],
+    hints:['뛰어 세기 호 하나하나가 한 묶음이에요',
+      '3, 6, 9, 12로 점프했는데, 이건 3개씩 묶음이랑 같아요',
+      '👉 답은 "🧺 묶어 세기"']
+  },()=>show('scrSummary'));
+};
+
+/* ================ 도전 ================ */
+const CHAL=[
+  {size:2,groups:5,emoji:'🍪'},
+  {size:5,groups:3,emoji:'🌟'},
+  {size:3,groups:6,emoji:'🐟'},
+  {size:4,groups:4,emoji:'🍎'},
+  {size:6,groups:2,emoji:'🎀'}
+];
+let chalIdx=0,CH=null;
+function startChal(){
+  pickSpeedTitle(tk=>{
+    _speedTitle = tk;
+    _speedAchieved = false;
+    show('scrChal');chalIdx=0;S.chalRight=0;
+    const t = SPEED_TITLES[tk];
+    renderChal();
+    if(tk!=='none' && t.total>0){
+      setTimeout(()=>startSpeedTimer(t.total), 400);
+    } else {
+      stopSpeedTimer();
+    }
+  });
+}
+function renderChal(){
+  const P=CHAL[chalIdx];CH={P,val:''};
+  progress($('#pgChal'),CHAL.length,chalIdx);
+  const grid=$('#chalGrid'),svg=$('#chalSvg');
+  grid.style.gridTemplateColumns=`repeat(${P.size},56px)`;grid.innerHTML='';svg.innerHTML='';
+  const objs=[];
+  for(let i=0;i<P.size*P.groups;i++){
+    const o=document.createElement('div');o.className='obj';o.style.width='54px';o.style.height='54px';o.style.fontSize='40px';
+    o.textContent=P.emoji;o.classList.add('cg'+(Math.floor(i/P.size)%6+1));
+    grid.appendChild(o);objs.push(o);}
+  setTimeout(()=>{sizeSvg(svg,grid);
+    for(let r=0;r<P.groups;r++)drawRing(svg,objs.slice(r*P.size,r*P.size+P.size),r);},100);
+  $('#chalConcept').innerHTML=
+    `<span class="c1">${P.size}</span>씩 <span class="fill on">${P.groups}</span><span class="kw kw-bd">묶음</span> = 모두 <span class="fill">?</span>개`;
+  $('#chalDisp').textContent='';
+  buildChalKey();
+}
+function buildChalKey(){
+  const kp=$('#chalKey');kp.innerHTML='';
+  for(let i=0;i<=9;i++){const b=document.createElement('button');b.className='keyLin';b.textContent=i;
+    b.onclick=()=>chalPress(String(i));kp.appendChild(b);}
+  const del=document.createElement('button');del.className='keyLin act';del.textContent='⌫';
+  del.onclick=()=>{CH.val=CH.val.slice(0,-1);$('#chalDisp').textContent=CH.val;};kp.appendChild(del);
+  const ok=document.createElement('button');ok.className='keyLin go';ok.textContent='확인 ✓';
+  ok.style.minWidth='110px';ok.onclick=()=>{ if(CH.val) chalCheck(); };kp.appendChild(ok);
+}
+function chalPress(n){if(CH.val.length<3){CH.val+=n;$('#chalDisp').textContent=CH.val;sndPop();
+  // 자동 정답 처리: 맞으면 바로 다음으로
+  if(+CH.val===CH.P.size*CH.P.groups)chalCheck();}}
+function chalCheck(){
+  const P=CH.P,need=P.size*P.groups;
+  if(+CH.val===need){
+    sndOk();confetti();S.chalRight++;
+    const [cx,cy]=centerOf($('#chalGrid'));numBurst(cx,cy,need,2);
+    $('#chalConcept').innerHTML=
+      `<span class="c1">${P.size}</span>씩 <span class="fill on">${P.groups}</span><span class="kw kw-bd">묶음</span> = 모두 <span class="fill gold on">${need}</span>개`;
+    setTimeout(()=>{chalIdx++;
+      if(chalIdx>=CHAL.length){speedCheckCompletion();show('scrPost');buildPost();}
+      else renderChal();},1300);
+  }else{sndNo();toast('묶음을 다시 세어 봐요!');}
+}
+
+/* ================ 사후 녹음 ================ */
+function buildPost(){
+  if($('#recapPre')) $('#recapPre').textContent = (S.preText && S.preText.trim()) || '(녹음 안 함)';
+  buildRecorder($('#postRec'),{rating:true,onDone:async(t,_,blob)=>{
+    S.postText=t||'(녹음 안 함)';S.stickers++;confetti();
+    S.postAudioUrl=await uploadAudio(blob,'post',1);
+    setTimeout(finishCert,800);}});
+}
+
+/* ================ 탐구질문 ================ */
+let popState=null;
+function popup(cfg,after){
+  popState={cfg,after,answered:false,hintIdx:0};
+  $('#popQ').innerHTML=cfg.q;
+  const opts=$('#popOpts');opts.innerHTML='';
+  cfg.opts.forEach(o=>{const b=document.createElement('button');b.className='qopt';b.innerHTML=o.text;
+    b.onclick=()=>chooseOpt(b,o);opts.appendChild(b);});
+  $('#popHint').classList.remove('show');$('#popHint').innerHTML='';
+  $('#popBtn').disabled=true;$('#popBtn').textContent='보기를 하나 골라요';
+  $('#ovPop').classList.add('on');
+}
+function chooseOpt(btn,o){
+  if(popState.answered)return;
+  if(o.right){btn.classList.add('right');popState.answered=true;sndOk();confetti();
+    [...$('#popOpts').children].forEach(c=>c.disabled=true);
+    showHint(o.fb,true);$('#popBtn').disabled=false;$('#popBtn').textContent='잘했어요! 다음 ➡️';
+  }else{btn.classList.add('wrong');sndNo();setTimeout(()=>btn.classList.remove('wrong'),600);
+    showHint(o.fb||'다시 생각해 봐요!');}
+}
+function showHint(t,green){const h=$('#popHint');h.classList.add('show');
+  h.innerHTML=(green?'✅ ':'💡 ')+t;
+  h.style.background=green?'linear-gradient(180deg,#dff7d6,#a8f098)':'linear-gradient(180deg,#fff8d6,#fff2b0)';
+  h.style.borderColor=green?'#5cc24a':'#ffd23f';h.style.color=green?'#2d6921':'#5e4b00';}
+$('#popHintBtn').onclick=()=>{
+  if(!popState)return;const hints=popState.cfg.hints||[];
+  if(popState.hintIdx<hints.length){showHint(hints[popState.hintIdx]);popState.hintIdx++;
+    if(popState.hintIdx>=hints.length){$('#popBtn').disabled=false;$('#popBtn').textContent='이해했어요! 다음 ➡️';}}
+  else toast('힌트를 다 봤어요!');};
+$('#popSkip').onclick=()=>{$('#ovPop').classList.remove('on');if(popState&&popState.after)popState.after();};
+$('#popBtn').onclick=()=>{if($('#popBtn').disabled)return;
+  $('#ovPop').classList.remove('on');if(popState&&popState.after)popState.after();};
+
+/* ================ 수료증 + 저장 ================ */
+async function finishCert(){
+  $('#certName').textContent=S.name+' 어린이';
+  $('#certPre').textContent=S.preText;$('#certPost').textContent=S.postText;
+  $('#certStars').textContent='⭐ 자기평가: '+(S.stars||0)+'개';
+  $('#certStk').textContent='🎁 스티커: '+S.stickers+'개';
+  show('scrCert');try{renderCertResult();}catch(e){};confetti();
+  try{let log=[];
+    try{const r=await window.storage.get('mult1:log');if(r)log=JSON.parse(r.value);}catch(e){}
+    log.push({date:new Date().toLocaleDateString('ko-KR'),name:S.name,
+      bundles:S.bundlesDone,skips:S.skipsDone,chal:S.chalRight,
+      help:S.helpUsed,stars:S.stars,stickers:S.stickers,
+      pre:S.preText.slice(0,60),post:S.postText.slice(0,60)});
+    await window.storage.set('mult1:log',JSON.stringify(log));}catch(e){}
+  // Apps Script 백엔드에 학습기록 전송 (URL 비어 있으면 자동 skip)
+  postBackend({action:'saveRecord',name:S.name,app:'1',
+    preText:S.preText||'',postText:S.postText||'',
+    preAudioUrl:S.preAudioUrl||'',postAudioUrl:S.postAudioUrl||'',
+    stars:S.stars,stickers:S.stickers,hint:S.helpUsed,
+    learnDone:S.bundlesDone+S.skipsDone,chalRight:S.chalRight,
+    sessionId:'sess_'+Date.now()});
+}
+
+/* ================ 대시보드 ================ */
+async function openDash(){
+  show('scrDash');let log=[];
+  try{const r=await window.storage.get('mult1:log');if(r)log=JSON.parse(r.value);}catch(e){}
+  const mine=log.filter(x=>!S.name||x.name===S.name);
+  const list=$('#dashList');list.innerHTML='';
+  if(!mine.length)list.innerHTML='<div class="dashRow"><b>아직 기록이 없어요.</b><br><span>활동을 마치면 여기에 학습기록이 스스로 쌓여요! 🌱</span></div>';
+  else[...mine].reverse().forEach(x=>{const d=document.createElement('div');d.className='dashRow';
+    d.innerHTML=`<b>📅 ${x.date} · ${x.name}</b><br>
+      <span>🧺 묶어세기 ${x.bundles} · 🦘 뛰어세기 ${x.skips} · ⏱️ 도전 ${x.chal} · 🎁 ${x.stickers}</span><br>
+      <span>🌱 활동 후: "${x.post||'-'}"</span>`;list.appendChild(d);});
+  const tb=mine.reduce((a,x)=>a+x.bundles,0),tsk=mine.reduce((a,x)=>a+x.skips,0),ts=mine.reduce((a,x)=>a+x.stickers,0);
+  $('#dashKpi').innerHTML=`
+    <div class="kpicard"><div class="n">${mine.length}</div><div class="l">활동한 날</div></div>
+    <div class="kpicard"><div class="n">${tb}</div><div class="l">묶어세기</div></div>
+    <div class="kpicard"><div class="n">${tsk}</div><div class="l">뛰어세기</div></div>
+    <div class="kpicard"><div class="n">${ts}</div><div class="l">스티커</div></div>`;
+}
+
+$('#startBtn').onclick=async()=>{S.name=sel.value;
+  try{await navigator.mediaDevices.getUserMedia({audio:true})
+    .then(s=>s.getTracks().forEach(t=>t.stop()));}catch(e){}
+  show('scrTut');initTut();};
+$('#toDashBtn').onclick=()=>{S.name=sel.value;openDash();};
+$('#dashBack').onclick=()=>show(S.preText?'scrCert':'scrStart');
+$('#certDash').onclick=openDash;
+$('#notebookDone').onclick=()=>startChal();
+$('#certAgain').onclick=()=>{S={name:S.name,helpUsed:0,stickers:0,stars:0,preText:'',postText:'',preAudioUrl:'',postAudioUrl:'',
+  bundlesDone:0,skipsDone:0,chalRight:0};show('scrTut');initTut();};
+
+$('#sumNext').onclick=()=>{show('scrNotebook');};
+
+/* 단계 진행 표시 관리 */
+const STAGE_MAP = {'scrMot':'mot','scrBundle':'act','scrSkip':'act','scrSummary':'sum','scrChal':'chal'};
+const STAGE_ORDER = ['mot','act','sum','chal'];
+function updateStageBar(scrId){
+  const bar = document.getElementById('stageBar');
+  if(!bar) return;
+  const stg = STAGE_MAP[scrId];
+  if(!stg){ bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  const curIdx = STAGE_ORDER.indexOf(stg);
+  bar.querySelectorAll('.stageStep').forEach(s=>{
+    s.classList.remove('cur','done');
+    const sIdx = STAGE_ORDER.indexOf(s.dataset.stg);
+    if(sIdx === curIdx) s.classList.add('cur');
+    else if(sIdx < curIdx) s.classList.add('done');
+  });
+}
+
+/* show() augmentation — 단계 표시 업데이트 */
+(function(){
+  const _origShow = window.show;
+  if(_origShow){
+    window.show = function(id){
+      const r = _origShow.apply(this, arguments);
+      try{ updateStageBar(id); }catch(e){}
+      return r;
+    };
+  }
+})();
+
+/* === 빠른 연산 — 칭호 데이터 === */
+const SPEED_TITLES = {
+  god:       {ico:'🌠', name:'묶음의 별', sub:'묶음 마스터', desc:'30초 안에! ⚡ 극한 도전!', total:30, perQ:6, cls:'c1'},
+  lightning: {ico:'⚡', name:'번개 캥거루', sub:'아주 빠른 점프꾼', desc:'1분 안에! ⚡ 빠른 도전!', total:60, perQ:12, cls:'c2'},
+  rocket:    {ico:'🦘', name:'점프 챔피언', sub:'안정된 점프꾼', desc:'1분 30초 안에! 🛡️ 안정 도전!', total:90, perQ:18, cls:'c3'},
+  owl:       {ico:'🌳', name:'차분한 나무늘보', sub:'천천히 정확하게', desc:'2분 안에! 🐢 차분히 도전!', total:120, perQ:24, cls:'c4'},
+  none:      {ico:'🐢', name:'천천히', sub:'시간 제한 없음', desc:'천천히 정확하게 풀어봐요', total:0, perQ:0, cls:'cn'}
+};
+let _speedTitle = null;       // 선택된 칭호 key
+let _speedDeadline = 0;       // ms 시각
+let _speedTimerId = null;
+let _speedAchieved = false;   // 시간 내 모두 정답 여부
+
+/* 칭호 선택 모달 — startChal 진입 직전 호출 */
+function pickSpeedTitle(onPicked){
+  const ov = document.getElementById('ovSpeedPick');
+  if(!ov){ onPicked('none'); return; }
+  ov.classList.add('on');
+  ov.querySelectorAll('.speedCard').forEach(c=>{
+    c.onclick = ()=>{
+      const tk = c.dataset.tk;
+      ov.classList.remove('on');
+      onPicked(tk);
+    };
+  });
+}
+
+/* 타이머 시작 */
+function startSpeedTimer(seconds){
+  const bar = document.getElementById('timerBar');
+  const inner = document.getElementById('timerInner');
+  const num = document.getElementById('timerNum');
+  if(!bar) return;
+  if(!seconds || seconds<=0){ bar.classList.add('hidden'); return; }
+  bar.classList.remove('hidden');
+  _speedDeadline = Date.now() + seconds*1000;
+  const total = seconds*1000;
+  function tick(){
+    const left = Math.max(0, _speedDeadline - Date.now());
+    const pct = Math.max(0, Math.min(100, left/total*100));
+    inner.style.width = pct + '%';
+    const sec = Math.ceil(left/1000);
+    num.textContent = sec>=60?Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'):sec+'';
+    num.classList.toggle('warn', sec<=5);
+    if(left<=0){
+      clearInterval(_speedTimerId);
+      _speedTimerId = null;
+      onSpeedTimeUp();
+    }
+  }
+  if(_speedTimerId) clearInterval(_speedTimerId);
+  tick();
+  _speedTimerId = setInterval(tick, 200);
+}
+function stopSpeedTimer(){
+  if(_speedTimerId){ clearInterval(_speedTimerId); _speedTimerId=null; }
+  const bar = document.getElementById('timerBar');
+  if(bar) bar.classList.add('hidden');
+}
+function onSpeedTimeUp(){
+  _speedAchieved = false;
+  stopSpeedTimer();
+  // 타임아웃 알림 — 그래도 마저 풀게 (학습 가치)
+  if(typeof toast === 'function') toast('⏰ 시간 종료! 천천히 마저 풀어요',2400);
+  if(typeof setMascot === 'function') setMascot('⏰ 시간이 다 됐어요. 다음엔 더 차분한 단계로!', 3200);
+}
+
+/* 모든 도전 완료 시 — 시간 내였는지 확인 */
+function speedCheckCompletion(){
+  if(!_speedTitle || _speedTitle==='none'){ _speedAchieved = false; stopSpeedTimer(); return; }
+  if(_speedDeadline && Date.now() <= _speedDeadline){
+    _speedAchieved = true;
+    if(typeof confetti==='function') confetti();
+    const t = SPEED_TITLES[_speedTitle];
+    if(typeof setMascot==='function') setMascot(`${t.ico} ${t.name} 칭호 획득!`, 3500);
+  } else {
+    _speedAchieved = false;
+  }
+  stopSpeedTimer();
+}
+
+/* === 수료증 학습 결과 페이지 === */
+function renderCertResult(){
+  const host = document.getElementById('certResult');
+  if(!host) return;
+  const chalTotal = (typeof CHAL!=='undefined' && CHAL) ? CHAL.length : 5;
+  const chalRight = (typeof S!=='undefined' && S) ? (S.chalRight||0) : 0;
+  const rate = chalTotal ? Math.round(chalRight/chalTotal*100) : 0;
+  const color = rate>=80 ? '#15803d' : rate>=60 ? '#d97706' : '#dc2626';
+  const circ = 2*Math.PI*32, offset = circ*(1-rate/100);
+
+  /* 칭호 배지 */
+  let titleHtml = '';
+  if(_speedTitle && _speedTitle!=='none' && _speedAchieved){
+    const t = SPEED_TITLES[_speedTitle];
+    titleHtml = `<div class="titleBadge">
+      <div class="tLbl">⚡ 빠른 연산 칭호</div>
+      <div class="tIco">${t.ico}</div>
+      <div class="tName">${t.name}</div>
+      <div class="tDesc">${t.desc} · ${t.total}초 안에!</div></div>`;
+  } else if(_speedTitle && _speedTitle!=='none'){
+    titleHtml = `<div class="titleBadge locked">
+      <div class="tLbl">⚡ 빠른 연산 칭호</div>
+      <div class="tIco">🔒</div>
+      <div class="tName">다음 기회에!</div>
+      <div class="tDesc">시간 안에 5문제 모두 맞히면 OK</div></div>`;
+  }
+
+  /* 인사이트 메시지 */
+  let mood='good', em='💪', msg='잘했어요!';
+  if(rate===100 && _speedAchieved){ mood='best'; em='🏆'; msg='완벽! 빠른 연산 칭호까지 획득!'; }
+  else if(rate===100){ mood='best'; em='✨'; msg='도전 5문제 100% 정답!'; }
+  else if(rate>=80){ mood='good'; em='💪'; msg=`정답률 ${rate}%! 멋져요`; }
+  else if(rate>=60){ mood='good'; em='🌱'; msg=`정답률 ${rate}% — 한 번 더 도전!`; }
+  else if(rate>0){ mood='tip'; em='📝'; msg=`정답률 ${rate}% — 천천히 다시 풀어봐요`; }
+  else { mood='tip'; em='🎯'; msg='도전을 풀어 보세요!'; }
+
+  host.innerHTML = `
+    <div class="donutCell">
+      <div class="dLbl">🎯 도전 정답률</div>
+      <div class="donutWrap">
+        <svg class="donutSvg" viewBox="0 0 80 80">
+          <circle class="donutTrack" cx="40" cy="40" r="32"/>
+          <circle class="donutFill" cx="40" cy="40" r="32" stroke="${color}"
+                  stroke-dasharray="${circ}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="donutPct" style="color:${color}">${rate}%</div>
+      </div>
+      <div class="donutFrac">${chalRight} / ${chalTotal} 문제</div>
+    </div>
+    ${titleHtml}
+  `;
+
+  const heroEl = document.getElementById('certHero');
+  if(heroEl){
+    heroEl.className = 'heroChip mood-' + mood;
+    heroEl.innerHTML = `<span class="hcEm">${em}</span><span>${msg}</span>`;
+  }
+}
+
+
+/* ⚡ 빠른 연산 시간 도전 시스템 */
+const FAST_LEVELS = {
+  1:{name:'묶음의 별',icon:'🌠',time:30,emoji:'🌠'},
+  2:{name:'번개 캥거루',icon:'⚡',time:60,emoji:'⚡'},
+  3:{name:'점프 챔피언',icon:'🦘',time:90,emoji:'🦘'},
+  4:{name:'차분한 나무늘보',icon:'🌳',time:120,emoji:'🌳'}
+};
+let fastState={lv:0,problems:[],idx:0,ok:0,no:0,input:'',startMs:0,remainSec:0,timerId:null};
+
+function buildFastKeypad(){
+  const kp=document.getElementById('fastKeypad');
+  kp.innerHTML='';
+  const keys=['1','2','3','4','5','6','7','8','9','0','del','ok'];
+  keys.forEach(k=>{
+    const b=document.createElement('button');
+    b.className='fastKey'+(k==='del'?' del':k==='ok'?' ok':'');
+    b.textContent=k==='del'?'⌫':k==='ok'?'확인 ✓':k;
+    b.onclick=()=>handleFastKey(k);
+    kp.appendChild(b);
+  });
+}
+function handleFastKey(k){
+  if(k==='del'){fastState.input=fastState.input.slice(0,-1);}
+  else if(k==='ok'){submitFast();return;}
+  else{if(fastState.input.length<3)fastState.input+=k;}
+  renderFastQ();
+}
+function renderFastQ(){
+  const p=fastState.problems[fastState.idx];
+  if(!p)return;
+  const q=document.getElementById('fastQ');
+  q.innerHTML=`<span class="qa">${p.a}</span><span style="color:#fff;">×</span><span class="qb">${p.b}</span><span style="color:#fff;">=</span><span class="qbox">${fastState.input||'?'}</span>`;
+  document.getElementById('fastIdx').textContent=fastState.idx+1;
+  document.getElementById('fastOk').textContent=fastState.ok;
+  document.getElementById('fastNo').textContent=fastState.no;
+}
+function submitFast(){
+  if(!fastState.input)return;
+  const p=fastState.problems[fastState.idx];
+  const ans=parseInt(fastState.input);
+  if(ans===p.a*p.b){fastState.ok++;sndOk();}
+  else{fastState.no++;sndNo();}
+  fastState.input='';
+  fastState.idx++;
+  if(fastState.idx>=10){endFast(false);return;}
+  renderFastQ();
+}
+function startFast(lv){
+  fastState.lv=lv;
+  fastState.problems=genFastProblems();
+  fastState.idx=0;fastState.ok=0;fastState.no=0;fastState.input='';
+  const tot=FAST_LEVELS[lv].time;
+  fastState.remainSec=tot;
+  show('scrFast');
+  document.getElementById('fastTitle').textContent=`⚡ ${FAST_LEVELS[lv].icon} ${FAST_LEVELS[lv].name} (${tot}초)`;
+  buildFastKeypad();
+  renderFastQ();
+  if(fastState.timerId)clearInterval(fastState.timerId);
+  document.getElementById('fastTimerFill').style.width='100%';
+  document.getElementById('fastTimerNum').textContent=tot;
+  fastState.startMs=Date.now();
+  fastState.timerId=setInterval(()=>{
+    const elapsed=(Date.now()-fastState.startMs)/1000;
+    const remain=Math.max(0,tot-elapsed);
+    fastState.remainSec=remain;
+    document.getElementById('fastTimerFill').style.width=(remain/tot*100)+'%';
+    document.getElementById('fastTimerNum').textContent=Math.ceil(remain);
+    if(remain<=0){endFast(true);}
+  },200);
+}
+function endFast(timeout){
+  if(fastState.timerId){clearInterval(fastState.timerId);fastState.timerId=null;}
+  const lv=fastState.lv;
+  const lvInfo=FAST_LEVELS[lv];
+  const tot=10;
+  const acc=Math.round(fastState.ok/tot*100);
+  const trophy=acc>=80?lvInfo.icon+'👑':acc>=50?lvInfo.icon+'⭐':'🌱';
+  const earned=acc>=80?`${lvInfo.icon} ${lvInfo.name} 칭호 획득!`:acc>=50?`${lvInfo.icon} ${lvInfo.name} 도전 완료!`:'다시 도전해봐요!';
+  show('scrFastResult');
+  document.getElementById('fastRTrophy').textContent=trophy;
+  document.getElementById('fastRTitle').textContent=timeout?'⏰ 시간 종료!':'🎉 완주!';
+  document.getElementById('fastRSub').textContent=earned;
+  document.getElementById('fastROk').textContent=fastState.ok+'/'+tot;
+  document.getElementById('fastRAcc').textContent=acc+'%';
+  document.getElementById('fastRTime').textContent=Math.max(0,Math.round(fastState.remainSec))+'초';
+  confetti();
+  /* 백엔드 저장 */
+  postBackend({action:'saveRecord',name:S.name,app:'1',
+    bundles:0,chal:fastState.ok,help:0,stickers:0,stars:Math.ceil(acc/20),
+    pre:'(빠른 연산)',post:`${lvInfo.name} ${acc}% ${fastState.ok}/${tot}`});
+}
+
+function genFastProblems(){
+  /* app1 묶어 세기·뛰어 세기 — 2,3,4,5단 곱셈 */
+  const arr=[];
+  for(let i=0;i<10;i++){
+    const a=2+Math.floor(Math.random()*4);  /* 2~5 */
+    const b=2+Math.floor(Math.random()*5);  /* 2~6 */
+    arr.push({a,b});
+  }
+  return arr;
+}
+
+</script>
+<!-- 빠른 연산 칭호 선택 -->
+<div class="ov" id="ovSpeedPick"><div class="pop speedPick">
+  <h2>⚡ 도전 단계를 골라요!</h2>
+  <div class="sLead">5문제를 정해진 시간 안에! 어떤 칭호에 도전할까요?</div>
+  <div class="speedGrid">
+    <button class="speedCard c1" data-tk="god"><span class="sBadge">30초 도전</span>
+      <div class="sName">🌠 묶음의 별</div>
+      <div class="sDesc">묶음 마스터</div>
+      <div class="sExtra">30초 안에 ⚡ · 극한 도전!</div></button>
+    <button class="speedCard c2" data-tk="lightning"><span class="sBadge">1분 도전</span>
+      <div class="sName">⚡ 번개 캥거루</div>
+      <div class="sDesc">아주 빠른 점프꾼</div>
+      <div class="sExtra">1분 안에 ⚡ · 빠른 도전!</div></button>
+    <button class="speedCard c3" data-tk="rocket"><span class="sBadge">1분 30초 도전</span>
+      <div class="sName">🦘 점프 챔피언</div>
+      <div class="sDesc">안정된 점프꾼</div>
+      <div class="sExtra">1분 30초 안에 🛡️ · 안정 도전!</div></button>
+    <button class="speedCard c4" data-tk="owl"><span class="sBadge">2분 도전 도전</span>
+      <div class="sName">🌳 차분한 나무늘보</div>
+      <div class="sDesc">천천히 정확하게</div>
+      <div class="sExtra">2분 안에 🐢 · 차분히 도전!</div></button>
+    <button class="speedCard cn" data-tk="none"><div class="sName">🐢 그냥 천천히 풀기</div>
+      <div class="sExtra">천천히 정확하게 풀어봐요</div></button>
+  </div>
+</div></div>
+</body>
+</html>
